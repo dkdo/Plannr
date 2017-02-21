@@ -4,6 +4,7 @@
     <head>
         <title>Plannr</title>
         <link href="{% static '/bootstrap-3.3.7-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static '/css/simple_sidebar.css' %}" rel="stylesheet">
         <script src="{% static '/bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
     </head>
     <body>
@@ -26,5 +27,27 @@
             </div>
           </div>
         </nav>
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="#">Home</a>
+                </li>
+                <li>
+                    <a href="#">Shift Center</a>
+                </li>
+                <li>
+                    <a href="#">Notifications</a>
+                </li>
+                <li>
+                    <a href="#">Employees</a>
+                </li>
+                <li>
+                    <a href="#">Position</a>
+                </li>
+                <li>
+                    <a href="#">System Settings</a>
+                </li>
+            </ul>
+        </div>
     </body>
 </html>
