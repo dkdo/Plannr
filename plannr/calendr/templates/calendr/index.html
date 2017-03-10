@@ -2,8 +2,19 @@
 
 {% block content %}
         <div id="content-wrapper" class="main-content-wrapper">
+            <div id="home-button-wrapper" class="calendar-home-button-header-wrapper">
+                <div id="month-week-day-buttons" class="calendar-home-button-header">
+                    <button type="button" class="btn btn-default btn-md home-button">Month</button>
+                    <button type="button" class="btn btn-default btn-md home-button">Week</button>
+                    <button type="button" class="btn btn-default btn-md home-button">Day</button>
+                    <button type="button" class="btn btn-default btn-md home-button">&lt</button>
+                    <button type="button" class="btn btn-default btn-md home-button">Today</button>
+                    <button type="button" class="btn btn-default btn-md home-button">&gt</button>
+                </div>
+            </div>
             <div id="calendar-grid-wrapper" class="calendar-grid-wrapper">
                     <table id="month-grid">
+                        <caption class="month-title">March 2017</caption>
                         <tr>
                             <th>Sun</th>
                             <th>Mon</th>
