@@ -22126,6 +22126,7 @@ var Calendar = React.createClass({
                     this.setState({ eventList: events });
                 }.bind(this)
             });
+            this.setState({ eventTitle: '' });
         }
     },
     render: function () {
