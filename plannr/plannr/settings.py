@@ -25,7 +25,7 @@ SECRET_KEY = 'dt2%(o+!525*&^ssy@ktlambns^$f$mcy#x6$m$c+7bl^i2*jv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ec2-52-37-246-173.us-west-2.compute.amazonaws.com']
 
 
 # Application definition
@@ -77,11 +77,12 @@ WSGI_APPLICATION = 'plannr.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'plannr',
         'USER': 'plannr',
         'PASSWORD': 'plannr',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
+	'PORT': '',
     }
 }
 
