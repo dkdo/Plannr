@@ -4,17 +4,20 @@
   "description": "",
   "main": "webpack.config.js",
   "dependencies": {
+    "babel-core": "^6.25.0",
     "babel-loader": "^6.4.1",
-    "babel-core": "^6.24.0",
-    "babel-preset-react": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
     "jquery": "^3.2.1",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
     "webpack": "^2.2.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^2.6.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack ./src/main.js ./public/bundle.js"
   },
   "keywords": [],
   "author": "",
