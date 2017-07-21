@@ -1,0 +1,24 @@
+{% block content %}
+<div class="login-main-container">
+	<div class="login-content-container">
+			<div class="login-input-container" id="login-input-left">
+				<div class="login-info-container">
+					<input type="text" class="login-signin-inputs active" name="signin_email" value="   Email@domain.com">
+					<input type="text" class="login-signin-inputs" name="signin_pwd" value="   Password">
+					<form method="POST">
+						<button type="button" class="btn login-connect-btn" name="connect_btn">CONNECT</button>
+					</form>
+					<div class="login-signup-link-container">
+						<a href="" class="login-pwd-forgot-link" name="pwd_forget_link">Forgot your password?</a>
+						<a href="" class="login-signup-link" name="signup_link">Sign Up</a>
+					</div>
+				</div>
+			</div>
+			<div class="login-input-container">
+				<div class="login-logo-container">
+					<img src="plannr_temp_logo.png" alt="LOGO">
+				</div>
+			</div>
+	</div>
+</div>
+{% endblock %}
