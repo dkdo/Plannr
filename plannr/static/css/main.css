@@ -205,6 +205,7 @@
 }
 
 /* Calendar Arrows */
+
 .r-calendar .r-prev,
 .r-calendar .r-next{
     background-color: #ffffff;
@@ -295,5 +296,85 @@
 }
 
 .eventList{
+    float: left;
+}
+
+/* Login CSS */
+.login-connect-btn {
+    background-color : #0066ff;
+    border-radius: 6px;
+    color : #ffffff; 
+    -moz-border-radius: 6px; 
+    -webkit-border-radius: 6px; 
+    height : 45px;
+    margin : 20px 40px 25px;
+    width : 250px;
+}
+
+.login-content-container {
+    height : 300px;
+    left : 50%;
+    position : fixed;
+    top : 50%;
+    transform: translate(-50%, -50%);
+    width : 1100px;
+}
+
+.login-info-container {
+    margin : 40px 25px 25px 110px;
+}
+
+.login-input-container {
+    float : left;
+    height : 100%;
+    position : relative;
+    width: 50%;
+}
+
+#login-input-left {
+    border-right : 2px solid #595959;
+}
+
+.login-main-container {
+    background-color : #001433;
+    position: absolute;
+    top: 0; 
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.login-logo-container {
+    margin : 30px 0px 25px 60px;
+}
+
+.login-signin-inputs {
+    background-color : transparent;
+    border: 2px solid #595959;
+    border-radius: 6px; 
+    color : #595959;
+    -moz-border-radius: 6px; 
+    -webkit-border-radius: 6px; 
+    height : 45px;
+    margin : 0px 40px 20px;
+    width : 250px;
+}
+
+.active {
+    border : 2px solid #0066ff;
+    color : #ffffff;
+}
+
+.login-signup-link {
+    float : right;
+}
+
+.login-signup-link-container {
+    height : 45px;
+    margin : 0px 40px 25px;
+    width : 250px;
+}
+
+.login-pwd-forgot-link {
     float: left;
 }
