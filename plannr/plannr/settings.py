@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'calendr.apps.CalendrConfig',
     'position.apps.PositionConfig',
-    'event.apps.EventConfig'
+    'event.apps.EventConfig',
+    'login.apps.LoginConfig'
 ]
 
 MIDDLEWARE = [
@@ -113,10 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Login redirection url
-
-LOGIN_REDIRECT_URL = 'home'
 
 
 # Internationalization
