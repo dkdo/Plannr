@@ -17,7 +17,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack ./src/app.js ./public/bundle.js"
+    "build": "webpack ./src/app.js ./public/bundle.js",
+    "build:watch": "webpack ./src/app/js ./public/bundle.js --watch"
   },
   "keywords": [],
   "author": "",
