@@ -17,6 +17,7 @@ class Login extends React.Component {
 			username: this.state.username,
 			password: this.state.password
 		};
+		alert(this.props.url);
 		$.ajax({
                 type: 'POST',
                 url: this.props.url,
@@ -24,7 +25,7 @@ class Login extends React.Component {
                 datatype: 'json',
                 cache: false,
                 success: function(){
-                    
+                    alert("Success!");
                 }.bind(this)
             })
         this.setState({username: '', password: ''});
