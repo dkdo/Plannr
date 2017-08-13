@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'calendr.apps.CalendrConfig',
     'position.apps.PositionConfig',
-    'event.apps.EventConfig'
+    'event.apps.EventConfig',
+    'login.apps.LoginConfig'
 ]
 
 MIDDLEWARE = [
