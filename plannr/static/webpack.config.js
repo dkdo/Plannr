@@ -1,17 +1,21 @@
 module.exports = {
-    entry: "./src/app.js",
+    entry: "./src/index.js",
     output: {
         filename: "./public/bundle.js"
     },
     module: {
         loaders: [
             {
-                test: /\.jsx?$/,
+                test: /\.js?$/,
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel-loader',
                 query: {
                     presets: ['react']
                 }
+            },
+            {
+                test: /\.css$/,
+                use: [ 'style-loader', 'css-loader' ]
             }
         ]
     }

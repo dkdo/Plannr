@@ -1,45 +1,11 @@
-// main.js
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-var Calendar = React.createClass({
-    calc: function (year, month) {
-        if (this.state.selectedElement) {
-            if (this.state.selectedMonth != month || this.state.selectedYear != year) {
-                this.state.selectedElement.classList.remove('r-selected');
-            } else {
-                this.state.selectedElement.classList.add('r-selected');
-            }
-        }
-        return {
-            firstOfMonth: new Date(year, month, 1),
-            daysInMonth: new Date(year, month + 1, 0).getDate()
-        };
-    },
-    loadEventsFromServer: function(){
-        $.ajax({
-            url: this.props.url,
-            datatype: 'json',
-            cache: false,
-            success: function(data){
-                this.setState({data: data});
-            }.bind(this)
-        })
-    },
-    componentWillMount: function () {
-        this.setState(this.calc.call(null, this.state.year, this.state.month));
-    },
-    componentDidMount: function () {
-        this.loadEventsFromServer();
-    },
-    componentDidUpdate: function (prevProps, prevState) {
-        if (this.props.onSelect && prevState.selectedDt != this.state.selectedDt) {
-            this.props.onSelect.call(this.getDOMNode(), this.state);
-        }
-    },
-    getInitialState: function () {
+class Calendr extends React.Component {
+    constructor(props){
+        super(props);
         var date = new Date();
-        return {
+        this.state = {
             year: date.getFullYear(),
             month: date.getMonth(),
             selectedYear: date.getFullYear(),
@@ -57,9 +23,57 @@ var Calendar = React.createClass({
             daysInMonth: null,
             eventList: [],
             eventTitle: ''
+        }
+
+        this.calc = this.calc.bind(this);
+        this.loadEventsFromServer = this.loadEventsFromServer.bind(this);
+        this.getPrev = this.getPrev.bind(this);
+        this.getNext = this.getNext.bind(this);
+        this.selectDate = this.selectDate.bind(this);
+        this.titleChange = this.titleChange.bind(this);
+        this.addEvent = this.addEvent.bind(this);
+    }
+    
+    calc(year, month) {
+        if (this.state.selectedElement) {
+            if (this.state.selectedMonth != month || this.state.selectedYear != year) {
+                this.state.selectedElement.classList.remove('r-selected');
+            } else {
+                this.state.selectedElement.classList.add('r-selected');
+            }
+        }
+        return {
+            firstOfMonth: new Date(year, month, 1),
+            daysInMonth: new Date(year, month + 1, 0).getDate()
         };
-    },
-    getPrev: function () {
+    }
+
+    loadEventsFromServer() {
+        $.ajax({
+            url: this.props.url,
+            datatype: 'json',
+            cache: false,
+            success: function(data){
+                this.setState({data: data});
+            }.bind(this)
+        })
+    }
+
+    componentWillMount() {
+        this.setState(this.calc.call(null, this.state.year, this.state.month));
+    }
+
+    componentDidMount() {
+        this.loadEventsFromServer();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.onSelect && prevState.selectedDt != this.state.selectedDt) {
+            this.props.onSelect.call(this.getDOMNode(), this.state);
+        }
+    }
+
+    getPrev() {
         var state = {};
         if (this.state.month > 0) {
             state.month = this.state.month - 1;
@@ -70,8 +84,9 @@ var Calendar = React.createClass({
         }
         Object.assign(state, this.calc.call(null, state.year, state.month));
         this.setState(state);
-    },
-    getNext: function () {
+    }
+
+    getNext() {
         var state = {};
         if (this.state.month < 11) {
             state.month = this.state.month + 1;
@@ -82,8 +97,9 @@ var Calendar = React.createClass({
         }
         Object.assign(state, this.calc.call(null, state.year, state.month));
         this.setState(state);
-    },
-    selectDate: function (year, month, date, element) {
+    }
+
+    selectDate(year, month, date, element) {
         if (this.state.selectedElement) {
             this.state.selectedElement.classList.remove('r-selected');
         }
@@ -109,11 +125,13 @@ var Calendar = React.createClass({
             selectedElement: element.target,
             eventList: events
         });
-    },
-    titleChange: function(event) {
+    }
+
+    titleChange(event) {
         this.setState({eventTitle: event.target.value});
-    },
-    addEvent: function (){
+    }
+
+    addEvent(){
         if (this.state.eventTitle == ''){
             alert('Select a date and/or add a title!');
         }
@@ -142,8 +160,9 @@ var Calendar = React.createClass({
             })
             this.setState({eventTitle: ''});
         }
-    },
-    render: function () {
+    }
+
+    render() {
         return (
             <div className="calendar-event-container">
                 <div className="left-position-pane">
@@ -165,21 +184,25 @@ var Calendar = React.createClass({
                     <AddEvent eventTitle={this.state.eventTitle} titleChange={this.titleChange} addEvent={this.addEvent}/>
                 </div>
             </div>
-        );
+        )
     }
-});
+}
 
-var EventList = React.createClass({
-    render: function(){
+Calendr.defaultProps = {
+    url: '/events/'
+};
+
+class EventList extends React.Component {
+    render() {
         var eventComponents = this.props.eventList.map(function(event) {
             return <div className="event" key={event.id}>{event.title} {event.date}</div>
         });
         return <div className="eventList">{eventComponents}</div>;
     }
-});
+}
 
-var AddEvent = React.createClass({
-    render: function(){
+class AddEvent extends React.Component {
+    render() {
         return (
             <div className="eventAdder">
                 <div><label>Title </label><input type="text" value={this.props.eventTitle} onChange={this.props.titleChange}/></div>
@@ -187,9 +210,10 @@ var AddEvent = React.createClass({
             </div>
         );
     }
-});
- var Arrows = React.createClass({
-    render: function () {
+}
+
+ class Arrows extends React.Component {
+    render() {
         return (
             <div className="r-arrows">
                 <div className="r-cell r-prev" onClick={this.props.onPrev.bind(null, this)} role="button" tabIndex="0"></div>
@@ -197,18 +221,18 @@ var AddEvent = React.createClass({
             </div>
         );
     }
-});
+}
 
-var Header = React.createClass({
-    render: function () {
+class Header extends React.Component {
+    render() {
         return (
             <div className="r-title">{this.props.monthNames[this.props.month]}&nbsp;{this.props.year}</div>
         );
     }
-});
+}
 
-var WeekDays = React.createClass({
-    render: function () {
+class WeekDays extends React.Component {
+    render() {
         var that = this,
             haystack = Array.apply(null, {length: 7}).map(Number.call, Number);
         return (
@@ -228,16 +252,10 @@ var WeekDays = React.createClass({
             </div>
         );
     }
-});
+}
 
-var MonthDates = React.createClass({
-    statics: {
-        year: new Date().getFullYear(),
-        month: new Date().getMonth(),
-        date: new Date().getDate(),
-        today: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
-    },
-    render: function () {
+class MonthDates extends React.Component {
+    render() {
         var haystack, day, d, current, onClick,
             isDate, className,
             weekStack = Array.apply(null, {length: 7}).map(Number.call, Number),
@@ -306,16 +324,10 @@ var MonthDates = React.createClass({
             </div>
         );
     }
-});
+}
 
-ReactDOM.render(
-    React.createElement(Calendar, {
-        url: '/events/'
-        //onSelect: function (state) {
-            //console.log(this, state);
-        //},
-        //disablePast: true,
-        //minDate: new Date(2016, 2, 28)
-    }),
-    document.getElementById("calendar")
-);
+MonthDates.defaultProps = {
+    today: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+};
+
+export default Calendr

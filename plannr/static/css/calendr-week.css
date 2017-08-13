@@ -1,0 +1,12 @@
+.calendr-week {
+    width: 100%;
+    display: table;
+}
+
+.week-days {
+    display: table-row;
+}
+
+.week-day {
+    display: table-cell;
+}

@@ -136,3 +136,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+REACT_ROUTES = [
+    'week',
+    'about',
+    'topics',
+]
