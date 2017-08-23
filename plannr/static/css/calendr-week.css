@@ -5,8 +5,13 @@
 
 .week-days {
     display: table-row;
+    width: 12%;
 }
 
 .week-day {
     display: table-cell;
+}
+
+.week-grid {
+    display: table-row-group;
 }
