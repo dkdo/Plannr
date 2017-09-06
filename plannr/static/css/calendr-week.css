@@ -10,6 +10,7 @@
 
 .week-day {
     display: table-cell;
+    border: black solid 1px;
 }
 
 .week-grid {

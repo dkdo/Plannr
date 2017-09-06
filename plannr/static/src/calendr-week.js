@@ -19,6 +19,10 @@ class CalendrWeek extends React.Component {
         this.getDateFromSundayOffset = this.getDateFromSundayOffset.bind(this);
     }
 
+    componentWillMount(){
+        this.getWeekEvents();
+    }
+
     setGridArray(){
         var weekArray = new Array(48);
         weekArray.fill(Array(7));
@@ -46,16 +50,18 @@ class CalendrWeek extends React.Component {
         // some API call to get events
 
         $.ajax({
-            url: this.props.url,
+            url: this.props.url + 'weekevents/',
             datatype: 'json',
             cache: false,
+            data: {
+                year: this.state.prevSunday.getFullYear(),
+                month: this.state.prevSunday.getMonth(),
+                day: this.state.prevSunday.getDate()
+            },
             success: function(data){
                 this.setState({data: data});
             }.bind(this)
         })
-        for (let i = 0; i < 7; i ++){
-
-        }
     }
 
     render() {
