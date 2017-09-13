@@ -4,7 +4,7 @@ from event.models import Event
 class EventSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=True)
-    date = serializers.DateField(required=True)
+    date = serializers.DateTimeField(required=True)
 
     def create(self, validated_data):
         """
