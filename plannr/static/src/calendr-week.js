@@ -10,7 +10,6 @@ class CalendrWeek extends React.Component {
             numOfHalfHours: 48,
             today: new Date(),
             prevSunday: this.getPreviousSunday(new Date()),
-            gridArray: this.setGridArray()
         };
         this.getPreviousSunday = this.getPreviousSunday.bind(this);
         this.getDateFromSundayOffset = this.getDateFromSundayOffset.bind(this);
@@ -18,15 +17,6 @@ class CalendrWeek extends React.Component {
 
     componentWillMount(){
         this.getWeekEvents();
-    }
-
-    setGridArray(){
-        var weekArray = new Array(48);
-        weekArray.fill(Array(7));
-        for (var i = 0; i < weekArray.length; i ++){
-            weekArray[i].fill({event: null});
-        }
-        return weekArray;
     }
 
     getPreviousSunday(day){
@@ -65,7 +55,7 @@ class CalendrWeek extends React.Component {
         return (
             <div className="calendr-week">
                 <WeekHeader dayNames={calendrConst.dayNames} getDateFromSundayOffset={this.getDateFromSundayOffset}/>
-                <WeekGrid dayNames={calendrConst.dayNames} gridArray={this.state.gridArray}/>
+                <WeekGrid dayNames={calendrConst.dayNames}/>
             </div>
         )
     }
@@ -93,8 +83,8 @@ class WeekHeader extends React.Component {
 class WeekGrid extends React.Component {
     getWeekContainers(){
         var weeks = [];
-        for(var i = 0; i < this.props.gridArray.length; i++){
-            weeks.push(<WeekContainer key={i} weekDays={this.props.gridArray[i]} rowIndex={i}/>);
+        for(var i = 0; i < 48; i++){
+            weeks.push(<WeekContainer key={i} rowIndex={i}/>);
         }
         return weeks;
     }
@@ -110,8 +100,8 @@ class WeekGrid extends React.Component {
 class WeekContainer extends React.Component {
     getWeekDays() {
         var weekDays = [];
-        for(var i = 0; i < this.props.weekDays.length; i++){
-            weekDays.push(<WeekDay key={i} dayDetail={this.props.weekDays[i]}/>);
+        for(var i = 0; i < 7; i++){
+            weekDays.push(<WeekDay key={i}/>);
         }
         return weekDays;
     }
@@ -130,7 +120,7 @@ class WeekContainer extends React.Component {
 class WeekDay extends React.Component {
     render(){
         return(
-            <div className="week-day">{this.props.dayDetail.event}</div>
+            <div className="week-day"></div>
         )
     }
 
