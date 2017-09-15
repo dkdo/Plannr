@@ -143,7 +143,8 @@ class Signup extends React.Component {
 		this.organizationChange = this.organizationChange.bind(this);
 	}
 
-	attemptSignup() {
+	attemptSignup(event) {
+		event.preventDefault();
 		var signupInfo = {
 			firstname: this.state.firstname,
 			lastname: this.state.lastname,
@@ -164,10 +165,10 @@ class Signup extends React.Component {
 			}.bind(this),
 			error: function(jqXHR, exception){
 				console.log("FAILED!");
-				console.log("info is" + JSON.stringify(signupInfo));
+				console.log("info is " + JSON.stringify(signupInfo));
 		        var msg = '';
 		        if (jqXHR.status === 0) {
-		            msg = 'Not connect.\nVerify Network.\n' + jqXHR.responseText;
+		            msg = 'Not connected.\nVerify Network.\n' + jqXHR.responseText;
 		        } else if (jqXHR.status == 404) {
 		            msg = 'Requested page not found. [404]';
 		        } else if (jqXHR.status == 500) {
