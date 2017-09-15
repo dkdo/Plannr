@@ -1,18 +1,76 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+class DjangoCSRFToken extends React.Component{
+	constructor(props) {
+		super(props);
+		this.state = {};
+		this.getCookie = this.getCookie.bind(this);
+	}
+	getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1)
+                  );
+                break;
+            }
+        }
+    }
+    return cookieValue;
+	}
+
+	render() {
+		var csrfToken = this.getCookie('csrftoken');
+		return (
+			<input type="hidden" name="csrfmiddlewaretoken" value={csrfToken}></input>
+    	);
+  	}
+}
+
+class MasterLogin extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			showSignup: false,
+		};
+
+		this.showSignUp = this.showSignUp.bind(this);
+	}
+
+	showSignUp() {
+		this.setState({showSignup: true});
+	}
+
+	hideSignUp() {
+		this.setState({showSignup: false});
+	}
+
+	render() {
+		return (
+			<div className="login-content-container">
+				<Login show={this.showSignUp} submit_url={this.props.submit_url}/>
+				{this.state.showSignup ? <Signup hide={this.hideSignUp} signup_url={this.props.signup_url}/> : null}
+			</div>
+		);
+	}
+}
+
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			username: '',
 			password: '',
-			showSignupForm: false,
 		};
 
 		this.attemptLogin = this.attemptLogin.bind(this);
 		this.passwordChange = this.passwordChange.bind(this);
-		this.signupFormAppear = this.signupFormAppear.bind(this);
 		this.usernameChange = this.usernameChange.bind(this);
 	}
 
@@ -39,36 +97,29 @@ class Login extends React.Component {
 
 	passwordChange(event) {
 		this.setState({password: event.target.value});
-	}
-
-	signupFormAppear() {
-		console.log('caca');
-		this.setState({showSignupForm: true});
-		console.log(this.state.showSignupForm);
+		console.log('changed !');
 	}
 
 	usernameChange(event) {
 		this.setState({username: event.target.value});
+		console.log('changed !');
 	}
 
 
 	render() {
 		return (
-			<div className="login-content-container">
 				<form onSubmit={this.attemptLogin} className="login-input-container" id="login-input-left">
-						<div className="login-info-container">
-							<img src="" alt="LOGO" className="logo-resize"></img>
-							<Username usernameChange={this.usernameChange} />
-							<Passwrd passwordChange={this.passwordChange} />
-							<SubmitBtn />
-							<div className="login-signup-link-container">
-								<p className="login-pwd-forgot-link login-links" name="pwd_forget_link">Forgot your password?</p>
-								<p className="login-signup-link login-links" onClick={this.signupFormAppear} name="signup_link">Sign Up</p>
-							</div>
+					<div className="login-info-container">
+						<img src="" alt="LOGO" className="logo-resize"></img>
+						<Username usernameChange={this.usernameChange} />
+						<Passwrd passwordChange={this.passwordChange} />
+						<SubmitBtn />
+						<div className="login-signup-link-container">
+							<p className="login-pwd-forgot-link login-links" name="pwd_forget_link">Forgot your password?</p>
+							<p className="login-signup-link login-links" onClick={this.props.show} name="signup_link">Sign Up</p>
 						</div>
+					</div>
 				</form>
-				<Signup showForm={this.state.showSignupForm} />
-			</div>
 		);
 	}
 }
@@ -82,10 +133,14 @@ class Signup extends React.Component {
 			email: '',
 			password: '',
 			organization: '',
-			show: props.showForm
 		};
 
 		this.attemptSignup = this.attemptSignup.bind(this);
+		this.firstnameChange = this.firstnameChange.bind(this);
+		this.lastnameChange = this.lastnameChange.bind(this);
+		this.emailChange = this.emailChange.bind(this);
+		this.spasswordChange = this.spasswordChange.bind(this);
+		this.organizationChange = this.organizationChange.bind(this);
 	}
 
 	attemptSignup() {
@@ -96,6 +151,7 @@ class Signup extends React.Component {
 			password: this.state.password,
 			organization: this.state.organization
 		};
+		console.log(signupInfo);
 		$.ajax({
 			type: 'POST',
 			url: this.props.signup_url,
@@ -103,11 +159,29 @@ class Signup extends React.Component {
 			datatype: 'json',
 			cache: false,
 			success: function(){
-				alert("SUCCESS!");
-				this.setState({show: false});
+				console.log("SUCCESS!");
+				this.props.hide;
 			}.bind(this),
-			error: function(){
-
+			error: function(jqXHR, exception){
+				console.log("FAILED!");
+				console.log("info is" + JSON.stringify(signupInfo));
+		        var msg = '';
+		        if (jqXHR.status === 0) {
+		            msg = 'Not connect.\nVerify Network.\n' + jqXHR.responseText;
+		        } else if (jqXHR.status == 404) {
+		            msg = 'Requested page not found. [404]';
+		        } else if (jqXHR.status == 500) {
+		            msg = 'Internal Server Error [500].';
+		        } else if (exception === 'parsererror') {
+		            msg = 'Requested JSON parse failed.';
+		        } else if (exception === 'timeout') {
+		            msg = 'Time out error.';
+		        } else if (exception === 'abort') {
+		            msg = 'Ajax request aborted.';
+		        } else {
+		            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+		        }
+		        console.log(msg);
 			}
 		})
 	}
@@ -135,7 +209,8 @@ class Signup extends React.Component {
 	render() {
 		return (
 				<form onSubmit={this.attemptSignup} className="login-input-container">
-					<div className={this.state.show ? "login-signup-container" : "login-signup-container hidden"}>
+					<DjangoCSRFToken />
+					<div className="login-signup-container">
 						<h1 className="login-signup-title">SIGN UP</h1>
 						<SignupFirstName firstnameChange={this.firstnameChange} />
 						<SignupLastName lastnameChange={this.lastnameChange} />
@@ -160,7 +235,7 @@ class Passwrd extends React.Component {
 class SignupFirstName extends React.Component {
 	render() {
 		return (
-			<input type="text" className="login-page-inputs" name="signup_firstname" placeholder="First Name" required></input>
+			<input type="text" className="login-page-inputs" onChange={this.props.firstnameChange} name="signup_firstname" placeholder="First Name" required></input>
 		);
 	}
 }
@@ -168,7 +243,7 @@ class SignupFirstName extends React.Component {
 class SignupLastName extends React.Component {
 	render() {
 		return (
-			<input type="text" className="login-page-inputs" name="signup_lastname" placeholder="Last Name" required></input>
+			<input type="text" className="login-page-inputs" onChange={this.props.lastnameChange} name="signup_lastname" placeholder="Last Name" required></input>
 		);
 	}
 }
@@ -176,7 +251,7 @@ class SignupLastName extends React.Component {
 class SignupEmail extends React.Component {
 	render() {
 		return (
-			<input type="text" className="login-page-inputs" name="signup_email" placeholder="Email / Username" required></input>
+			<input type="text" className="login-page-inputs" onChange={this.props.emailChange} name="signup_email" placeholder="Email / Username" required></input>
 		);
 	}
 }
@@ -184,7 +259,7 @@ class SignupEmail extends React.Component {
 class SignupPassword extends React.Component {
 	render() {
 		return (
-			<input type="password" className="login-page-inputs" name="signup_password" placeholder="New Password" required></input>
+			<input type="password" className="login-page-inputs" onChange={this.props.spasswordChange} name="signup_password" placeholder="New Password" required></input>
 		);
 	}
 }
@@ -192,7 +267,7 @@ class SignupPassword extends React.Component {
 class SignupOrganization extends React.Component {
 	render() {
 		return (
-			<input type="text" className="login-page-inputs" name="signup_organization" placeholder="Organization"></input>
+			<input type="text" className="login-page-inputs" onChange={this.props.organizationChange} name="signup_organization" placeholder="Organization"></input>
 		);
 	}
 }
@@ -223,10 +298,10 @@ class Username extends React.Component {
 
 
 ReactDOM.render(
-	React.createElement(Login, {
+	React.createElement(MasterLogin, {
 		url: '/login/',
-		submit_url: '/login/?loginaction/',
-		signup_url: 'login/?signupaction/'
+		submit_url: 'loginaction/',
+		signup_url: 'signupaction/'
 	}),
 	document.getElementById("login_react")
 );

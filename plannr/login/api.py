@@ -22,19 +22,24 @@ class SignInRequest(APIView):
 
 class SignUpRequest(APIView):
     def post(self, request, format=None):
-        return Response(status=status.HTTP_201_CREATED)
-        # firstname = request.POST['firstname']
-        # print "signup firstname: " + firstname
-        # lastname = request.POST['lastname']
-        # print "signup lastname: " + lastname
-        # email = request.POST['email']
-        # print "signup email: " + email
-        # password = request.POST['password']
-        # print "signup password: " + password
-        # user = User.objects.create_user(email, email, password)
-        # user.first_name = firstname
-        # user.last_name = lastname
-        # if user is not None:
-        #     user.save()
-        #     return Response(status=status.HTTP_201_CREATED)
-        # return Response(status=status.HTTP_400_BAD_REQUEST)
+        firstname = request.POST['firstname']
+        print "signup firstname: " + firstname
+        lastname = request.POST['lastname']
+        print "signup lastname: " + lastname
+        email = request.POST['email']
+        print "signup email: " + email
+        password = request.POST['password']
+        print "signup password: " + password
+        try:
+            user = User.objects.create_user(email, email, password)
+            user.first_name = firstname
+            user.last_name = lastname
+            if user is not None:
+                user.save()
+                print "CREATED SUCCESSFULLY"
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                print "UNSUCCESSFUL CREATION"
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        except:
+            print "ERROR ERROR ERROR"
