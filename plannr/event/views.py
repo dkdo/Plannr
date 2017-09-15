@@ -15,8 +15,6 @@ class EventList(APIView):
         date_selected = request.GET.get('date')
         start_date = parse(date_selected)
         end_date = start_date + timedelta(hours=23, minutes=59, seconds=59)
-        print start_date
-        print end_date
         events = Event.objects.filter(date__range=(start_date, end_date))
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
