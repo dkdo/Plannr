@@ -1,15 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import calendrConst from './shared/calendr-const';
 import '../css/calendr-week.css'
 
 class CalendrWeek extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-            monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            monthNamesFull: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-            numOfHours: 24,
             numOfHalfHours: 48,
             today: new Date(),
             prevSunday: this.getPreviousSunday(new Date()),
@@ -67,8 +64,8 @@ class CalendrWeek extends React.Component {
     render() {
         return (
             <div className="calendr-week">
-                <WeekHeader dayNames={this.state.dayNames} getDateFromSundayOffset={this.getDateFromSundayOffset}/>
-                <WeekGrid dayNames={this.state.dayNames} gridArray={this.state.gridArray}/>
+                <WeekHeader dayNames={calendrConst.dayNames} getDateFromSundayOffset={this.getDateFromSundayOffset}/>
+                <WeekGrid dayNames={calendrConst.dayNames} gridArray={this.state.gridArray}/>
             </div>
         )
     }
@@ -83,7 +80,7 @@ class WeekHeader extends React.Component {
         return(
             <div className="week-days">
                 <div className="week-day hour-col"></div>
-                {this.props.dayNames.map((item, index) => (
+                {calendrConst.dayNames.map((item, index) => (
                     <div className="week-day" key={item}>{item}
                     &nbsp;{this.props.getDateFromSundayOffset(index).getDate()}/{this.props.getDateFromSundayOffset(index).getMonth() + 1}
                     </div>
