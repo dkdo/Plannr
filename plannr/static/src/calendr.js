@@ -287,7 +287,7 @@ class MonthDates extends React.Component {
             janOne = new Date(that.props.year, 0, 1),
             rows = 5;
 
-        if ((startDay == 5 && this.props.daysInMonth == 31) || (startDay == 6 && this.props.daysInMonth > 29)) {
+        if ((startDay == 5 && this.props.daysInMonth == 31) || ((startDay == 0 || startDay == 6) && this.props.daysInMonth > 29)) {
             rows = 6;
         }
 
