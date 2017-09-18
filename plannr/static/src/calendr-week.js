@@ -7,7 +7,6 @@ class CalendrWeek extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            numOfHalfHours: 48,
             today: new Date(),
             prevSunday: this.getPreviousSunday(new Date()),
         };
@@ -69,9 +68,9 @@ class WeekHeader extends React.Component {
     render() {
         return(
             <div className="week-days">
-                <div className="week-day hour-col"></div>
+                <div className="week-day-cell hour-col"></div>
                 {calendrConst.dayNames.map((item, index) => (
-                    <div className="week-day" key={item}>{item}
+                    <div className="week-day-cell day-title" key={item}>{item}
                     &nbsp;{this.props.getDateFromSundayOffset(index).getDate()}/{this.props.getDateFromSundayOffset(index).getMonth() + 1}
                     </div>
                 ))}
@@ -83,7 +82,7 @@ class WeekHeader extends React.Component {
 class WeekGrid extends React.Component {
     getWeekContainers(){
         var weeks = [];
-        for(var i = 0; i < 48; i++){
+        for(var i = 0; i < 24; i++){
             weeks.push(<WeekContainer key={i} rowIndex={i}/>);
         }
         return weeks;
@@ -120,7 +119,7 @@ class WeekContainer extends React.Component {
 class WeekDay extends React.Component {
     render(){
         return(
-            <div className="week-day"></div>
+            <div className="week-day-cell"></div>
         )
     }
 
@@ -128,18 +127,13 @@ class WeekDay extends React.Component {
 
 class WeekTime extends React.Component {
     getTime(rowIndex) {
-        var hour = Math.floor(rowIndex / 2);
-        var minute = rowIndex % 2;
-        var minuteString = minute === 0 ? "00" : "30";
-
-        var timeString = hour.toString() + ":" + minuteString;
-
+        var timeString = rowIndex.toString() + ":00";
         return timeString;
     } 
     render() {
         var rowTime = this.getTime(this.props.rowIndex);
         return(
-            <div className="week-day hour-col">{rowTime}</div>
+            <div className="week-day-cell hour-col">{rowTime}</div>
         )
     }
 }

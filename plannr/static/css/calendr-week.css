@@ -8,11 +8,28 @@
     width: 12%;
 }
 
-.week-day {
+.week-day-cell {
     display: table-cell;
     border: black solid 1px;
+    height: 42px;
+}
+
+    .week-day-cell.hour-col {
+        text-align: end;
+        vertical-align: top;
+        width: 60px;
+    }
+
+.week-day{
+    height: 22px;
+    margin-bottom: 20px;
 }
 
 .week-grid {
     display: table-row-group;
+}
+
+.day-title {
+    text-align: center;
+    vertical-align: middle;
 }
