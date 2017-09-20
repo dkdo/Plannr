@@ -12,10 +12,10 @@ from rest_framework import status
 
 class EventList(APIView):
     def get(self, request, format=None):
-        date_selected = request.GET.get('date')
+        date_selected = request.GET.get('start_date')
         start_date = parse(date_selected)
         end_date = start_date + timedelta(hours=23, minutes=59, seconds=59)
-        events = Event.objects.filter(date__range=(start_date, end_date))
+        events = Event.objects.filter(start_date__range=(start_date, end_date))
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 

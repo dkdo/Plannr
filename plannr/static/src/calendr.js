@@ -88,7 +88,7 @@ class Calendr extends React.Component {
 
     loadDateEvents(date){
         var data = {
-            date: date
+            start_date: date
         }
         $.ajax({
             url: this.props.url,
@@ -111,7 +111,7 @@ class Calendr extends React.Component {
             var date = this.parseAddEventDate().toISOString();
             var data = {
                 title: this.state.eventTitle,
-                date: date
+                start_date: date
             }
             $.ajax({
                 type: 'POST',
@@ -200,8 +200,8 @@ class EventList extends React.Component {
 
     render() {
         var eventComponents = this.props.eventList.map(function(event) {
-            var date = new Date(event.date).toLocaleString();
-            return <div className="event" key={event.id}>{event.title} {date}</div>
+            var start_date = new Date(event.start_date).toLocaleString();
+            return <div className="event" key={event.id}>{event.title} {start_date}</div>
         });
         return <div className="eventList">{eventComponents}</div>;
     }
