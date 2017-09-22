@@ -7,6 +7,9 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth import authenticate as django_auth
+from django.contrib.auth import login as django_login
+from django.shortcuts import redirect
 
 class SignInRequest(APIView):
     def post(self, request, format=None):
@@ -14,11 +17,12 @@ class SignInRequest(APIView):
         print "signin username:" + username
         password = request.POST['password']
         print "signin password:" + password
-        user = authenticate(request, username=username, password=password)
+        user = django_auth(username=username, password=password)
         if user is not None:
-            login(request, user)
+            django_login(request, user)
             return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class SignUpRequest(APIView):
     def post(self, request, format=None):
