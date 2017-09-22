@@ -21,7 +21,8 @@ class Calendr extends React.Component {
             daysInMonth: null,
             eventList: [],
             eventTitle: '',
-            eventTime: ''
+            eventStartTime: '0:00',
+            eventEndTime: '0:30'
         }
 
         this.calc = this.calc.bind(this);
@@ -29,7 +30,8 @@ class Calendr extends React.Component {
         this.getNext = this.getNext.bind(this);
         this.selectDate = this.selectDate.bind(this);
         this.titleChange = this.titleChange.bind(this);
-        this.timeChange = this.timeChange.bind(this);
+        this.startTimeChange = this.startTimeChange.bind(this);
+        this.endTimeChange = this.endTimeChange.bind(this);
         this.addEvent = this.addEvent.bind(this);
     }
     
@@ -108,10 +110,12 @@ class Calendr extends React.Component {
             alert('Select a date and/or add a title!');
         }
         else{
-            var date = this.parseAddEventDate().toISOString();
+            var start_date = this.parseEventStartDate().toISOString();
+            var end_date = this.parseEventEndDate().toISOString();
             var data = {
                 title: this.state.eventTitle,
-                start_date: date
+                start_date: start_date,
+                end_date: end_date
             }
             $.ajax({
                 type: 'POST',
@@ -149,17 +153,34 @@ class Calendr extends React.Component {
         this.setState({eventTitle: event.target.value});
     }
 
-    timeChange(event) {
-        this.setState({eventTime: event.target.value});
+    startTimeChange(event) {
+        this.setState({eventStartTime: event.target.value});
     }
 
-    parseAddEventDate(){
+    endTimeChange(event) {
+        this.setState({eventEndTime: event.target.value});
+    }
+
+    getSelectedDate(){
         var dateMonth = this.state.selectedMonth;
         dateMonth = ("0" + dateMonth).slice(-2);
         var dateDay = this.state.selectedDate;
         dateDay = ("0" + dateDay).slice(-2);
-        var date = new Date(this.state.selectedYear, dateMonth, dateDay);
-        var hourMin = this.state.eventTime.split(':');
+        var date = new Date(this.state.selectedYear, dateMonth, dateDay); 
+        return date;
+    }
+
+    parseEventStartDate(){
+        var date = this.getSelectedDate();
+        var hourMin = this.state.eventStartTime.split(':');
+        date.setHours(hourMin[0]);
+        date.setMinutes(hourMin[1]);
+        return date;
+    }
+
+    parseEventEndDate(){
+        var date = this.getSelectedDate();
+        var hourMin = this.state.eventEndTime.split(':');
         date.setHours(hourMin[0]);
         date.setMinutes(hourMin[1]);
         return date;
@@ -185,7 +206,7 @@ class Calendr extends React.Component {
                 </div>
                 <div className="right-position-pane">
                     <EventList eventList={this.state.eventList}/>
-                    <AddEvent eventTitle={this.state.eventTitle} titleChange={this.titleChange} addEvent={this.addEvent} timeChange={this.timeChange}/>
+                    <AddEvent eventTitle={this.state.eventTitle} titleChange={this.titleChange} addEvent={this.addEvent} startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange}/>
                 </div>
             </div>
         )
@@ -201,14 +222,24 @@ class EventList extends React.Component {
     render() {
         var eventComponents = this.props.eventList.map(function(event) {
             var start_date = new Date(event.start_date).toLocaleString();
-            return <div className="event" key={event.id}>{event.title} {start_date}</div>
+            var end_date = new Date(event.end_date).toLocaleString();
+            return <div className="event" key={event.id}>{event.title} {start_date} {end_date}</div>
         });
         return <div className="eventList">{eventComponents}</div>;
     }
 }
 
 class AddEvent extends React.Component {
-    getHoursOption() {
+    constructor(props){
+        super(props);
+        this.state = {
+            endTimeOptions: this.getEndTimeOptions('0:00')
+        }
+
+        this.startTimeChange = this.startTimeChange.bind(this);
+    }
+
+    getStartTimeOptions() {
         var options = [];
         var timeValue, minutes, hours;
         for (let i = 0; i < 48; i++){
@@ -220,14 +251,49 @@ class AddEvent extends React.Component {
         return options;
     }
 
+    getEndTimeOptions(startTime) {
+        var options = [];
+        var timeValue, minutes, hours;
+        var timeSelectedHourMinute = startTime.split(':');
+        var optionStart = parseInt(timeSelectedHourMinute[0]) * 2;
+        optionStart = timeSelectedHourMinute[1] === '00' ? optionStart : optionStart + 1;
+        optionStart += 1;
+        for (let i = optionStart; i < 48; i++){
+            minutes = i % 2 === 0 ? "00" : "30";
+            hours = parseInt(i/2);
+            timeValue = hours + ":" + minutes;
+            options.push(<option value={timeValue} key={timeValue}>{timeValue}</option>);
+        }
+        return options;
+    }
+
+    startTimeChange(event){
+        this.setState({endTimeOptions: this.getEndTimeOptions(event.target.value)});
+        this.props.startTimeChange(event);
+    }
+
+
     render() {
-        let options = this.getHoursOption();
+        let options = this.getStartTimeOptions();
         return (
             <div className="eventAdder">
-                <div><label>Title </label><input type="text" value={this.props.eventTitle} onChange={this.props.titleChange}/></div>
-                <select onChange={this.props.timeChange}>
-                    {options}
-                </select>
+                <div>
+                    <label>Title </label><input type="text" value={this.props.eventTitle} onChange={this.props.titleChange}/>
+                </div>
+                <div className="time-selectors">
+                    <div>
+                        <div>Start time: </div>
+                        <select onChange={this.startTimeChange}>
+                            {options}
+                        </select>
+                    </div>
+                    <div>
+                        <div>End time:</div>
+                        <select onChange={this.props.endTimeChange}>
+                            {this.state.endTimeOptions}
+                        </select>
+                    </div>
+                </div>
                 <div className="btn btn-default btn-md" onClick={this.props.addEvent.bind(null, this)} role="button">Add Event</div>
             </div>
         );

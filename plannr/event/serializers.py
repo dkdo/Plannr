@@ -5,6 +5,7 @@ class EventSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=True)
     start_date = serializers.DateTimeField(required=True)
+    end_date = serializers.DateTimeField(required=True)
 
     def create(self, validated_data):
         """

@@ -20,7 +20,6 @@ class EventList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        print request.data
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -64,7 +63,7 @@ class WeekEvents(APIView):
         start_date = date(year, month, sunday)
         end_date = start_date + timedelta(days=6)
 
-        events = Event.objects.filter(date__range=(start_date, end_date))
+        events = Event.objects.filter(start_date__range=(start_date, end_date))
         serializer = EventSerializer(events, many=True)
 
         return Response(serializer.data)
