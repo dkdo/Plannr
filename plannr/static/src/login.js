@@ -4,6 +4,7 @@ import { Router, Route, browserHistory, IndexRoute, withRouter } from 'react-rou
 import createBrowserHistory from 'history/createBrowserHistory';
 
 const history = createBrowserHistory({forceRefresh:true});
+//Testing Caca
 
 class DjangoCSRFToken extends React.Component{
 	constructor(props) {
