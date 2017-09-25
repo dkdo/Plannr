@@ -9,7 +9,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate as django_auth
 from django.contrib.auth import login as django_login
+from django.contrib.auth import logout as django_logout
 from django.shortcuts import redirect
+
+class SignOutRequest(APIView):
+    def post(self, request, format=None):
+        if request.user.is_authenticated():
+            logout(request)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class SignInRequest(APIView):
     def post(self, request, format=None):
@@ -17,12 +26,15 @@ class SignInRequest(APIView):
         print "signin username:" + username
         password = request.POST['password']
         print "signin password:" + password
-        user = django_auth(username=username, password=password)
-        if user is not None:
-            django_login(request, user)
-            return Response(status=status.HTTP_201_CREATED)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = django_auth(username=username, password=password)
+            if user is not None:
+                django_login(request, user)
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        except:
+            print "SIGN IN ERROR"
 
 class SignUpRequest(APIView):
     def post(self, request, format=None):
@@ -46,4 +58,5 @@ class SignUpRequest(APIView):
                 print "UNSUCCESSFUL CREATION"
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         except:
-            print "ERROR ERROR ERROR"
+            print "SIGN UP ERROR"
+            return Response(status=status.HTTP_400_BAD_REQUEST)

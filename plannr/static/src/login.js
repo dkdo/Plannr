@@ -2,42 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, withRouter } from 'react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
+import DjangoCSRFToken from './shared/csrf';
 
 const history = createBrowserHistory({forceRefresh:true});
-//Testing Caca
-
-class DjangoCSRFToken extends React.Component{
-	constructor(props) {
-		super(props);
-		this.state = {};
-		this.getCookie = this.getCookie.bind(this);
-	}
-
-	getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(
-                  cookie.substring(name.length + 1)
-                  );
-                break;
-            }
-        }
-    }
-    return cookieValue;
-	}
-
-	render() {
-		var csrfToken = this.getCookie('csrftoken');
-		return (
-			<input type="hidden" name="csrfmiddlewaretoken" value={csrfToken || ''}></input>
-    	);
-  	}
-}
 
 class MasterLogin extends React.Component {
 	constructor(props) {
@@ -167,8 +134,8 @@ class Signup extends React.Component {
 				console.log("SUCCESS!");
 			}.bind(this),
 			error: function(jqXHR, exception){
+				alert("HO OH, Something went wrong!");
 				console.log("FAILED!");
-				console.log("info is " + JSON.stringify(signupInfo));
 			}.bind(this)
 		})
 		event.preventDefault();
