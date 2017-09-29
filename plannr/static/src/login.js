@@ -84,7 +84,7 @@ class Login extends React.Component {
 				<form onSubmit={this.attemptLogin} className="login-input-container" id="login-input-left">
 					<DjangoCSRFToken />
 					<div className="login-info-container">
-						// <img src="plannr_logo.png" alt="LOGO" className="logo-resize"></img>
+						<img src="/static/plannr_logo.png" alt="LOGO" className="logo-resize"></img>
 						<input value={this.state.username} type="text" className="login-page-inputs" onChange={this.handleInputChange} name="username" placeholder="Email@domain.com" required></input>
 						<input value={this.state.password} type="password" className="login-page-inputs" onChange={this.handleInputChange} name="password" placeholder="Password" required></input>
 						<button type="submit" className="btn login-page-btn" name="connect_btn">LOGIN</button>

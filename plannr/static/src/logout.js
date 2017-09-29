@@ -48,6 +48,9 @@ class MasterLogout extends React.Component {
 			success: function() {
 				alert("Logout Success!");
 				history.push('/login/');
+			}.bind(this),
+			error: function() {
+				alert("Logout Failed !");
 			}.bind(this)
 		})
 		event.preventDefault();
@@ -55,10 +58,7 @@ class MasterLogout extends React.Component {
 
 	render() {
 		return (
-			<form onSubmit={this.attemptLogout} className="logout-link-form" id="logout_form"> 
-				<DjangoCSRFToken />
-				<button type="submit" className="logout-btn" name="logout_btn">Log Out</button>
-			</form>
+			<button type="submit" className="logout-btn" onClick={this.attemptLogout} name="logout_btn">Log Out</button>
 		);
 	}
 }
