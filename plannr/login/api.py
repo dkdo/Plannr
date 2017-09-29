@@ -16,7 +16,8 @@ class SignOutRequest(APIView):
     def post(self, request, format=None):
         print "Went into the sign out request"
         if request.user.is_authenticated():
-            logout(request)
+            django_logout(request)
+            return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -31,7 +32,7 @@ class SignInRequest(APIView):
             user = django_auth(username=username, password=password)
             if user is not None:
                 django_login(request, user)
-                return Response(status=status.HTTP_201_CREATED)
+                return Response(status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         except:
