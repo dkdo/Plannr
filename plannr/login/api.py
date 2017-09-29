@@ -14,6 +14,7 @@ from django.shortcuts import redirect
 
 class SignOutRequest(APIView):
     def post(self, request, format=None):
+        print "Went into the sign out request"
         if request.user.is_authenticated():
             logout(request)
         else:

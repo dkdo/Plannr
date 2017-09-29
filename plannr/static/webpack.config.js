@@ -3,7 +3,8 @@ const path = require('path');
 module.exports = {
     entry: {
         "./index": "./src/index",
-        "./login": "./src/login"
+        "./login": "./src/login",
+	"./logout": "./src/logout",
     },
     output: {
         path: path.resolve(__dirname, 'public'),

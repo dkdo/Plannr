@@ -25,7 +25,6 @@
                 <li class="active"><a href="month">Month</a></li>
                 <li><a href="week">Week</a></li>
                 <li><a href="#contact">Day</a></li>
-                <div id="logout"></div>
               </ul>
             </div>
           </div>
@@ -51,9 +50,12 @@
                     <a href="#">System Settings</a>
                 </li>
             </ul>
+            <div class="sidebar-logout" id="logout-option">
+            </div>
         </div>
         {% block content %}
         {% endblock %}
     </body>
+    <script src="{% static '/public/logout.js' %}"></script>
     <script src="{% static '/public/index.js' %}"></script>
 </html>

@@ -204,6 +204,15 @@
     }
 }
 
+/* Logout */
+
+.sidebar-logout {
+    position: absolute;
+    bottom: 0;
+}
+
+
+
 /* Calendar Arrows */
 
 .r-calendar .r-prev,
