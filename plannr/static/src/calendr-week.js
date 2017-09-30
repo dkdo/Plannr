@@ -45,6 +45,8 @@ class CalendrWeek extends React.Component {
                 day: this.state.prevSunday.getDate()
             },
             success: function(data){
+                console.log(data);
+                console.log('success')
                 this.setState({data: data});
             }.bind(this)
         })
@@ -52,10 +54,12 @@ class CalendrWeek extends React.Component {
 
     render() {
         return (
-            <div className="calendr-week">
-                <WeekHeader dayNames={calendrConst.dayNames} getDateFromSundayOffset={this.getDateFromSundayOffset}/>
-                <WeekGrid dayNames={calendrConst.dayNames}/>
-            </div>
+            <table className="calendr-week">
+                <tbody>
+                    <WeekGrid />
+                    <DayColumns />
+                </tbody>
+            </table>
         )
     }
 }
@@ -80,60 +84,89 @@ class WeekHeader extends React.Component {
 }
 
 class WeekGrid extends React.Component {
-    getWeekContainers(){
-        var weeks = [];
+    getHourSeparator() {
+        var separators = [];
         for(var i = 0; i < 24; i++){
-            weeks.push(<WeekContainer key={i} rowIndex={i}/>);
+            separators.push(<div key={i} className="hour-cell"><div className="hour-cell-split"></div></div>);
         }
-        return weeks;
+        return separators;
     }
+
     render() {
-        let weeks = null;
-        weeks = this.getWeekContainers();
-        return(
-            <div className="week-grid">{weeks}</div>
+        let separators = null;
+        separators = this.getHourSeparator();
+        return (
+            <tr>
+                <td className="time-buffer-col"></td>
+                <td colSpan="7">
+                    <div className="hours-grid">
+                        <div className="hour-separator">
+                            {separators}
+                        </div>
+                    </div>
+                </td>
+            </tr>
         )
     }
 }
 
-class WeekContainer extends React.Component {
-    getWeekDays() {
-        var weekDays = [];
+class DayColumns extends React.Component {
+    getDayCols() {
+        var dayCols = [];
         for(var i = 0; i < 7; i++){
-            weekDays.push(<WeekDay key={i}/>);
+            dayCols.push(<td key={i} className="day-col"><div className="day-col-events"><div className="events"></div></div></td>);
         }
-        return weekDays;
+        return dayCols;
     }
-    render(){
-        let weekDays = null;
-        weekDays = this.getWeekDays();
-        return(
-            <div className="week-days">
-                <WeekTime rowIndex={this.props.rowIndex}/>
-                {weekDays}
-            </div>
-        )
-    }
-}
 
-class WeekDay extends React.Component {
     render(){
+        let dayCols = null;
+        dayCols = this.getDayCols();
         return(
-            <div className="week-day-cell"></div>
+            <tr>
+                <TimeColumn />
+                {dayCols}
+            </tr>
         )
     }
 
 }
 
-class WeekTime extends React.Component {
+class TimeColumn extends React.Component {
     getTime(rowIndex) {
         var timeString = rowIndex.toString() + ":00";
         return timeString;
     } 
+
+    getTimeColumns(){
+        var timeCols = [];
+        for(var i = 0; i < 24; i++){
+            timeCols.push(<div key={i} className="hour-cell">{this.getTime(i)}</div>);
+        }
+        return timeCols;
+    }
+
     render() {
-        var rowTime = this.getTime(this.props.rowIndex);
+        var timeCols = this.getTimeColumns();
         return(
-            <div className="week-day-cell hour-col">{rowTime}</div>
+            <td className="hour-col">{timeCols}</td>
+        )
+    }
+}
+
+class EventBlock extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+
+        }
+    }
+
+
+
+    render() {
+        return (
+            <div></div>
         )
     }
 }
