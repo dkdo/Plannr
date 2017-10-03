@@ -50,9 +50,12 @@
                     <a href="#">System Settings</a>
                 </li>
             </ul>
+            <div class="sidebar-logout" id="logout-option">
+            </div>
         </div>
         {% block content %}
         {% endblock %}
     </body>
+    <script src="{% static '/public/logout.js' %}"></script>
     <script src="{% static '/public/index.js' %}"></script>
 </html>

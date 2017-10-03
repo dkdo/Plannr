@@ -2,41 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, withRouter } from 'react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
+import DjangoCSRFToken from './shared/csrf';
 
 const history = createBrowserHistory({forceRefresh:true});
-
-class DjangoCSRFToken extends React.Component{
-	constructor(props) {
-		super(props);
-		this.state = {};
-		this.getCookie = this.getCookie.bind(this);
-	}
-
-	getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(
-                  cookie.substring(name.length + 1)
-                  );
-                break;
-            }
-        }
-    }
-    return cookieValue;
-	}
-
-	render() {
-		var csrfToken = this.getCookie('csrftoken');
-		return (
-			<input type="hidden" name="csrfmiddlewaretoken" value={csrfToken || ''}></input>
-    	);
-  	}
-}
 
 class MasterLogin extends React.Component {
 	constructor(props) {
@@ -116,7 +84,7 @@ class Login extends React.Component {
 				<form onSubmit={this.attemptLogin} className="login-input-container" id="login-input-left">
 					<DjangoCSRFToken />
 					<div className="login-info-container">
-						// <img src="plannr_logo.png" alt="LOGO" className="logo-resize"></img>
+						<img src="/static/plannr_logo.png" alt="LOGO" className="logo-resize"></img>
 						<input value={this.state.username} type="text" className="login-page-inputs" onChange={this.handleInputChange} name="username" placeholder="Email@domain.com" required></input>
 						<input value={this.state.password} type="password" className="login-page-inputs" onChange={this.handleInputChange} name="password" placeholder="Password" required></input>
 						<button type="submit" className="btn login-page-btn" name="connect_btn">LOGIN</button>
@@ -166,8 +134,8 @@ class Signup extends React.Component {
 				console.log("SUCCESS!");
 			}.bind(this),
 			error: function(jqXHR, exception){
+				alert("HO OH, Something went wrong!");
 				console.log("FAILED!");
-				console.log("info is " + JSON.stringify(signupInfo));
 			}.bind(this)
 		})
 		event.preventDefault();

@@ -204,6 +204,33 @@
     }
 }
 
+/* Logout */
+
+.sidebar-logout {
+    height: 40px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
+.sidebar-logout button{
+    background-color: black;
+    border: none;
+    color: #999999;
+    height: 100%;
+    text-align: left;
+    text-indent: 20px;
+    width: 100%;
+}
+
+.sidebar-logout button:hover {
+    border-top: 2px solid #0066ff;
+    border-bottom: 2px solid #0066ff;
+    color: #ffffff;
+}
+
+
+
 /* Calendar Arrows */
 
 .r-calendar .r-prev,
