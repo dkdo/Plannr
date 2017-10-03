@@ -4,7 +4,8 @@ module.exports = {
     entry: {
         "./index": "./src/index",
         "./login": "./src/login",
-	"./logout": "./src/logout",
+	    "./logout": "./src/logout",
+        "./profil": "./src/profil",
     },
     output: {
         path: path.resolve(__dirname, 'public'),

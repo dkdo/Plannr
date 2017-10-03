@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'calendr.apps.CalendrConfig',
     'position.apps.PositionConfig',
     'event.apps.EventConfig',
-    'login.apps.LoginConfig'
+    'login.apps.LoginConfig',
+    'profil.apps.ProfilConfig'
 ]
 
 MIDDLEWARE = [

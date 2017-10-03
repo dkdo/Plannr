@@ -4,10 +4,12 @@ import {
   Route,
   Link
 } from 'react-router-dom'
-import Calendr from './calendr'
-import CalendrWeek from './calendr-week'
-import MasterLogin from './login'
+import Calendr from './calendr';
+import CalendrWeek from './calendr-week';
+import MasterLogin from './login';
 import history from './history';
+import MasterProfile from './profil';
+
 
 const App = () => (
   <Router history={history}>
@@ -16,6 +18,7 @@ const App = () => (
       <Route path="/month" component={Calendr}/>
       <Route path="/week" component={CalendrWeek}/>
       <Route path="/login" component={MasterLogin}/>
+      <Route path="/profile" component={MasterProfile}/>
     </div>
   </Router>
 )

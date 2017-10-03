@@ -26,6 +26,7 @@ react_routes = getattr(settings, 'REACT_ROUTES', [])
 
 urlpatterns = [
     url(r'^', include('calendr.urls'), name='homepage'),
+    url(r'^profile/', include('profil.urls')),
     url(r'^login/', include('login.urls')),
     url(r'^calendr/', include('calendr.urls')),
     url(r'^position/', include('position.urls')),
