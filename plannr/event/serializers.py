@@ -4,14 +4,13 @@ from event.models import Event
 class EventSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(required=True)
-    date = serializers.DateField(required=True)
+    start_date = serializers.DateTimeField(required=True)
+    end_date = serializers.DateTimeField(required=True)
 
     def create(self, validated_data):
         """
         Create and return a new Event instance, given the validated data.
         """
-        for x in validated_data:
-            print x
         return Event.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
@@ -19,6 +18,6 @@ class EventSerializer(serializers.Serializer):
         Update and return an existing Event instance, given the validated data.
         """
         instance.title = validated_data.get('title', instance.title)
-        instance.date = validated_data.get('date', instance.date)
+        instance.start_date = validated_data.get('start_date', instance.start_date)
         instance.save()
         return instance

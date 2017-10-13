@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import calendrConst from './shared/calendr-const';
 
 class Calendr extends React.Component {
     constructor(props){
@@ -16,21 +17,21 @@ class Calendr extends React.Component {
             weekNumbers: false,
             minDate: this.props.minDate ? this.props.minDate : null,
             disablePast: this.props.disablePast ? this.props.disablePast : false,
-            dayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-            monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            monthNamesFull: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             firstOfMonth: null,
             daysInMonth: null,
             eventList: [],
-            eventTitle: ''
+            eventTitle: '',
+            eventStartTime: '0:00',
+            eventEndTime: '0:30'
         }
 
         this.calc = this.calc.bind(this);
-        this.loadEventsFromServer = this.loadEventsFromServer.bind(this);
         this.getPrev = this.getPrev.bind(this);
         this.getNext = this.getNext.bind(this);
         this.selectDate = this.selectDate.bind(this);
         this.titleChange = this.titleChange.bind(this);
+        this.startTimeChange = this.startTimeChange.bind(this);
+        this.endTimeChange = this.endTimeChange.bind(this);
         this.addEvent = this.addEvent.bind(this);
     }
     
@@ -48,23 +49,11 @@ class Calendr extends React.Component {
         };
     }
 
-    loadEventsFromServer() {
-        $.ajax({
-            url: this.props.url,
-            datatype: 'json',
-            cache: false,
-            success: function(data){
-                this.setState({data: data});
-            }.bind(this)
-        })
-    }
-
     componentWillMount() {
         this.setState(this.calc.call(null, this.state.year, this.state.month));
     }
 
     componentDidMount() {
-        this.loadEventsFromServer();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -99,36 +88,21 @@ class Calendr extends React.Component {
         this.setState(state);
     }
 
-    selectDate(year, month, date, element) {
-        if (this.state.selectedElement) {
-            this.state.selectedElement.classList.remove('r-selected');
+    loadDateEvents(date){
+        var data = {
+            start_date: date
         }
-        element.target.classList.add('r-selected');
-        this.loadEventsFromServer();
-        var dateObject = new Date(year, month, date);
-        dateObject.setHours(0,0,0,0);
-        var events = [];
-        for (var key in this.state.data) {
-            var event = this.state.data[key];
-            var eventDate = new Date(event.date);
-            eventDate.setHours(0,0,0,0);
-            eventDate.setDate(eventDate.getDate()+1);
-            if (eventDate.valueOf() == dateObject.valueOf()) {
-                events.push(event);
-            }
-        }
-        this.setState({
-            selectedYear: year,
-            selectedMonth: month,
-            selectedDate: date,
-            selectedDt: new Date(year, month, date),
-            selectedElement: element.target,
-            eventList: events
-        });
-    }
-
-    titleChange(event) {
-        this.setState({eventTitle: event.target.value});
+        $.ajax({
+            url: this.props.url,
+            datatype: 'json',
+            data: data,
+            cache: false,
+            success: function(data){
+                this.setState({
+                    eventList: data 
+                });
+            }.bind(this)
+        })
     }
 
     addEvent(){
@@ -136,15 +110,12 @@ class Calendr extends React.Component {
             alert('Select a date and/or add a title!');
         }
         else{
-            var dateMonth = this.state.selectedMonth + 1;
-            dateMonth = ("0" + dateMonth).slice(-2);
-            var dateDay = this.state.selectedDate;
-            dateDay = ("0" + dateDay).slice(-2);
-            var date = [this.state.selectedYear, dateMonth, dateDay].join('-');
-            console.log(date);
+            var start_date = this.parseEventStartDate().toISOString();
+            var end_date = this.parseEventEndDate().toISOString();
             var data = {
                 title: this.state.eventTitle,
-                date: date
+                start_date: start_date,
+                end_date: end_date
             }
             $.ajax({
                 type: 'POST',
@@ -162,6 +133,60 @@ class Calendr extends React.Component {
         }
     }
 
+    selectDate(year, month, date, element) {
+        if (this.state.selectedElement) {
+            this.state.selectedElement.classList.remove('r-selected');
+        }
+        element.target.classList.add('r-selected');
+        var dateObject = new Date(year, month, date, 0, 0, 0).toISOString();
+        this.loadDateEvents(dateObject);
+        this.setState({
+            selectedYear: year,
+            selectedMonth: month,
+            selectedDate: date,
+            selectedDt: new Date(year, month, date),
+            selectedElement: element.target
+        });
+    }
+
+    titleChange(event) {
+        this.setState({eventTitle: event.target.value});
+    }
+
+    startTimeChange(event) {
+        this.setState({eventStartTime: event.target.value});
+    }
+
+    endTimeChange(event) {
+        this.setState({eventEndTime: event.target.value});
+    }
+
+    getSelectedDate(){
+        var dateMonth = this.state.selectedMonth;
+        dateMonth = ("0" + dateMonth).slice(-2);
+        var dateDay = this.state.selectedDate;
+        dateDay = ("0" + dateDay).slice(-2);
+        var date = new Date(this.state.selectedYear, dateMonth, dateDay); 
+        return date;
+    }
+
+    parseEventStartDate(){
+        var date = this.getSelectedDate();
+        var hourMin = this.state.eventStartTime.split(':');
+        date.setHours(hourMin[0]);
+        date.setMinutes(hourMin[1]);
+        return date;
+    }
+
+    parseEventEndDate(){
+        var date = this.getSelectedDate();
+        var hourMin = this.state.eventEndTime.split(':');
+        date.setHours(hourMin[0]);
+        date.setMinutes(hourMin[1]);
+        return date;
+    }
+
+
     render() {
         return (
             <div className="calendar-event-container">
@@ -170,9 +195,9 @@ class Calendr extends React.Component {
                         <div className="r-outer">
                             <Arrows onPrev={this.getPrev} onNext={this.getNext}/>
                             <div className="r-inner">
-                                <Header monthNames={this.state.monthNamesFull} month={this.state.month} year={this.state.year} />
+                                <Header monthNames={calendrConst.monthNamesFull} month={this.state.month} year={this.state.year} />
                                 <div className="calendar-table">
-                                    <WeekDays dayNames={this.state.dayNames} startDay={this.state.startDay} weekNumbers={this.state.weekNumbers} />
+                                    <WeekDays dayNames={calendrConst.dayNames} startDay={this.state.startDay} weekNumbers={this.state.weekNumbers} />
                                     <MonthDates month={this.state.month} year={this.state.year} daysInMonth={this.state.daysInMonth} firstOfMonth={this.state.firstOfMonth} startDay={this.state.startDay} onSelect={this.selectDate} weekNumbers={this.state.weekNumbers} disablePast={this.state.disablePast} minDate={this.state.minDate} />
                                 </div>
                             </div>
@@ -181,7 +206,7 @@ class Calendr extends React.Component {
                 </div>
                 <div className="right-position-pane">
                     <EventList eventList={this.state.eventList}/>
-                    <AddEvent eventTitle={this.state.eventTitle} titleChange={this.titleChange} addEvent={this.addEvent}/>
+                    <AddEvent eventTitle={this.state.eventTitle} titleChange={this.titleChange} addEvent={this.addEvent} startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange}/>
                 </div>
             </div>
         )
@@ -193,19 +218,82 @@ Calendr.defaultProps = {
 };
 
 class EventList extends React.Component {
+
     render() {
         var eventComponents = this.props.eventList.map(function(event) {
-            return <div className="event" key={event.id}>{event.title} {event.date}</div>
+            var start_date = new Date(event.start_date).toLocaleString();
+            var end_date = new Date(event.end_date).toLocaleString();
+            return <div className="event" key={event.id}>{event.title} {start_date} {end_date}</div>
         });
         return <div className="eventList">{eventComponents}</div>;
     }
 }
 
 class AddEvent extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            endTimeOptions: this.getEndTimeOptions('0:00')
+        }
+
+        this.startTimeChange = this.startTimeChange.bind(this);
+    }
+
+    getStartTimeOptions() {
+        var options = [];
+        var timeValue, minutes, hours;
+        for (let i = 0; i < 48; i++){
+            minutes = i % 2 === 0 ? "00" : "30";
+            hours = parseInt(i/2);
+            timeValue = hours + ":" + minutes;
+            options.push(<option value={timeValue} key={timeValue}>{timeValue}</option>);
+        }
+        return options;
+    }
+
+    getEndTimeOptions(startTime) {
+        var options = [];
+        var timeValue, minutes, hours;
+        var timeSelectedHourMinute = startTime.split(':');
+        var optionStart = parseInt(timeSelectedHourMinute[0]) * 2;
+        optionStart = timeSelectedHourMinute[1] === '00' ? optionStart : optionStart + 1;
+        optionStart += 1;
+        for (let i = optionStart; i < 48; i++){
+            minutes = i % 2 === 0 ? "00" : "30";
+            hours = parseInt(i/2);
+            timeValue = hours + ":" + minutes;
+            options.push(<option value={timeValue} key={timeValue}>{timeValue}</option>);
+        }
+        return options;
+    }
+
+    startTimeChange(event){
+        this.setState({endTimeOptions: this.getEndTimeOptions(event.target.value)});
+        this.props.startTimeChange(event);
+    }
+
+
     render() {
+        let options = this.getStartTimeOptions();
         return (
             <div className="eventAdder">
-                <div><label>Title </label><input type="text" value={this.props.eventTitle} onChange={this.props.titleChange}/></div>
+                <div>
+                    <label>Title </label><input type="text" value={this.props.eventTitle} onChange={this.props.titleChange}/>
+                </div>
+                <div className="time-selectors">
+                    <div>
+                        <div>Start time: </div>
+                        <select onChange={this.startTimeChange}>
+                            {options}
+                        </select>
+                    </div>
+                    <div>
+                        <div>End time:</div>
+                        <select onChange={this.props.endTimeChange}>
+                            {this.state.endTimeOptions}
+                        </select>
+                    </div>
+                </div>
                 <div className="btn btn-default btn-md" onClick={this.props.addEvent.bind(null, this)} role="button">Add Event</div>
             </div>
         );
@@ -226,7 +314,7 @@ class AddEvent extends React.Component {
 class Header extends React.Component {
     render() {
         return (
-            <div className="r-title">{this.props.monthNames[this.props.month]}&nbsp;{this.props.year}</div>
+            <div className="r-title">{calendrConst.monthNames[this.props.month]}&nbsp;{this.props.year}</div>
         );
     }
 }
@@ -265,7 +353,7 @@ class MonthDates extends React.Component {
             janOne = new Date(that.props.year, 0, 1),
             rows = 5;
 
-        if ((startDay == 5 && this.props.daysInMonth == 31) || (startDay == 6 && this.props.daysInMonth > 29)) {
+        if ((startDay == 5 && this.props.daysInMonth == 31) || ((startDay == 0 || startDay == 6) && this.props.daysInMonth > 29)) {
             rows = 6;
         }
 

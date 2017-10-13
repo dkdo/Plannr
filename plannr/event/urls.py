@@ -5,6 +5,7 @@ from event import views
 urlpatterns = [
     url(r'^$', views.EventList.as_view()),
     url(r'^(?P<pk>[0-9]+)/$', views.EventDetail.as_view()),
+    url(r'^weekevents/$', views.WeekEvents.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

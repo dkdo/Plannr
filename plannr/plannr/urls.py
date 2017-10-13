@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 plannr URL Configuration
 

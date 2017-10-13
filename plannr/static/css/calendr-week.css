@@ -1,12 +1,50 @@
 .calendr-week {
-    width: 100%;
+    margin-top: 10px;
+    width: 75%;
     display: table;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
-.week-days {
-    display: table-row;
+.hours-grid {
+    position: relative; 
 }
 
-.week-day {
-    display: table-cell;
+    .hours-grid .hour-separator {
+        position: absolute;
+        width: 100%;
+    }
+
+        .hours-grid .hour-separator .hour-cell {
+            height: 42px;
+        }
+
+        .hours-grid .hour-separator .hour-cell .hour-cell-split {
+            height: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px dotted #ddd;
+            border-top: 1px solid #ddd;
+        }
+
+.day-col {
+    vertical-align: top;
+    border-left: 1px solid #ddd;
+}
+
+    .day-col .day-col-events {
+        height: 1008px;
+    }
+
+.hour-col {
+    text-align: right;
+    border-left: 1px solid #ddd;
+}
+
+    .hour-col .hour-cell {
+        height: 42px;
+        border-top: 1px solid #ddd;
+    }
+
+.time-buffer-col {
+    width: 60px;
 }
