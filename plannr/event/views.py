@@ -58,18 +58,24 @@ class WeekEvents(APIView):
         year = int(request.GET.get('year', 0))
         month = int(request.GET.get('month', 0))
         month = month + 1
-        sunday = int(request.GET.get('day', 0))
+        monday = int(request.GET.get('day', 0))
 
-        start_date = date(year, month, sunday)
-        end_date = start_date + timedelta(days=6)
+        start_date = date(year, month, monday)
+        end_date = start_date + timedelta(days=7)
 
-        events = Event.objects.filter(start_date__range=(start_date, end_date))
+        events = Event.objects.filter(start_date__range=(start_date,
+                                      end_date)).order_by('start_date')
         serializer = EventSerializer(events, many=True)
 
-        return Response(serializer.data)
+        events_list = [[] for x in range(7)]
+
+        for event in serializer.data:
+            weekday = parse(event.get('start_date')).weekday()
+            events_list[weekday].append(event)
+
+        return Response(events_list)
 
     def post(self, request, format=None):
-        print request
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

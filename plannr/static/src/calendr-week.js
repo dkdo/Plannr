@@ -8,31 +8,30 @@ class CalendrWeek extends React.Component {
         super(props);
         this.state = {
             today: new Date(),
-            prevSunday: this.getPreviousSunday(new Date()),
+            thisWeekMonday: this.getPreviousMonday(new Date()),
         };
-        this.getPreviousSunday = this.getPreviousSunday.bind(this);
-        this.getDateFromSundayOffset = this.getDateFromSundayOffset.bind(this);
+        this.getPreviousMonday = this.getPreviousMonday.bind(this);
+        this.getDateFromMondayOffset = this.getDateFromMondayOffset.bind(this);
     }
 
     componentWillMount(){
         this.getWeekEvents();
     }
 
-    getPreviousSunday(day){
-        var prevSunday = new Date(day);
-        prevSunday.setDate(prevSunday.getDate() - prevSunday.getDay());
-        return prevSunday;
+    getPreviousMonday(day){
+        var thisWeekMonday = new Date(day);
+        thisWeekMonday.setDate(thisWeekMonday.getDate() - thisWeekMonday.getDay() + 1);
+        return thisWeekMonday;
     }
 
-    getDateFromSundayOffset(offset){
-        var currentDay = new Date(this.state.prevSunday);
+    getDateFromMondayOffset(offset){
+        var currentDay = new Date(this.state.thisWeekMonday);
         currentDay.setDate(currentDay.getDate() + offset);
         return currentDay;
     }
 
     getWeekEvents(){
-        var prevSunday = new Date(this.state.prevSunday.getDate());
-        
+        var thisWeekMonday = new Date(this.state.thisWeekMonday.getDate());
         // some API call to get events
 
         $.ajax({
@@ -40,13 +39,12 @@ class CalendrWeek extends React.Component {
             datatype: 'json',
             cache: false,
             data: {
-                year: this.state.prevSunday.getFullYear(),
-                month: this.state.prevSunday.getMonth(),
-                day: this.state.prevSunday.getDate()
+                year: this.state.thisWeekMonday.getFullYear(),
+                month: this.state.thisWeekMonday.getMonth(),
+                day: this.state.thisWeekMonday.getDate()
             },
             success: function(data){
                 console.log(data);
-                console.log('success')
                 this.setState({data: data});
             }.bind(this)
         })
@@ -75,7 +73,7 @@ class WeekHeader extends React.Component {
                 <div className="week-day-cell hour-col"></div>
                 {calendrConst.dayNames.map((item, index) => (
                     <div className="week-day-cell day-title" key={item}>{item}
-                    &nbsp;{this.props.getDateFromSundayOffset(index).getDate()}/{this.props.getDateFromSundayOffset(index).getMonth() + 1}
+                    &nbsp;{this.props.getDateFromMondayOffset(index).getDate()}/{this.props.getDateFromMondayOffset(index).getMonth() + 1}
                     </div>
                 ))}
             </div>
@@ -161,8 +159,6 @@ class EventBlock extends React.Component {
 
         }
     }
-
-
 
     render() {
         return (
