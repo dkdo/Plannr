@@ -153,8 +153,12 @@ class Calendr extends React.Component {
         this.setState({eventTitle: event.target.value});
     }
 
-    startTimeChange(event) {
+    startTimeChange(event, endTimeValues) {
         this.setState({eventStartTime: event.target.value});
+
+        if(!endTimeValues.includes(this.state.eventEndTime)) {
+            this.setState({eventEndTime: endTimeValues[0]});
+        }
     }
 
     endTimeChange(event) {
@@ -163,9 +167,9 @@ class Calendr extends React.Component {
 
     getSelectedDate(){
         var dateMonth = this.state.selectedMonth;
-        dateMonth = ("0" + dateMonth).slice(-2);
+        dateMonth = ('0' + dateMonth).slice(-2);
         var dateDay = this.state.selectedDate;
-        dateDay = ("0" + dateDay).slice(-2);
+        dateDay = ('0' + dateDay).slice(-2);
         var date = new Date(this.state.selectedYear, dateMonth, dateDay); 
         return date;
     }
@@ -243,33 +247,49 @@ class AddEvent extends React.Component {
         var options = [];
         var timeValue, minutes, hours;
         for (let i = 0; i < 48; i++){
-            minutes = i % 2 === 0 ? "00" : "30";
+            minutes = i % 2 === 0 ? '00' : '30';
             hours = parseInt(i/2);
-            timeValue = hours + ":" + minutes;
+            timeValue = hours + ':' + minutes;
             options.push(<option value={timeValue} key={timeValue}>{timeValue}</option>);
         }
         return options;
     }
 
-    getEndTimeOptions(startTime) {
-        var options = [];
+    getEndTimeValues(startTime) {
+        var endTimeValues = [];
         var timeValue, minutes, hours;
         var timeSelectedHourMinute = startTime.split(':');
         var optionStart = parseInt(timeSelectedHourMinute[0]) * 2;
         optionStart = timeSelectedHourMinute[1] === '00' ? optionStart : optionStart + 1;
         optionStart += 1;
+
         for (let i = optionStart; i < 48; i++){
-            minutes = i % 2 === 0 ? "00" : "30";
+            minutes = i % 2 === 0 ? '00' : '30';
             hours = parseInt(i/2);
             timeValue = hours + ":" + minutes;
-            options.push(<option value={timeValue} key={timeValue}>{timeValue}</option>);
+            endTimeValues.push(timeValue);
         }
-        return options;
+
+        return endTimeValues;
+    }
+
+    getEndTimeOptions(startTime) {
+        var endTimeOptions = [];
+        var endTimeValues = this.getEndTimeValues(startTime);
+
+        for(let i = 0; i < endTimeValues.length; i++){
+            endTimeOptions.push(<option value={endTimeValues[i]} key={endTimeValues[i]}>{endTimeValues[i]}</option>);
+        }
+
+        return endTimeOptions;
     }
 
     startTimeChange(event){
-        this.setState({endTimeOptions: this.getEndTimeOptions(event.target.value)});
-        this.props.startTimeChange(event);
+        var newEndTimeValues = this.getEndTimeValues(event.target.value);
+        var newEndTimeOptions = this.getEndTimeOptions(event.target.value);
+        this.setState({endTimeOptions: newEndTimeOptions});
+
+        this.props.startTimeChange(event, newEndTimeValues);
     }
 
 
