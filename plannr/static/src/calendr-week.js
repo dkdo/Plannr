@@ -8,46 +8,44 @@ class CalendrWeek extends React.Component {
         super(props);
         this.state = {
             today: new Date(),
-            prevSunday: this.getPreviousSunday(new Date()),
+            thisWeekMonday: this.getPreviousMonday(new Date()),
+            weekEventsList: [],
         };
-        this.getPreviousSunday = this.getPreviousSunday.bind(this);
-        this.getDateFromSundayOffset = this.getDateFromSundayOffset.bind(this);
+        this.getPreviousMonday = this.getPreviousMonday.bind(this);
+        this.getDateFromMondayOffset = this.getDateFromMondayOffset.bind(this);
     }
 
     componentWillMount(){
         this.getWeekEvents();
     }
 
-    getPreviousSunday(day){
-        var prevSunday = new Date(day);
-        prevSunday.setDate(prevSunday.getDate() - prevSunday.getDay());
-        return prevSunday;
+    getPreviousMonday(day){
+        var thisWeekMonday = new Date(day);
+        thisWeekMonday.setDate(thisWeekMonday.getDate() - thisWeekMonday.getDay() + 1);
+        return thisWeekMonday;
     }
 
-    getDateFromSundayOffset(offset){
-        var currentDay = new Date(this.state.prevSunday);
+    getDateFromMondayOffset(offset){
+        var currentDay = new Date(this.state.thisWeekMonday);
         currentDay.setDate(currentDay.getDate() + offset);
         return currentDay;
     }
 
     getWeekEvents(){
-        var prevSunday = new Date(this.state.prevSunday.getDate());
-        
-        // some API call to get events
+        var thisWeekMonday = new Date(this.state.thisWeekMonday.getDate());
 
         $.ajax({
             url: this.props.url + 'weekevents/',
             datatype: 'json',
             cache: false,
             data: {
-                year: this.state.prevSunday.getFullYear(),
-                month: this.state.prevSunday.getMonth(),
-                day: this.state.prevSunday.getDate()
+                year: this.state.thisWeekMonday.getFullYear(),
+                month: this.state.thisWeekMonday.getMonth(),
+                day: this.state.thisWeekMonday.getDate()
             },
             success: function(data){
                 console.log(data);
-                console.log('success')
-                this.setState({data: data});
+                this.setState({weekEventsList: data});
             }.bind(this)
         })
     }
@@ -57,7 +55,7 @@ class CalendrWeek extends React.Component {
             <table className="calendr-week">
                 <tbody>
                     <WeekGrid />
-                    <DayColumns />
+                    <DayColumns weekEventsList={this.state.weekEventsList} />
                 </tbody>
             </table>
         )
@@ -75,7 +73,7 @@ class WeekHeader extends React.Component {
                 <div className="week-day-cell hour-col"></div>
                 {calendrConst.dayNames.map((item, index) => (
                     <div className="week-day-cell day-title" key={item}>{item}
-                    &nbsp;{this.props.getDateFromSundayOffset(index).getDate()}/{this.props.getDateFromSundayOffset(index).getMonth() + 1}
+                    &nbsp;{this.props.getDateFromMondayOffset(index).getDate()}/{this.props.getDateFromMondayOffset(index).getMonth() + 1}
                     </div>
                 ))}
             </div>
@@ -114,7 +112,10 @@ class DayColumns extends React.Component {
     getDayCols() {
         var dayCols = [];
         for(var i = 0; i < 7; i++){
-            dayCols.push(<td key={i} className="day-col"><div className="day-col-events"><div className="events"></div></div></td>);
+            dayCols.push(<td key={i} className="day-col">
+                <div className="day-col-events">
+                    <EventsContainer events={this.props.weekEventsList[i]}/>
+                </div></td>);
         }
         return dayCols;
     }
@@ -154,6 +155,32 @@ class TimeColumn extends React.Component {
     }
 }
 
+class EventsContainer extends React.Component {
+    constructEventBlocks(events) {
+        var eventBlocks = [];
+        if(this.hasEvents(events)){ 
+            for(var i = 0; i < events.length; i ++){
+                var eventBlock = <EventBlock event={events[i]}/>
+                eventBlocks.push(eventBlock)
+            }
+        }
+
+        return eventBlocks;
+    }
+
+    hasEvents(events) {        
+        return (events !== undefined && events.length > 0);
+    }
+
+    render() {
+        var events = this.constructEventBlocks(this.props.events);
+
+        return (
+            <div>{events}</div>
+        )
+    }
+}
+
 class EventBlock extends React.Component {
     constructor(props){
         super(props);
@@ -162,11 +189,39 @@ class EventBlock extends React.Component {
         }
     }
 
+    getTimePosition(datetime) {
+        var datetime = new Date(datetime);
+        var hours = datetime.getHours();
+        var minutes = datetime.getMinutes(); 
 
+        var position = hours * calendrConst.hourWeekSize + minutes * calendrConst.minWeekSize;
+
+        return position;
+    }
+
+    getEventSize(event) {
+        var startPosition = this.getTimePosition(event.start_date);
+        var endPosition = this.getTimePosition(event.end_date);
+
+        var height = endPosition - startPosition;
+
+        return height;
+    }
 
     render() {
+        var top = this.getTimePosition(this.props.event.start_date);
+        var height = this.getEventSize(this.props.event);
+        var eventStyle = {
+            top: top,
+            height: height
+        }
+
         return (
-            <div></div>
+            <div className='event-block' style={eventStyle} title={this.props.event.title}>
+                <div className='event-name'>
+                    {this.props.event.title}
+                </div>
+            </div>
         )
     }
 }
