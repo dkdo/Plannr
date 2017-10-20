@@ -227,7 +227,7 @@ class Calendr extends React.Component {
                             <div className="r-inner">
                                 <Header monthNames={calendrConst.monthNamesFull} month={this.state.month} year={this.state.year} />
                                 <div className="calendar-table">
-                                    <WeekDays dayNames={calendrConst.dayNames} startDay={this.state.startDay} weekNumbers={this.state.weekNumbers} />
+                                    <WeekDays dayNames={calendrConst.dayNames} weekNumbers={this.state.weekNumbers} />
                                     <MonthDates month={this.state.month} year={this.state.year} daysInMonth={this.state.daysInMonth} firstOfMonth={this.state.firstOfMonth} startDay={this.state.startDay} onSelect={this.selectDate} weekNumbers={this.state.weekNumbers} disablePast={this.state.disablePast} minDate={this.state.minDate} />
                                 </div>
                             </div>
@@ -380,7 +380,7 @@ class WeekDays extends React.Component {
                 })()}
                 {haystack.map(function (item, i) {
                     return (
-                        <div key={that.props.startDay + i} className="r-cell r-weekday">{that.props.dayNames[(that.props.startDay + i) % 7]}</div>
+                        <div key={i} className="r-cell r-weekday">{that.props.dayNames[i % 7]}</div>
                     );
                 })}
             </div>

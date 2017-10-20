@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import calendrConst from './shared/calendr-const';
-import '../css/calendr-week.css'
+import '../css/calendr-week.css';
 
 class CalendrWeek extends React.Component {
     constructor(props) {
@@ -13,27 +13,42 @@ class CalendrWeek extends React.Component {
         };
         this.getPreviousMonday = this.getPreviousMonday.bind(this);
         this.getDateFromMondayOffset = this.getDateFromMondayOffset.bind(this);
+        this.nextWeek = this.nextWeek.bind(this);
+        this.prevWeek = this.prevWeek.bind(this);
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.getWeekEvents();
     }
 
-    getPreviousMonday(day){
+    getPreviousMonday(day) {
         var thisWeekMonday = new Date(day);
         thisWeekMonday.setDate(thisWeekMonday.getDate() - thisWeekMonday.getDay() + 1);
         return thisWeekMonday;
     }
 
-    getDateFromMondayOffset(offset){
+    getDateFromMondayOffset(offset) {
         var currentDay = new Date(this.state.thisWeekMonday);
         currentDay.setDate(currentDay.getDate() + offset);
         return currentDay;
     }
 
-    getWeekEvents(){
-        var thisWeekMonday = new Date(this.state.thisWeekMonday.getDate());
+    nextWeek() {
+        var nextMonday = new Date()
+        nextMonday.setDate(this.state.thisWeekMonday.getDate() + 7);
+        this.setState({thisWeekMonday: nextMonday}, () => this.getWeekEvents());
+    }
 
+    prevWeek() {
+        var prevMonday = new Date()
+        prevMonday.setDate(this.state.thisWeekMonday.getDate() - 7);
+        this.setState({thisWeekMonday: prevMonday}, () => this.getWeekEvents());
+    }
+
+    getWeekEvents() {
+        var thisWeekMonday = new Date(this.state.thisWeekMonday.getDate());
+        console.log('monday get week events');
+        console.log(this.state.thisWeekMonday);
         $.ajax({
             url: this.props.url + 'weekevents/',
             datatype: 'json',
@@ -52,12 +67,16 @@ class CalendrWeek extends React.Component {
 
     render() {
         return (
-            <table className="calendr-week">
-                <tbody>
-                    <WeekGrid />
-                    <DayColumns weekEventsList={this.state.weekEventsList} />
-                </tbody>
-            </table>
+            <div className="calendr-week-wrapper">
+                <table className="calendr-week-table">
+                    <tbody>
+                        <WeekCalendrTitle thisWeekMonday={this.state.thisWeekMonday} nextWeek={this.nextWeek} prevWeek={this.prevWeek} />
+                        <WeekHeader getDateFromMondayOffset={this.getDateFromMondayOffset} />
+                        <WeekGrid />
+                        <DayColumns weekEventsList={this.state.weekEventsList} />
+                    </tbody>
+                </table>
+            </div>
         )
     }
 }
@@ -66,17 +85,43 @@ CalendrWeek.defaultProps = {
     url: '/events/'
 };
 
+class WeekCalendrTitle extends React.Component {
+    render() {
+        var monday = this.props.thisWeekMonday.toLocaleDateString('en-GB');
+        var sunday = new Date();
+        sunday.setDate(this.props.thisWeekMonday.getDate() + 6);
+        sunday = sunday.toLocaleDateString('en-GB');
+
+        return (
+            <tr className="title-row">
+                <td className="time-buffer-col"></td>
+                <td colSpan="7" className="calendr-week-header">
+                    <div className="prev-arrow arrow-wrapper" onClick={this.props.prevWeek.bind(null, this)} >
+                        <div className="r-prev" role="button" tabIndex="0"></div>
+                    </div>
+                    <div className="calendr-title">
+                        {monday} - {sunday}
+                    </div>   
+                    <div className="next-arrow arrow-wrapper" onClick={this.props.nextWeek.bind(null, this)} >
+                        <div className="r-next" role="button" tabIndex="0"></div>
+                    </div>
+                </td>
+            </tr>
+        )
+    }
+}
+
 class WeekHeader extends React.Component {
     render() {
-        return(
-            <div className="week-days">
-                <div className="week-day-cell hour-col"></div>
+        return (
+            <tr className="calendr-week-header">
+                <td className="time-buffer-col"></td>
                 {calendrConst.dayNames.map((item, index) => (
-                    <div className="week-day-cell day-title" key={item}>{item}
+                    <td className="day-col day-title" key={item}>{item}
                     &nbsp;{this.props.getDateFromMondayOffset(index).getDate()}/{this.props.getDateFromMondayOffset(index).getMonth() + 1}
-                    </div>
+                    </td>
                 ))}
-            </div>
+            </tr>
         )
     }
 }
@@ -158,9 +203,10 @@ class TimeColumn extends React.Component {
 class EventsContainer extends React.Component {
     constructEventBlocks(events) {
         var eventBlocks = [];
+
         if(this.hasEvents(events)){ 
             for(var i = 0; i < events.length; i ++){
-                var eventBlock = <EventBlock event={events[i]}/>
+                var eventBlock = <EventBlock event={events[i]} key={events[i].id}/>
                 eventBlocks.push(eventBlock)
             }
         }

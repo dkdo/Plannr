@@ -234,14 +234,14 @@
 
 /* Calendar Arrows */
 
-.r-calendar .r-prev,
-.r-calendar .r-next{
+.r-prev,
+.r-next{
     background-color: #ffffff;
     cursor: pointer;
     outline: none;
 }
-.r-calendar .r-prev:before,
-.r-calendar .r-next:before{
+.r-prev:before,
+.r-next:before{
     position: relative;
     top: 0;
     content: "";
@@ -251,26 +251,26 @@
     border-top: 0.2em solid #222222;
     transform: rotate(-45deg);
 }
-.r-calendar .r-prev:before{
+.r-prev:before{
     border-left: 0.2em solid #222222;
     transform: rotate(-45deg);
     margin-left: 0.3em;
 }
-.r-calendar .r-prev:hover:before{
+.r-prev:hover:before{
     border-left-color: #ffffff;
     border-top-color: #ffffff;
 }
-.r-calendar .r-next:before{
+.r-next:before{
     border-right: 0.2em solid #222222;
     transform: rotate(45deg);
     margin-right: 0.3em;
 }
-.r-calendar .r-next:hover:before{
+.r-next:hover:before{
     border-right-color: #ffffff;
     border-top-color: #ffffff;
 }
-.r-calendar .r-prev:hover,
-.r-calendar .r-next:hover{
+.r-prev:hover,
+.r-next:hover{
     background-color: #0066CC;
 }
 
@@ -282,8 +282,6 @@
 .calendar-table{
     display: table;
     width: 100%;
-}
-.r-calendar .r-arrows{
 }
 .r-calendar .r-row{
     display: table-row;
