@@ -1,9 +1,40 @@
-.calendr-week {
-    margin-top: 10px;
+.calendr-week-wrapper {
     width: 75%;
-    table-layout: fixed;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    margin-top: 15px;
+}
+
+    .calendr-week-wrapper .calendr-week-table {
+        margin-top: 10px;
+        table-layout: fixed;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .calendr-week-wrapper .calendr-week-table tr:not(.title-row) {
+        border-right: 1px solid #ddd;
+    }
+
+.calendr-week-header {
+    text-align: center;
+}
+
+    .calendr-week-header > div {
+        display: inline-block;
+    }
+
+    .calendr-week-header .next-arrow {
+        float: right;
+    }
+
+    .calendr-week-header .prev-arrow {
+        float: left;
+    }
+
+.r-next {
+    float: right;
+}
+
+.r-prev {
+    float: left;
 }
 
 .hours-grid {
@@ -36,6 +67,11 @@
         height: 1008px;
         position: relative;
     }
+
+.day-title {
+    text-align: center;
+    border-top: 1px solid #ddd;
+}
 
 .hour-col {
     text-align: right;
