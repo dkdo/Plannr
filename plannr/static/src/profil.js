@@ -12,9 +12,11 @@ class MasterProfile extends React.Component {
 	render() {
 		return (
 			<div className="profile-container">
-			<h1>USERNAME</h1>
-			<PictureUpload />
-			<UserInformation />
+				<div className="profile-content-container">
+					<h1>USERNAME</h1>
+					<PictureUpload />
+					<UserInformation />
+				</div>
 			</div>
 		);
 	}
@@ -28,7 +30,8 @@ class PictureUpload extends React.Component {
 
 	render() {
 		return (
-			<div className="profile-picture-container">
+			<div className="profile-sub-container" id="profile_picture">
+				<span>PICTURE</span>
 			</div>
 		);
 	}
@@ -44,32 +47,33 @@ class UserInformation extends React.Component {
 
 	render() {
 		return (
-			<form className="user-info-container">
+			<form className="profile-sub-container" id="profile_form">
 				<DjangoCSRFToken />
-				<label class='user-info-group' for='user_info_name'>
-  					<span class='user-info-label'>Name: </span>
-  					<input class='user-info-input' type='text' id='user_info_name'></input>
-				</label>
-				<label class='user-info-group' for='user_info_pwd'>
-  					<span class='user-info-label'>Password: </span>
-  					<input class='user-info-input' type='password' id='user_info_pwd'></input>
-				</label>
-				<label class='user-info-group' for='user_info_email'>
-  					<span class='user-info-label'>Email: </span>
-  					<input class='user-info-input' type='text' id='user_info_email'></input>
-				</label>
-				<label class='user-info-group' for='user_info_phone'>
-  					<span class='user-info-label'>Phone: </span>
-  					<input class='user-info-input' type='text' id='user_info_phone'></input>
-				</label>
-				<label class='user-info-group' for='user_info_bday'>
-  					<span class='user-info-label'>Birth Date: </span>
-  					<input class='user-info-input' type='text' id='user_info_bday'></input>
-				</label>
-				<label class='user-info-group' for='user_info_status'>
-  					<span class='user-info-label'>Status: </span>
-  					<textarea class='user-info-input' id='user_info_status'></textarea>
-				</label>
+				<div className='input-group user-info-group'>
+  					<span className='user-info-label input-group-addon'>FirstName </span>
+  					<input className='user-info-input form-control' type='text' id='user_info_fname'></input>
+				</div>
+				<div className='input-group user-info-group'>
+  					<span className='user-info-label input-group-addon'>LastName </span>
+  					<input className='user-info-input form-control' type='text' id='user_info_lname'></input>
+				</div>
+				<div className='input-group user-info-group'>
+  					<span className='user-info-label input-group-addon'>Email </span>
+  					<input className='user-info-input form-control' type='text' id='user_info_email'></input>
+				</div>
+				<div className='input-group user-info-group'>
+  					<span className='user-info-label input-group-addon'>Phone </span>
+  					<input className='user-info-input form-control' type='text' id='user_info_phone'></input>
+				</div>
+				<div className='input-group user-info-group'>
+  					<span className='user-info-label input-group-addon'>Birth Date </span>
+  					<input className='user-info-input form-control' type='text' id='user_info_bday'></input>
+				</div>
+				<div className='input-group user-info-group'>
+  					<span className='user-info-label input-group-addon'>Status </span>
+  					<textarea className='user-info-input form-control' type='text' id='user_info_status'></textarea>
+				</div>
+				<button type="submit" className="user-info-input-btn" id="user_info_btn">Save</button>
 			</form>
 		);
 	}
