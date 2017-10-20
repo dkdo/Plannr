@@ -18,7 +18,7 @@ const App = () => (
       <Route path="/month" component={Calendr}/>
       <Route path="/week" component={CalendrWeek}/>
       <Route path="/login" component={MasterLogin}/>
-      <Route path="/profile" component={MasterProfile}/>
+      <Route path="/profil" component={MasterProfile}/>
     </div>
   </Router>
 )

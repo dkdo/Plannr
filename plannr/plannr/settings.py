@@ -143,4 +143,5 @@ REACT_ROUTES = [
     'week',
     'about',
     'topics',
+    'profil',
 ]

@@ -33,7 +33,6 @@ export default class DjangoCSRFToken extends React.Component{
 
   render() {
     var csrfToken = this.getCookie('csrftoken');
-    console.log(csrfToken);
     return (
       <input type="hidden" name="csrfmiddlewaretoken" value={csrfToken || ''}></input>
       );

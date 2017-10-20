@@ -105,6 +105,25 @@ class Calendr extends React.Component {
         })
     }
 
+    getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(
+                      cookie.substring(name.length + 1)
+                      );
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
     addEvent(){
         if (this.state.eventTitle == ''){
             alert('Select a date and/or add a title!');
@@ -117,6 +136,13 @@ class Calendr extends React.Component {
                 start_date: start_date,
                 end_date: end_date
             }
+            console.log('posting');
+            // var csrfToken = this.getCookie('csrftoken');
+            // $.ajaxSetup({
+            //     beforeSend: function(xhr, settings) {
+            //         xhr.setRequestHeader("X-CSRFToken", csrfToken);
+            //     }
+            // });
             $.ajax({
                 type: 'POST',
                 url: this.props.url,
