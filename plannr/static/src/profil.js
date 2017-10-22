@@ -5,23 +5,32 @@ import DjangoCSRFToken from './shared/csrf';
 class MasterProfile extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+			logged_in: '',
+		};
 
 	}
 
 	componentWillMount() {
-		this.loadProfileInfo();
+		this.loadUsername();
 	}
 
-	loadProfileInfo() {
-		console.log('info loaded');
+	loadUsername() {
+		$.ajax({
+            url: this.props.loadUsername_url,
+            datatype: 'json',
+            cache: false,
+            success: function(data){
+                this.setState(data);
+            }.bind(this)
+        })
 	}
 
 	render() {
 		return (
 			<div className="profile-container">
 				<div className="profile-content-container">
-					<h1>USERNAME</h1>
+					<h1>{this.state.logged_in}</h1>
 					<PictureUpload />
 					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
 				</div>
@@ -32,6 +41,7 @@ class MasterProfile extends React.Component {
 
 MasterProfile.defaultProps = {
 	saveprofile_url: '/profil/profileInfo/',
+	loadUsername_url: '/profil/user/',
 };
 
 class PictureUpload extends React.Component {
@@ -53,8 +63,8 @@ class UserInformation extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			fname: '',
-			lname: '',
+			first_name: '',
+			last_name: '',
 			email: '',
 			phone_num: '',
 			birth_date: '',
@@ -65,6 +75,21 @@ class UserInformation extends React.Component {
 		this.handleInfoChange = this.handleInfoChange.bind(this);
 		this.saveProfileInfo = this.saveProfileInfo.bind(this);
 
+	}
+
+	componentWillMount() {
+		this.loadProfileInfo();
+	}
+
+	loadProfileInfo() {
+		$.ajax({
+			url: this.props.saveprofile_url,
+			datatype: 'json',
+			cache: false,
+			success: function(data) {
+				this.setState(data);
+			}.bind(this)
+		})
 	}
 
 	getCookie(name) {
@@ -92,8 +117,8 @@ class UserInformation extends React.Component {
 		else {
 			console.log('Went into saveProfileInfo');
 			var info = {
-				first_name: this.state.fname,
-				last_name: this.state.lname,
+				first_name: this.state.first_name,
+				last_name: this.state.last_name,
 				phone_num: this.state.phone_num,
 				birth_date: this.state.birth_date,
 				status: this.state.status,
@@ -130,11 +155,11 @@ class UserInformation extends React.Component {
 			<form onSubmit={this.saveProfileInfo} className="profile-sub-container" id="profile_form">
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>FirstName </span>
-  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.fname} name="fname" type='text' id='user_info_fname'></input>
+  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.first_name} name="first_name" type='text' id='user_info_fname'></input>
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>LastName </span>
-  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.lname} name="lname" type='text' id='user_info_lname'></input>
+  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.last_name} name="last_name" type='text' id='user_info_lname'></input>
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Email </span>
