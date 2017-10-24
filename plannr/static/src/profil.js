@@ -119,17 +119,18 @@ class UserInformation extends React.Component {
 			var info = {
 				first_name: this.state.first_name,
 				last_name: this.state.last_name,
+				email: this.state.email,
 				phone_num: this.state.phone_num,
 				birth_date: this.state.birth_date,
 				status: this.state.status,
 			};
+			console.log('saved info is: ' + JSON.stringify(info));
 			var csrfToken = this.getCookie('csrftoken');
 			$.ajaxSetup({
 	            beforeSend: function(xhr, settings) {
 	                xhr.setRequestHeader("X-CSRFToken", csrfToken);
 	            }
 	        });
-	        console.log(this.props.saveprofile_url);
 			$.ajax({
 				type: 'POST',
 				url: this.props.saveprofile_url,
@@ -155,27 +156,27 @@ class UserInformation extends React.Component {
 			<form onSubmit={this.saveProfileInfo} className="profile-sub-container" id="profile_form">
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>FirstName </span>
-  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.first_name} name="first_name" type='text' id='user_info_fname'></input>
+  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.first_name} name="first_name" type='text' id='user_info_fname' placeholder='John'></input>
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>LastName </span>
-  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.last_name} name="last_name" type='text' id='user_info_lname'></input>
+  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.last_name} name="last_name" type='text' id='user_info_lname' placeholder='Doe'></input>
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Email </span>
-  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.email} name="email" type='text' id='user_info_email'></input>
+  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.email} name="email" type='text' id='user_info_email' placeholder='john.doe@example.ca'></input>
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Phone </span>
-  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.phone_num} name="phone_num" type='text' id='user_info_phone'></input>
+  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.phone_num} name="phone_num" type='text' id='user_info_phone' placeholder='111-222-3333'></input>
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Birth Date </span>
-  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.birth_date} name="birth_date" type='text' id='user_info_bday'></input>
+  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.birth_date} name="birth_date" type='text' id='user_info_bday' placeholder='YYYY/MM/DD'></input>
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Status </span>
-  					<textarea className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status'></textarea>
+  					<textarea className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status' placeholder='You can write your status here...'></textarea>
 				</div>
 				<button type="submit" className="user-info-input-btn" id="user_info_btn">Save</button>
 			</form>

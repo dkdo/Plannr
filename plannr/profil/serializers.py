@@ -5,6 +5,7 @@ class ProfileSerializer(serializers.Serializer):
     user_id = serializers.IntegerField(read_only=True)
     first_name = serializers.CharField(max_length=30, required=True)
     last_name = serializers.CharField(max_length=50, required=False)
+    email = serializers.CharField(max_length=60, required=False)
     phone_num = serializers.CharField(max_length=12, required=False)
     birth_date = serializers.CharField(max_length=11, required=False)
     status = serializers.CharField(max_length=140, required=False)
@@ -13,7 +14,9 @@ class ProfileSerializer(serializers.Serializer):
         """
         Create and return a new Profile instance, given the validated data.
         """
-        user_id = self.context['request'].user.id
+        print "went into the create method"
+        user = self.context['request'].user
+        user_id = user.id
         profile = Profile.objects.create(
             user_id=user_id,
             **validated_data)
@@ -23,9 +26,11 @@ class ProfileSerializer(serializers.Serializer):
         """
         Update and return an existing Profile instance, given the validated data.
         """
-        instance.first_name = validated_data.get('first_name', instance.title)
+        print "went into the update method"
+        instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.phone_num = validated_data.get('phone_num', instance.phone_num)
+        instance.email = validated_data.get('email', instance.email)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
         instance.status = validated_data.get('status', instance.status)
         instance.save()

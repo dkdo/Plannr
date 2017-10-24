@@ -9,6 +9,7 @@ class Profile(models.Model):
 	user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
 	first_name = models.CharField(max_length=30)
 	last_name = models.CharField(max_length=50)
+	email = models.CharField(max_length=60)
 	phone_num = models.CharField(max_length=12)
 	birth_date = models.CharField(max_length=11)
 	status = models.CharField(max_length=140)
