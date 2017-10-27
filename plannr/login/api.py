@@ -1,7 +1,5 @@
-from event.models import Event
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
-from event.serializers import EventSerializer
 from rest_framework.decorators import api_view
 from django.http import Http404
 from rest_framework.views import APIView
@@ -11,6 +9,8 @@ from django.contrib.auth import authenticate as django_auth
 from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
 from django.shortcuts import redirect
+from profil.serializers import ProfileSerializer
+from profil.models import Profile
 
 class SignOutRequest(APIView):
     def post(self, request, format=None):
@@ -40,22 +40,30 @@ class SignInRequest(APIView):
 
 class SignUpRequest(APIView):
     def post(self, request, format=None):
-        firstname = request.POST['firstname']
-        print "signup firstname: " + firstname
-        lastname = request.POST['lastname']
-        print "signup lastname: " + lastname
+        first_name = request.POST['firstname']
+        last_name = request.POST['lastname']
         email = request.POST['email']
-        print "signup email: " + email
         password = request.POST['password']
-        print "signup password: " + password
         try:
             user = User.objects.create_user(email, email, password)
-            user.first_name = firstname
-            user.last_name = lastname
+            user.first_name = first_name
+            user.last_name = last_name
             if user is not None:
                 user.save()
-                print "CREATED SUCCESSFULLY"
-                return Response(status=status.HTTP_201_CREATED)
+                print "USER CREATED SUCCESSFULLY"
+                try:
+                    data = {'first_name': first_name, 'last_name': last_name, 'email': email}
+                    serializer = ProfileSerializer(data=data, context={'user': user})
+                    if serializer.is_valid():
+                        serializer.save()
+                        print "PROFILE CREATED SUCCESSFULLY"
+                        return Response(status=status.HTTP_201_CREATED)
+                    else: 
+                        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+                except:
+                    print "PROFILE CREATION ERROR"
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
             else:
                 print "UNSUCCESSFUL CREATION"
                 return Response(status=status.HTTP_400_BAD_REQUEST)
