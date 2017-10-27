@@ -18,7 +18,6 @@ class ProfileInfo(APIView):
 			serializer = ProfileSerializer(current_profile, data=request.data)
 		else:
 			serializer = ProfileSerializer(data=request.data, context={'request': request})
-		print serializer
 		if serializer.is_valid():
 			serializer.save()
 			return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -31,7 +30,6 @@ class ProfileInfo(APIView):
 			profile_exists = exists_or_not(Profile, user_id=current_user_id)
 			if profile_exists:
 				user_profile = Profile.objects.get(user_id=current_user_id)
-				print user_profile
 				serializer = ProfileSerializer(user_profile)
 				return Response(serializer.data)
 			else:

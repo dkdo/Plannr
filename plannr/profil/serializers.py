@@ -27,11 +27,13 @@ class ProfileSerializer(serializers.Serializer):
         Update and return an existing Profile instance, given the validated data.
         """
         print "went into the update method"
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.phone_num = validated_data.get('phone_num', instance.phone_num)
-        instance.email = validated_data.get('email', instance.email)
-        instance.birth_date = validated_data.get('birth_date', instance.birth_date)
-        instance.status = validated_data.get('status', instance.status)
+        print ("validated data: ", validated_data)
+        print ("instance: ", instance)
+        instance.first_name = validated_data.get('first_name', '')
+        instance.last_name = validated_data.get('last_name', '')
+        instance.phone_num = validated_data.get('phone_num', '')
+        instance.email = validated_data.get('email', '')
+        instance.birth_date = validated_data.get('birth_date', '')
+        instance.status = validated_data.get('status', '')
         instance.save()
         return instance
