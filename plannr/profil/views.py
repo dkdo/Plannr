@@ -17,7 +17,7 @@ class ProfileInfo(APIView):
 			current_profile = Profile.objects.get(user_id=user_id)
 			serializer = ProfileSerializer(current_profile, data=request.data)
 		else:
-			serializer = ProfileSerializer(data=request.data, context={'request': request})
+			serializer = ProfileSerializer(data=request.data, context={'user': request.user})
 		if serializer.is_valid():
 			serializer.save()
 			return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -28,6 +28,7 @@ class ProfileInfo(APIView):
 		if request.user.is_authenticated():
 			current_user_id = request.user.id
 			profile_exists = exists_or_not(Profile, user_id=current_user_id)
+			print ("does profile exist: ", profile_exists)
 			if profile_exists:
 				user_profile = Profile.objects.get(user_id=current_user_id)
 				serializer = ProfileSerializer(user_profile)

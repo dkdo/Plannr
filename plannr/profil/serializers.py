@@ -15,7 +15,7 @@ class ProfileSerializer(serializers.Serializer):
         Create and return a new Profile instance, given the validated data.
         """
         print "went into the create method"
-        user = self.context['request'].user
+        user = self.context['user']
         user_id = user.id
         profile = Profile.objects.create(
             user_id=user_id,

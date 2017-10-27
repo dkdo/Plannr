@@ -85,7 +85,10 @@ class UserInformation extends React.Component {
 			datatype: 'json',
 			cache: false,
 			success: function(data) {
-				this.setState(data);
+				console.log(JSON.stringify(data));
+				if(data != "") {
+					this.setState(data);
+				}
 			}.bind(this)
 		})
 	}
