@@ -30,9 +30,7 @@ class MasterProfile extends React.Component {
 		return (
 			<div className="profile-container">
 				<div className="profile-content-container">
-					<h1>{this.state.logged_in}</h1>
-					<PictureUpload />
-					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
+					<UserInformation saveprofile_url={this.props.saveprofile_url} logged_in={this.state.logged_in}/>
 				</div>
 			</div>
 		);
@@ -44,20 +42,20 @@ MasterProfile.defaultProps = {
 	loadUsername_url: '/profil/user/',
 };
 
-class PictureUpload extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {};
-	}
+// class PictureUpload extends React.Component {
+// 	constructor(props) {
+// 		super(props);
+// 		this.state = {};
+// 	}
 
-	render() {
-		return (
-			<div className="profile-sub-container" id="profile_picture">
-				<span>PICTURE</span>
-			</div>
-		);
-	}
-}
+// 	render() {
+// 		return (
+// 			<div className="profile-sub-container" id="profile_picture">
+// 				<span>PICTURE</span>
+// 			</div>
+// 		);
+// 	}
+// }
 
 class UserInformation extends React.Component {
 	constructor(props) {
@@ -154,6 +152,7 @@ class UserInformation extends React.Component {
 	render() {
 		return (
 			<form onSubmit={this.saveProfileInfo} className="profile-sub-container" id="profile_form">
+				<h1>{this.props.logged_in}</h1>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>FirstName </span>
   					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.first_name} name="first_name" type='text' id='user_info_fname' placeholder='John'></input>
@@ -178,7 +177,7 @@ class UserInformation extends React.Component {
   					<span className='user-info-label input-group-addon'>Status </span>
   					<textarea className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status' placeholder='You can write your status here...'></textarea>
 				</div>
-				<button type="submit" className="user-info-input-btn" id="user_info_btn">Save</button>
+				<button type="submit" className="user-info-input-btn btn" id="user_info_btn">Save</button>
 			</form>
 		);
 	}
