@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
   Link
-} from 'react-router-dom'
-import Calendr from './calendr'
-import CalendrWeek from './calendr-week'
-import MasterLogin from './login'
+} from 'react-router-dom';
+import Calendr from './calendr';
+import CalendrWeek from './calendr-week';
+import MasterLogin from './login';
 import history from './history';
 
 const App = () => (

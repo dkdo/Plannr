@@ -1,6 +1,7 @@
 .calendr-week-wrapper {
     width: 75%;
     margin-top: 15px;
+    float: left;
 }
 
     .calendr-week-wrapper .calendr-week-table {
