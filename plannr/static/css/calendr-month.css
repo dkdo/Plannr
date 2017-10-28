@@ -1,0 +1,13 @@
+.event-points {
+    margin-left: 0.25em;
+}
+.event-point {
+    background-color: rgb(0, 0, 255);
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    margin-right: 0.25em;
+}

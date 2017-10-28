@@ -1,3 +1,4 @@
+import calendar
 from datetime import timedelta, date, datetime
 from dateutil.parser import parse
 from event.models import Event
@@ -26,6 +27,32 @@ class EventList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MonthEvents(APIView):
+    def get(self, request, format=None):
+        date_selected = request.GET.get('month_date')
+        month_selected = parse(date_selected).month
+        year_selected = parse(date_selected).year
+
+        [month_start, month_end] = calendar.monthrange(year_selected,
+                                                       month_selected)
+
+        start_date = date(year_selected, month_selected, month_start)
+
+        end_date = (date(year_selected, month_selected, month_end) +
+                    timedelta(hours=23, minutes=59, seconds=59))
+
+        events = Event.objects.filter(start_date__range=(start_date, end_date))
+        serializer = EventSerializer(events, many=True)
+
+        events_list = [[] for x in range(month_end)]
+
+        for event in serializer.data:
+            day = parse(event.get('start_date')).day
+            events_list[day].append(event)
+
+        return Response(events_list)
 
 
 class EventDetail(APIView):

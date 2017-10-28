@@ -1,6 +1,7 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
+import AddEvent from './add-event'
 import '../css/calendr-week.css';
 
 class CalendrWeek extends React.Component {
@@ -8,6 +9,7 @@ class CalendrWeek extends React.Component {
         super(props);
         this.state = {
             today: new Date(),
+            selectedDt: new Date(),
             thisWeekMonday: this.getPreviousMonday(new Date()),
             weekEventsList: [],
         };
@@ -45,6 +47,10 @@ class CalendrWeek extends React.Component {
         this.setState({thisWeekMonday: prevMonday}, () => this.getWeekEvents());
     }
 
+    startTimeOnClick() {
+        
+    }
+
     getWeekEvents() {
         var thisWeekMonday = new Date(this.state.thisWeekMonday.getDate());
         console.log('monday get week events');
@@ -67,15 +73,18 @@ class CalendrWeek extends React.Component {
 
     render() {
         return (
-            <div className="calendr-week-wrapper">
-                <table className="calendr-week-table">
-                    <tbody>
-                        <WeekCalendrTitle thisWeekMonday={this.state.thisWeekMonday} nextWeek={this.nextWeek} prevWeek={this.prevWeek} />
-                        <WeekHeader getDateFromMondayOffset={this.getDateFromMondayOffset} />
-                        <WeekGrid />
-                        <DayColumns weekEventsList={this.state.weekEventsList} />
-                    </tbody>
-                </table>
+            <div>
+                <div className="calendr-week-wrapper">
+                    <table className="calendr-week-table">
+                        <tbody>
+                            <WeekCalendrTitle thisWeekMonday={this.state.thisWeekMonday} nextWeek={this.nextWeek} prevWeek={this.prevWeek} />
+                            <WeekHeader getDateFromMondayOffset={this.getDateFromMondayOffset} />
+                            <WeekGrid />
+                            <DayColumns weekEventsList={this.state.weekEventsList} />
+                        </tbody>
+                    </table>
+                </div>
+                <AddEvent selectedDate={this.state.selectedDt} startTimeSelected={'5:30'}/>
             </div>
         )
     }
