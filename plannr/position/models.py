@@ -4,5 +4,5 @@ from django.db import models
 
 class Position(models.Model):
     name = models.CharField(max_length=100)
-    hourly_salary = models.IntegerField()
-    department = models.CharField(max_length=100)
+    hourly_salary = models.FloatField()
+    department = models.CharField(max_length=100, default='Main')
