@@ -9,7 +9,7 @@ class CalendrWeek extends React.Component {
         super(props);
         this.state = {
             today: new Date(),
-            selectedDt: new Date(),
+            selectedDate: new Date(),
             thisWeekMonday: this.getPreviousMonday(new Date()),
             weekEventsList: [],
         };
@@ -17,6 +17,7 @@ class CalendrWeek extends React.Component {
         this.getDateFromMondayOffset = this.getDateFromMondayOffset.bind(this);
         this.nextWeek = this.nextWeek.bind(this);
         this.prevWeek = this.prevWeek.bind(this);
+        this.dayOnClick = this.dayOnClick.bind(this);
     }
 
     componentWillMount() {
@@ -45,6 +46,15 @@ class CalendrWeek extends React.Component {
         var prevMonday = new Date()
         prevMonday.setDate(this.state.thisWeekMonday.getDate() - 7);
         this.setState({thisWeekMonday: prevMonday}, () => this.getWeekEvents());
+    }
+
+    dayOnClick(weekdayId) {
+        var selectedDate = this.state.selectedDate;
+        
+        // Monday is 1 in JS, but 0 in python
+        selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 1 + weekdayId);
+        
+        this.setState({selectedDate: selectedDate});
     }
 
     startTimeOnClick() {
@@ -80,7 +90,7 @@ class CalendrWeek extends React.Component {
                             <WeekCalendrTitle thisWeekMonday={this.state.thisWeekMonday} nextWeek={this.nextWeek} prevWeek={this.prevWeek} />
                             <WeekHeader getDateFromMondayOffset={this.getDateFromMondayOffset} />
                             <WeekGrid />
-                            <DayColumns weekEventsList={this.state.weekEventsList} />
+                            <DayColumns weekEventsList={this.state.weekEventsList} dayOnClick={this.dayOnClick}/>
                         </tbody>
                     </table>
                 </div>
@@ -163,13 +173,14 @@ class WeekGrid extends React.Component {
 }
 
 class DayColumns extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     getDayCols() {
         var dayCols = [];
         for(var i = 0; i < 7; i++){
-            dayCols.push(<td key={i} className="day-col">
-                <div className="day-col-events">
-                    <EventsContainer events={this.props.weekEventsList[i]}/>
-                </div></td>);
+            dayCols.push(<DayColumn id={i} key={i} dayOnClick={this.props.dayOnClick} events={this.props.weekEventsList[i]}/>)
         }
         return dayCols;
     }
@@ -185,6 +196,27 @@ class DayColumns extends React.Component {
         )
     }
 
+}
+
+class DayColumn extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        this.props.dayOnClick(this.props.id);
+    }
+
+    render() {
+        return(
+            <td className="day-col">
+                <div className="day-col-events" onClick={this.handleClick}>
+                    <EventsContainer events={this.props.events}/>
+                </div>
+            </td>
+        )
+    }
 }
 
 class TimeColumn extends React.Component {
