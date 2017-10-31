@@ -21,8 +21,14 @@ class MasterProfile extends React.Component {
             datatype: 'json',
             cache: false,
             success: function(data){
-                this.setState(data);
-            }.bind(this)
+				if(data != "") {
+					this.setState(data);
+				}
+            }.bind(this),
+			error: function() {
+				alert("Get out please");
+				this.setState({logged_in: 'Unauthorized User'});
+			}.bind(this)
         })
 	}
 
@@ -89,6 +95,9 @@ class UserInformation extends React.Component {
 				if(data != "") {
 					this.setState(data);
 				}
+			}.bind(this),
+			error: function() {
+				console.log('This is an Unauthorized User');
 			}.bind(this)
 		})
 	}
