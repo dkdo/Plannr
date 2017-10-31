@@ -180,7 +180,7 @@ class UserInformation extends React.Component {
   					<span className='user-info-label input-group-addon'>Status </span>
   					<textarea className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status' placeholder='You can write your status here...'></textarea>
 				</div>
-				<button type="submit" className="user-info-input-btn btn" id="user_info_btn">Save</button>
+				<button type="submit" className="user-info-input-btn plannr-btn btn" id="user_info_btn">Save</button>
 			</form>
 		);
 	}

@@ -8,6 +8,17 @@
     overflow-x: hidden;
  }
 
+ /* PLANNR THEME BUTTONS */
+ .plannr-btn {
+     background-color: white;
+     border-color: #0066ff;
+     box-shadow: none;
+     color: #0066ff;
+     height: 35px;
+ }
+
+ /* END PLANNR THEME BUTTONS */
+
  /*Month page button header*/
  .calendar-home-button-header-wrapper {
     padding-left: 1.5%;
@@ -62,6 +73,7 @@
  .main-content-wrapper {
     padding-left: 250px;
     padding-top: 50px;
+    padding-right: 50px;
  }
 
 /* Main Position Page */
@@ -365,7 +377,7 @@
 .login-main-container {
     background-color : #001433;
     position: absolute;
-    top: 0; 
+    top: 0;
     left: 0;
     height: 100%;
     width: 100%;
@@ -388,9 +400,9 @@
 .login-page-btn {
     background-color : #0066ff;
     border-radius: 6px;
-    color : #ffffff; 
-    -moz-border-radius: 6px; 
-    -webkit-border-radius: 6px; 
+    color : #ffffff;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
     height : 45px;
     margin : 20px 40px 25px;
     width : 250px;
@@ -399,10 +411,10 @@
 .login-page-inputs {
     background-color : transparent;
     border: 2px solid #595959;
-    border-radius: 6px; 
+    border-radius: 6px;
     color : #595959;
-    -moz-border-radius: 6px; 
-    -webkit-border-radius: 6px; 
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
     height : 45px;
     margin : 0px 40px 20px;
     padding : 5px 15px;
@@ -483,11 +495,55 @@ img.logo-resize {
     padding-bottom: 15px;
 }
 
-.profile-sub-container .user-info-label {
-}
-
 .input-group-addon {
     min-width: 90px;
 }
 
 /* END PROFILE */
+
+/* POSITION */
+
+.position-add-btn {
+    margin-bottom: 15px;
+}
+.position-content-container {
+    margin-top: 50px;
+}
+
+.position-title {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.position-info-input {
+    background: transparent;
+    margin-left: 10px;
+    margin-bottom: 30px;
+    outline: 0;
+    text-indent: 10px;
+}
+
+.position-info-label {
+    min-width: 90px;
+}
+
+.position-pane {
+    width: 50%;
+    float: left;
+}
+
+.position-group {
+    width:100%;
+}
+
+.position-save-btn-wrapper {
+    width: 100%;
+    text-align: center;
+}
+
+.right-position-pane-content {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
