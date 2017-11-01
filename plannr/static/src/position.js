@@ -38,6 +38,46 @@ class Position extends React.Component {
                 id: 2,
                 title: 'Runner',
                 salary: 11.38,
+            },
+            {
+                id: 3,
+                title: 'Position1',
+                salary: 11.50,
+            },
+            {
+                id: 4,
+                title: 'Position2',
+                salary: 11.38,
+            },
+            {
+                id: 5,
+                title: 'Position3',
+                salary: 11.50,
+            },
+            {
+                id: 6,
+                title: 'Position4',
+                salary: 11.38,
+            },
+            {
+                id: 7,
+                title: 'Position5',
+                salary: 11.50,
+            },
+            {
+                id: 8,
+                title: 'Position6',
+                salary: 11.38,
+            },
+            {
+                id: 9,
+                title: 'Position7',
+                salary: 11.50,
+            },
+            {
+                id: 10,
+                title: 'Position8',
+                salary: 11.38,
             }
         ]
     };

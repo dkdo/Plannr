@@ -539,9 +539,16 @@ img.logo-resize {
     text-align: center;
 }
 
+.list-group {
+    height: 247px;
+    overflow : auto;
+}
+
 .right-position-pane-content {
     margin-top: 50px;
     margin-left: auto;
     margin-right: auto;
     width: 50%;
 }
+
+/* END POSITION */
