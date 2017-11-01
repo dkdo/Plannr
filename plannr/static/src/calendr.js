@@ -204,20 +204,16 @@ class Calendr extends React.Component {
         });
     }
 
-    titleChange(event) {
-        this.setState({eventTitle: event.target.value});
+    titleChange(newTitle) {
+        this.setState({eventTitle: newTitle});
     }
 
-    startTimeChange(event, endTimeValues) {
-        this.setState({eventStartTime: event.target.value});
-
-        if(!endTimeValues.includes(this.state.eventEndTime)) {
-            this.setState({eventEndTime: endTimeValues[0]});
-        }
+    startTimeChange(newStartTime) {
+        this.setState({eventStartTime: newStartTime});
     }
 
-    endTimeChange(event) {
-        this.setState({eventEndTime: event.target.value});
+    endTimeChange(newEndTime) {
+        this.setState({eventEndTime: newEndTime});
     }
 
     getSelectedDate(){
@@ -226,8 +222,6 @@ class Calendr extends React.Component {
         var dateDay = this.state.selectedDate;
         dateDay = ('0' + dateDay).slice(-2);
         var date = new Date(this.state.selectedYear, dateMonth, dateDay); 
-        console.log('getselectedate')
-        console.log(date)
         return date;
     }
 
@@ -252,7 +246,9 @@ class Calendr extends React.Component {
                 </div>
                 <div className="right-position-pane">
                     <EventList dayEventList={this.state.dayEventList}/>
-                    <AddEvent selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback}/>
+                    <AddEvent selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback} 
+                              eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
+                              startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
                 </div>
             </div>
         )
@@ -342,8 +338,6 @@ class MonthDates extends React.Component {
             rows = 5;
 
         var monthEventList = this.props.monthEventList;
-        console.log('render')
-        console.log(monthEventList);
 
         if ((startDay == 5 && this.props.daysInMonth == 31) || ((startDay == 0 || startDay == 6) && this.props.daysInMonth > 29)) {
             rows = 6;
@@ -404,6 +398,7 @@ class MonthDates extends React.Component {
                             }
 
                             return (
+                                // Change the bind, it always rerenders
                                 <div key={d} className={className} role="button" tabIndex="0" onClick={that.props.onSelect.bind(null, that.props.year, that.props.month, d)}>
                                     <div className="day-number">{d}</div>
                                     <div className="event-points">{eventPoints}</div>

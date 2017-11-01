@@ -52,10 +52,15 @@
         }
 
         .hours-grid .hour-separator .hour-cell .hour-cell-split {
-            height: 20px;
-            margin-bottom: 20px;
-            border-bottom: 1px dotted #ddd;
+            height: 21px;
+        }
+
+        .hours-grid .hour-separator .hour-cell .hour-cell-split:first-child {
             border-top: 1px solid #ddd;
+        }
+
+        .hours-grid .hour-separator .hour-cell .hour-cell-split:last-child {
+            border-top: 1px dotted #ddd;
         }
 
 .day-col {
@@ -103,3 +108,20 @@
         display: inline-block;
         width: inherit;
     }
+
+
+.hour-cell {
+    height: 42px;
+}
+
+.hour-cell .hour-cell-split {
+    height: 21px;
+}
+
+.hour-cell .hour-cell-split:first-child {
+    border-top: 1px solid #ddd;
+}
+
+.hour-cell .hour-cell-split:last-child {
+    border-top: 1px dotted #ddd;
+}
