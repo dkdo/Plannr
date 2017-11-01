@@ -87,7 +87,8 @@ class WeekEvents(APIView):
         month = month + 1
         monday = int(request.GET.get('day', 0))
 
-        start_date = date(year, month, monday)
+        start_date = datetime(year, month, monday, 0, 0, 0)
+
         end_date = start_date + timedelta(days=7)
 
         events = Event.objects.filter(start_date__range=(start_date,

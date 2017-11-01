@@ -6,10 +6,7 @@ class AddEvent extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            endTimeOptions: this.getEndTimeOptions('0:00'),
-            eventStartTime: '0:00',
-            eventEndTime: '0:00',
-            eventTitle: ''
+            endTimeOptions: []
         }
         this.startTimeChangeEvent = this.startTimeChangeEvent.bind(this);
         this.startTimeChange = this.startTimeChange.bind(this);
@@ -19,18 +16,25 @@ class AddEvent extends React.Component {
     }
 
     componentDidMount() {
-        this.startTimeChange(this.props.startTimeSelected);
+        this.setEndTimeOptions(this.props.eventStartTime);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(this.props.eventStartTime !== nextProps.eventStartTime) {
+            this.startTimeChange(nextProps.eventStartTime);
+        }
+    }
+
+
     addEvent(){
-        if (this.state.eventTitle == ''){
+        if (this.props.eventTitle == ''){
             alert('Select a date and/or add a title!');
         }
         else{
             var start_date = this.parseEventStartDate().toISOString();
             var end_date = this.parseEventEndDate().toISOString();
             var data = {
-                title: this.state.eventTitle,
+                title: this.props.eventTitle,
                 start_date: start_date,
                 end_date: end_date
             }
@@ -45,14 +49,14 @@ class AddEvent extends React.Component {
                     this.props.addEventCallback(data);
                 }.bind(this)
             })
-            this.setState({eventTitle: ''});
+            this.props.titleChange('');
         }
     }
 
     parseEventStartDate(){
         // var date = this.getSelectedDate();
         var date = this.props.selectedDate
-        var hourMin = this.state.eventStartTime.split(':');
+        var hourMin = this.props.eventStartTime.split(':');
         date.setHours(hourMin[0]);
         date.setMinutes(hourMin[1]);
         return date;
@@ -61,7 +65,7 @@ class AddEvent extends React.Component {
     parseEventEndDate(){
         // var date = this.getSelectedDate();
         var date= this.props.selectedDate
-        var hourMin = this.state.eventEndTime.split(':');
+        var hourMin = this.props.eventEndTime.split(':');
         date.setHours(hourMin[0]);
         date.setMinutes(hourMin[1]);
         return date;
@@ -97,7 +101,7 @@ class AddEvent extends React.Component {
         return endTimeValues;
     }
 
-    getEndTimeOptions(startTime) {
+    setEndTimeOptions(startTime) {
         var endTimeOptions = [];
         var endTimeValues = this.getEndTimeValues(startTime);
 
@@ -105,38 +109,40 @@ class AddEvent extends React.Component {
             endTimeOptions.push(<option value={endTimeValues[i]} key={endTimeValues[i]}>{endTimeValues[i]}</option>);
         }
 
+        this.setState({endTimeOptions: endTimeOptions});
+
         return endTimeOptions;
     }
-
-    // startTimeChange(event){
-
-    //     this.props.startTimeChange(event, newEndTimeValues);
-    // }
 
     startTimeChangeEvent(event){
         var newStartTime = event.target.value;
         this.startTimeChange(newStartTime);
+
+        var startTimeChangeCallback = this.props.startTimeChangeCallback || null;
+        if (startTimeChangeCallback) {
+            startTimeChangeCallback(event.target.value);
+        }
     }
 
     startTimeChange(newStartTime) {
         var newEndTimeValues = this.getEndTimeValues(newStartTime);
-        var newEndTimeOptions = this.getEndTimeOptions(newStartTime);
+        this.setEndTimeOptions(newStartTime);
         
-        this.setState({endTimeOptions: newEndTimeOptions});
-        this.setState({eventStartTime: newStartTime});
+        // this.setState({endTimeOptions: newEndTimeOptions});
+        this.props.startTimeChange(newStartTime);
 
-        if(!newEndTimeValues.includes(newStartTime)) {
-            this.setState({eventEndTime: newEndTimeValues[0]});
+        if(!newEndTimeValues.includes(this.props.eventEndTime)) {
+            this.props.endTimeChange(newEndTimeValues[0]);
         }
     }
 
     endTimeChange(event) {
-        this.setState({eventEndTime: event.target.value});
+        this.props.endTimeChange(event.target.value);
     }
 
 
     titleChange(event) {
-        this.setState({eventTitle: event.target.value});
+        this.props.titleChange(event.target.value);
     }
 
     render() {
@@ -144,12 +150,12 @@ class AddEvent extends React.Component {
         return (
             <div className="eventAdder">
                 <div>
-                    <label>Title </label><input type="text" value={this.state.eventTitle} onChange={this.titleChange}/>
+                    <label>Title </label><input type="text" value={this.props.eventTitle} onChange={this.titleChange}/>
                 </div>
                 <div className="time-selectors">
                     <div>
                         <div>Start time: </div>
-                        <select value={this.state.eventStartTime} onChange={this.startTimeChangeEvent}>
+                        <select value={this.props.eventStartTime} onChange={this.startTimeChangeEvent}>
                             {options}
                         </select>
                     </div>
