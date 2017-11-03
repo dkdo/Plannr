@@ -14,59 +14,35 @@ export default class MasterPosition extends React.Component {
   render() {
     return (
       <div className="position-content-container">
-        <Position />
+        <Position getpos_url={this.props.getPositions_url}/>
       </div>
 
     );
   }
 }
 
+MasterPosition.defaultProps = {
+    getPositions_url : '/positionList/',
+};
+
 class Position extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        positionList : [
-            {
-                id: 1,
-                title: 'Bol Maker',
-                salary: 11.50,
-            },
-            {
-                id: 2,
-                title: 'Runner',
-                salary: 11.38,
-            },
-            {
-                id: 3,
-                title: 'Position1',
-                salary: 11.50,
-            },
-            {
-                id: 4,
-                title: 'Position2',
-                salary: 11.38,
-            },
-            {
-                id: 5,
-                title: 'Position3',
-                salary: 11.50,
-            }
-        ],
+        positionList : [],
         selectedId: 0,
         selectedTitle: 'POSITION',
         selectedSalary: -1,
         selectedDep: '',
-        selectedManager: '',
         appearDetail: false,
         newTitle: '',
         newSalary: '',
         newDep: '',
-        newManager: '',
         appearAdd: false,
     };
     this.handlePositionClick = this.handlePositionClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.submitPosition = this.submitPosition.bind(this);
+    this.addNewPosition = this.addNewPosition.bind(this);
     this.handleAddClick = this.handleAddClick.bind(this);
 
   }
@@ -76,7 +52,20 @@ class Position extends React.Component {
   }
 
   loadPositions() {
-    console.log("loading positions...");
+      $.ajax({
+          url: this.props.getpos_url,
+          datatype: 'json',
+          cache: false,
+          success: function(data){
+              if(data != "") {
+                  console.log(JSON.stringify(data));
+                  this.setState({positionList: data});
+              }
+          }.bind(this),
+          error: function() {
+              alert("ERROR LOADING POSITIONS");
+          }.bind(this)
+      })
   }
 
   handlePositionClick(event) {
@@ -90,6 +79,7 @@ class Position extends React.Component {
                       selectedId: pos.id,
                       selectedTitle: pos.title,
                       selectedSalary: pos.salary,
+                      selectedDep: pos.department,
                       appearDetail: true,
                       appearAdd:false,
                   });
@@ -115,8 +105,10 @@ class Position extends React.Component {
       })
   }
 
-  submitPosition() {
+  addNewPosition() {
+      $.ajax({
 
+      })
   }
 
   render() {
@@ -140,11 +132,10 @@ class Position extends React.Component {
         <div className="position-pane" id="right_position_pane">
         <DisplayInformation show={this.state.appearDetail} handleInputChange={this.handleInputChange}
         posId={this.state.selectedId} posTitle={this.state.selectedTitle}
-        posSalary={this.state.selectedSalary} posDep={this.state.selectedDep}
-        posManager={this.state.selectedManager}/>
-        <DisplayNewPosition show={this.state.appearAdd} handleInputChange={this.handleInputChange}
+        posSalary={this.state.selectedSalary} posDep={this.state.selectedDep}/>
+        <DisplayNewPosition addNewPosition={this.addNewPosition} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
         newTitle={this.state.newTitle} newSalary={this.state.newSalary}
-        newDep={this.state.newDep} newManager={this.state.newManager}/>
+        newDep={this.state.newDep}/>
         </div>
       </div>
 
@@ -167,10 +158,6 @@ function DisplayInformation(props) {
                 <span className="position-info-label">Department:</span>
                 <input onChange={props.handleInputChange} name="positionDep" value={props.posDep} className="position-info-input" placeholder="Customer Service"></input>
             </div>
-            <div className="position-group">
-                <span className="position-info-label">Manager:</span>
-                <input onChange={props.handleInputChange} name="positionManager" value={props.posManager} className="position-info-input" placeholder="Bob TheBuilder"></input>
-            </div>
             <div className="position-save-btn-wrapper">
                 <button className="position-save-btn plannr-btn btn">SAVE</button>
             </div>
@@ -184,7 +171,7 @@ function DisplayNewPosition(props) {
     }
     return(
         <form className="right-position-pane-content">
-            <h2 className="position-title"> NEW POSITION </h2>
+            <h2 className="position-title">NEW POSITION</h2>
             <div className="position-group">
                 <span className="position-info-label">Title:</span>
                 <input onChange={props.handleInputChange} name="newTitle" value={props.newTitle} className="position-info-input" placeholder="ex:Cashier"></input>
@@ -197,12 +184,8 @@ function DisplayNewPosition(props) {
                 <span className="position-info-label">Department:</span>
                 <input onChange={props.handleInputChange} name="newDep" value={props.newDep} className="position-info-input" placeholder="Customer Service"></input>
             </div>
-            <div className="position-group">
-                <span className="position-info-label">Manager:</span>
-                <input onChange={props.handleInputChange} name="newManager" value={props.newManager} className="position-info-input" placeholder="Bob TheBuilder"></input>
-            </div>
             <div className="position-save-btn-wrapper">
-                <button className="position-save-btn plannr-btn btn">ADD NEW</button>
+                <button onClick={props.addNewPosition} className="position-save-btn plannr-btn btn">ADD NEW</button>
             </div>
         </form>
     )
