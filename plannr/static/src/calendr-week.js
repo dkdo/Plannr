@@ -69,14 +69,10 @@ class CalendrWeek extends React.Component {
         if (!this.state.timeHighlight) {
               document.addEventListener('click', this.handleOutsideClick, false);
         } 
-        else {
-              document.removeEventListener('click', this.handleOutsideClick, false);
-        }
         this.setState({
             selectedDate: selectedDate,
             timeHighlight: true
         });
-        console.log('highlight n');
     }
 
     getWeekEvents() {
@@ -112,8 +108,6 @@ class CalendrWeek extends React.Component {
     addEventCallback(event) {
         this.getWeekEvents();
     }
-
-
 
     handleOutsideClick(e) {
         if (this.dayColumns.contains(e.target) || this.addEventComp.contains(e.target)) {

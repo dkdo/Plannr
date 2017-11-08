@@ -186,6 +186,7 @@ class Calendr extends React.Component {
         var dayEventList = this.state.dayEventList;
         dayEventList.push(event);
         this.setState({dayEventList: dayEventList});
+        this.loadMonthEvents(this.getSelectedDate());
     }
 
     selectDate(year, month, date, element) {
