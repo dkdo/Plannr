@@ -7,4 +7,4 @@ class Position(models.Model):
     title = models.CharField(max_length=100)
     salary = models.FloatField()
     department = models.CharField(max_length=100, default='Main')
-    manager = models.OneToOneField(User, on_delete=models.CASCADE)
+    manager = models.ForeignKey(User, on_delete=models.CASCADE)
