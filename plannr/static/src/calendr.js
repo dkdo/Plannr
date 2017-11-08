@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
+import AddEvent from './add-event';
+import '../css/calendr-month.css';
 
 class Calendr extends React.Component {
     constructor(props){
@@ -19,7 +21,8 @@ class Calendr extends React.Component {
             disablePast: this.props.disablePast ? this.props.disablePast : false,
             firstOfMonth: null,
             daysInMonth: null,
-            eventList: [],
+            dayEventList: [],
+            monthEventList: [],
             eventTitle: '',
             eventStartTime: '0:00',
             eventEndTime: '0:30'
@@ -32,7 +35,8 @@ class Calendr extends React.Component {
         this.titleChange = this.titleChange.bind(this);
         this.startTimeChange = this.startTimeChange.bind(this);
         this.endTimeChange = this.endTimeChange.bind(this);
-        this.addEvent = this.addEvent.bind(this);
+        this.loadMonthEvents = this.loadMonthEvents.bind(this);
+        this.addEventCallback = this.addEventCallback.bind(this);
     }
     
     calc(year, month) {
@@ -54,6 +58,7 @@ class Calendr extends React.Component {
     }
 
     componentDidMount() {
+        this.loadMonthEvents(this.getSelectedDate());
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -99,7 +104,7 @@ class Calendr extends React.Component {
             cache: false,
             success: function(data){
                 this.setState({
-                    eventList: data 
+                    dayEventList: data
                 });
             }.bind(this)
         })
@@ -122,7 +127,6 @@ class Calendr extends React.Component {
         }
         return cookieValue;
     }
-
 
     addEvent(){
         if (this.state.eventTitle == ''){
@@ -156,7 +160,33 @@ class Calendr extends React.Component {
                 }.bind(this)
             })
             this.setState({eventTitle: ''});
+         }
+     }
+
+    loadMonthEvents(date) {
+        var date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0).toISOString();
+        var data = {
+            month_date: date
         }
+        $.ajax({
+            url: this.props.url_month,
+            datatype: 'json',
+            data: data,
+            cache: false,
+            success: function(data){
+                this.setState({
+                    monthEventList: data
+                });
+                console.log(data)
+            }.bind(this)
+        })
+    }
+
+    addEventCallback(event) {
+        var dayEventList = this.state.dayEventList;
+        dayEventList.push(event);
+        this.setState({dayEventList: dayEventList});
+        this.loadMonthEvents(this.getSelectedDate());
     }
 
     selectDate(year, month, date, element) {
@@ -175,20 +205,16 @@ class Calendr extends React.Component {
         });
     }
 
-    titleChange(event) {
-        this.setState({eventTitle: event.target.value});
+    titleChange(newTitle) {
+        this.setState({eventTitle: newTitle});
     }
 
-    startTimeChange(event, endTimeValues) {
-        this.setState({eventStartTime: event.target.value});
-
-        if(!endTimeValues.includes(this.state.eventEndTime)) {
-            this.setState({eventEndTime: endTimeValues[0]});
-        }
+    startTimeChange(newStartTime) {
+        this.setState({eventStartTime: newStartTime});
     }
 
-    endTimeChange(event) {
-        this.setState({eventEndTime: event.target.value});
+    endTimeChange(newEndTime) {
+        this.setState({eventEndTime: newEndTime});
     }
 
     getSelectedDate(){
@@ -200,23 +226,6 @@ class Calendr extends React.Component {
         return date;
     }
 
-    parseEventStartDate(){
-        var date = this.getSelectedDate();
-        var hourMin = this.state.eventStartTime.split(':');
-        date.setHours(hourMin[0]);
-        date.setMinutes(hourMin[1]);
-        return date;
-    }
-
-    parseEventEndDate(){
-        var date = this.getSelectedDate();
-        var hourMin = this.state.eventEndTime.split(':');
-        date.setHours(hourMin[0]);
-        date.setMinutes(hourMin[1]);
-        return date;
-    }
-
-
     render() {
         return (
             <div className="calendar-event-container">
@@ -227,16 +236,20 @@ class Calendr extends React.Component {
                             <div className="r-inner">
                                 <Header monthNames={calendrConst.monthNamesFull} month={this.state.month} year={this.state.year} />
                                 <div className="calendar-table">
-                                    <WeekDays dayNames={calendrConst.dayNames} startDay={this.state.startDay} weekNumbers={this.state.weekNumbers} />
-                                    <MonthDates month={this.state.month} year={this.state.year} daysInMonth={this.state.daysInMonth} firstOfMonth={this.state.firstOfMonth} startDay={this.state.startDay} onSelect={this.selectDate} weekNumbers={this.state.weekNumbers} disablePast={this.state.disablePast} minDate={this.state.minDate} />
+                                    <WeekDays dayNames={calendrConst.dayNames} weekNumbers={this.state.weekNumbers} />
+                                    <MonthDates month={this.state.month} year={this.state.year} daysInMonth={this.state.daysInMonth} firstOfMonth={this.state.firstOfMonth} 
+                                        startDay={this.state.startDay} onSelect={this.selectDate} weekNumbers={this.state.weekNumbers} disablePast={this.state.disablePast}
+                                        minDate={this.state.minDate} monthEventList={this.state.monthEventList}/>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="right-position-pane">
-                    <EventList eventList={this.state.eventList}/>
-                    <AddEvent eventTitle={this.state.eventTitle} titleChange={this.titleChange} addEvent={this.addEvent} startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange}/>
+                    <EventList dayEventList={this.state.dayEventList}/>
+                    <AddEvent selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback} 
+                              eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
+                              startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
                 </div>
             </div>
         )
@@ -244,105 +257,19 @@ class Calendr extends React.Component {
 }
 
 Calendr.defaultProps = {
-    url: '/events/'
+    url: '/events/',
+    url_month: '/events/monthevents/'
 };
 
 class EventList extends React.Component {
 
     render() {
-        var eventComponents = this.props.eventList.map(function(event) {
+        var eventComponents = this.props.dayEventList.map(function(event) {
             var start_date = new Date(event.start_date).toLocaleString();
             var end_date = new Date(event.end_date).toLocaleString();
             return <div className="event" key={event.id}>{event.title} {start_date} {end_date}</div>
         });
-        return <div className="eventList">{eventComponents}</div>;
-    }
-}
-
-class AddEvent extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            endTimeOptions: this.getEndTimeOptions('0:00')
-        }
-
-        this.startTimeChange = this.startTimeChange.bind(this);
-    }
-
-    getStartTimeOptions() {
-        var options = [];
-        var timeValue, minutes, hours;
-        for (let i = 0; i < 48; i++){
-            minutes = i % 2 === 0 ? '00' : '30';
-            hours = parseInt(i/2);
-            timeValue = hours + ':' + minutes;
-            options.push(<option value={timeValue} key={timeValue}>{timeValue}</option>);
-        }
-        return options;
-    }
-
-    getEndTimeValues(startTime) {
-        var endTimeValues = [];
-        var timeValue, minutes, hours;
-        var timeSelectedHourMinute = startTime.split(':');
-        var optionStart = parseInt(timeSelectedHourMinute[0]) * 2;
-        optionStart = timeSelectedHourMinute[1] === '00' ? optionStart : optionStart + 1;
-        optionStart += 1;
-
-        for (let i = optionStart; i < 48; i++){
-            minutes = i % 2 === 0 ? '00' : '30';
-            hours = parseInt(i/2);
-            timeValue = hours + ":" + minutes;
-            endTimeValues.push(timeValue);
-        }
-
-        return endTimeValues;
-    }
-
-    getEndTimeOptions(startTime) {
-        var endTimeOptions = [];
-        var endTimeValues = this.getEndTimeValues(startTime);
-
-        for(let i = 0; i < endTimeValues.length; i++){
-            endTimeOptions.push(<option value={endTimeValues[i]} key={endTimeValues[i]}>{endTimeValues[i]}</option>);
-        }
-
-        return endTimeOptions;
-    }
-
-    startTimeChange(event){
-        var newEndTimeValues = this.getEndTimeValues(event.target.value);
-        var newEndTimeOptions = this.getEndTimeOptions(event.target.value);
-        this.setState({endTimeOptions: newEndTimeOptions});
-
-        this.props.startTimeChange(event, newEndTimeValues);
-    }
-
-
-    render() {
-        let options = this.getStartTimeOptions();
-        return (
-            <div className="eventAdder">
-                <div>
-                    <label>Title </label><input type="text" value={this.props.eventTitle} onChange={this.props.titleChange}/>
-                </div>
-                <div className="time-selectors">
-                    <div>
-                        <div>Start time: </div>
-                        <select onChange={this.startTimeChange}>
-                            {options}
-                        </select>
-                    </div>
-                    <div>
-                        <div>End time:</div>
-                        <select onChange={this.props.endTimeChange}>
-                            {this.state.endTimeOptions}
-                        </select>
-                    </div>
-                </div>
-                <div className="btn btn-default btn-md" onClick={this.props.addEvent.bind(null, this)} role="button">Add Event</div>
-            </div>
-        );
+        return <div className="dayEventList">{eventComponents}</div>;
     }
 }
 
@@ -380,7 +307,7 @@ class WeekDays extends React.Component {
                 })()}
                 {haystack.map(function (item, i) {
                     return (
-                        <div key={that.props.startDay + i} className="r-cell r-weekday">{that.props.dayNames[(that.props.startDay + i) % 7]}</div>
+                        <div key={i} className="r-cell r-weekday">{that.props.dayNames[i % 7]}</div>
                     );
                 })}
             </div>
@@ -389,6 +316,18 @@ class WeekDays extends React.Component {
 }
 
 class MonthDates extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+
+        }
+        this.hasEvents = this.hasEvents.bind(this);
+    }
+
+    hasEvents(events) {        
+        return (events !== undefined && events.length > 0);
+    }
+
     render() {
         var haystack, day, d, current, onClick,
             isDate, className,
@@ -398,6 +337,8 @@ class MonthDates extends React.Component {
             first = this.props.firstOfMonth.getDay(),
             janOne = new Date(that.props.year, 0, 1),
             rows = 5;
+
+        var monthEventList = this.props.monthEventList;
 
         if ((startDay == 5 && this.props.daysInMonth == 31) || ((startDay == 0 || startDay == 6) && this.props.daysInMonth > 29)) {
             rows = 6;
@@ -437,14 +378,32 @@ class MonthDates extends React.Component {
                                 className += ' r-past';
                             }
 
+                            // if(this.props.monthEventList[d] !== undefined && this.props.monthEventList[d].length > 0) {
+                            if(monthEventList[d] !== undefined && monthEventList.length > 0) {
+                                var events = monthEventList[d];
+                                var eventPoints = [];
+
+                                for(var i = 0; i < events.length; i ++){
+                                    var eventBlock = <EventPoint event={events[i]} key={events[i].id}/>
+                                    eventPoints.push(eventBlock)
+                                }
+                            }
+
                             if (/r-past/.test(className)) {
                                 return (
-                                    <div key={d} className={className} role="button" tabIndex="0">{d}</div>
+                                    <div key={d} className={className} role="button" tabIndex="0">
+                                        <div className="day-number">{d}</div>
+                                        <div className="event-points">{eventPoints}</div>
+                                    </div>
                                 );
                             }
 
                             return (
-                                <div key={d} className={className} role="button" tabIndex="0" onClick={that.props.onSelect.bind(null, that.props.year, that.props.month, d)}>{d}</div>
+                                // Change the bind, it always rerenders
+                                <div key={d} className={className} role="button" tabIndex="0" onClick={that.props.onSelect.bind(null, that.props.year, that.props.month, d)}>
+                                    <div className="day-number">{d}</div>
+                                    <div className="event-points">{eventPoints}</div>
+                                </div>
                             );
                         }
 
@@ -457,6 +416,22 @@ class MonthDates extends React.Component {
             })}
             </div>
         );
+    }
+}
+
+class EventPoint extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+
+        }
+    }
+
+    render() {
+        return (
+            <div className='event-point'>
+            </div>
+        )
     }
 }
 

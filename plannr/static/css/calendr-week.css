@@ -1,9 +1,41 @@
-.calendr-week {
-    margin-top: 10px;
+.calendr-week-wrapper {
     width: 75%;
-    table-layout: fixed;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    margin-top: 15px;
+    float: left;
+}
+
+    .calendr-week-wrapper .calendr-week-table {
+        margin-top: 10px;
+        table-layout: fixed;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .calendr-week-wrapper .calendr-week-table tr:not(.title-row) {
+        border-right: 1px solid #ddd;
+    }
+
+.calendr-week-header {
+    text-align: center;
+}
+
+    .calendr-week-header > div {
+        display: inline-block;
+    }
+
+    .calendr-week-header .next-arrow {
+        float: right;
+    }
+
+    .calendr-week-header .prev-arrow {
+        float: left;
+    }
+
+.r-next {
+    float: right;
+}
+
+.r-prev {
+    float: left;
 }
 
 .hours-grid {
@@ -20,10 +52,15 @@
         }
 
         .hours-grid .hour-separator .hour-cell .hour-cell-split {
-            height: 20px;
-            margin-bottom: 20px;
-            border-bottom: 1px dotted #ddd;
+            height: 21px;
+        }
+
+        .hours-grid .hour-separator .hour-cell .hour-cell-split:first-child {
             border-top: 1px solid #ddd;
+        }
+
+        .hours-grid .hour-separator .hour-cell .hour-cell-split:last-child {
+            border-top: 1px dotted #ddd;
         }
 
 .day-col {
@@ -36,6 +73,11 @@
         height: 1008px;
         position: relative;
     }
+
+.day-title {
+    text-align: center;
+    border-top: 1px solid #ddd;
+}
 
 .hour-col {
     text-align: right;
@@ -66,3 +108,24 @@
         display: inline-block;
         width: inherit;
     }
+
+
+.hour-cell {
+    height: 42px;
+}
+
+.hour-cell .hour-cell-split {
+    height: 21px;
+}
+
+.hour-cell .hour-cell-split:first-child {
+    border-top: 1px solid #ddd;
+}
+
+.hour-cell .hour-cell-split:last-child {
+    border-top: 1px dotted #ddd;
+}
+
+.hour-cell .hour-cell-split.selected {
+    background-color: #4286f4;
+}
