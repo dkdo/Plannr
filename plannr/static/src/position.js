@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import DjangoCSRFToken from './shared/csrf';
+import { getCookie } from './shared/csrf_methods';
 
 export default class MasterPosition extends React.Component {
   constructor(props) {
@@ -22,7 +23,7 @@ export default class MasterPosition extends React.Component {
 }
 
 MasterPosition.defaultProps = {
-    getPositions_url : '/positionList/',
+    getPositions_url : '/position/positionList/',
 };
 
 class Position extends React.Component {
@@ -53,12 +54,14 @@ class Position extends React.Component {
 
   loadPositions() {
       $.ajax({
+          type: 'GET',
           url: this.props.getpos_url,
           datatype: 'json',
           cache: false,
           success: function(data){
-              if(data != "") {
-                  console.log(JSON.stringify(data));
+              console.log(JSON.stringify(data));
+              if(!(data == "" || data == [])) {
+                  console.log("updating positionList");
                   this.setState({positionList: data});
               }
           }.bind(this),
@@ -105,10 +108,36 @@ class Position extends React.Component {
       })
   }
 
-  addNewPosition() {
+  addNewPosition(event) {
+      var inData = {
+          title: this.state.newTitle,
+          salary: this.state.newSalary,
+          department: this.state.newDep
+      }
+      var csrfToken = getCookie('csrftoken');
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              xhr.setRequestHeader("X-CSRFToken", csrfToken);
+          }
+      });
       $.ajax({
-
+          type: 'POST',
+          url: this.props.getpos_url,
+          datatype: 'json',
+          data: inData,
+          cache: false,
+          success: function(data){
+              if(data != "") {
+                  var positions = this.state.positionList;
+                  positions.push(data);
+                  this.setState({positionList: positions});
+              }
+          }.bind(this),
+          error: function() {
+              alert("ERROR ADDING NEW POSITION");
+          }.bind(this)
       })
+      event.preventDefault();
   }
 
   render() {
