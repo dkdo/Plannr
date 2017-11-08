@@ -125,3 +125,7 @@
 .hour-cell .hour-cell-split:last-child {
     border-top: 1px dotted #ddd;
 }
+
+.hour-cell .hour-cell-split.selected {
+    background-color: #4286f4;
+}
