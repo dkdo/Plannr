@@ -15,6 +15,7 @@ class CalendrWeek extends React.Component {
             eventTitle: '',
             thisWeekMonday: new Date(),
             weekEventsList: [],
+            timeHighlight: false
         };
         this.getPreviousMonday = this.getPreviousMonday.bind(this);
         this.nextWeek = this.nextWeek.bind(this);
@@ -24,6 +25,8 @@ class CalendrWeek extends React.Component {
         this.titleChange = this.titleChange.bind(this);
         this.startTimeChange = this.startTimeChange.bind(this);
         this.endTimeChange = this.endTimeChange.bind(this);
+        this.handleOutsideClick = this.handleOutsideClick.bind(this);
+        this.addEventCallback = this.addEventCallback.bind(this);
     }
 
     componentWillMount() {
@@ -57,11 +60,23 @@ class CalendrWeek extends React.Component {
     }
 
     dayOnClick(weekdayId) {
-        var selectedDate = new Date(this.state.thisWeekMonday);
-        // Monday is 1 in JS, but 0 in python
-        selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 1 + weekdayId);
+        // var selectedDate = new Date(this.state.thisWeekMonday);
+        // // Monday is 1 in JS, but 0 in python
+        // selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 1 + weekdayId);
+        var selectedDate = new Date(weekdayId);
 
-        this.setState({selectedDate: selectedDate});
+        // TODO: ADD EVENT ADDER/REMOVER
+        if (!this.state.timeHighlight) {
+              document.addEventListener('click', this.handleOutsideClick, false);
+        } 
+        else {
+              document.removeEventListener('click', this.handleOutsideClick, false);
+        }
+        this.setState({
+            selectedDate: selectedDate,
+            timeHighlight: true
+        });
+        console.log('highlight n');
     }
 
     getWeekEvents() {
@@ -95,7 +110,18 @@ class CalendrWeek extends React.Component {
     }
 
     addEventCallback(event) {
-        // EVENT CALLBACK
+        this.getWeekEvents();
+    }
+
+
+
+    handleOutsideClick(e) {
+        if (this.dayColumns.contains(e.target) || this.addEventComp.contains(e.target)) {
+            return;
+        }
+
+        document.removeEventListener('click', this.handleOutsideClick, false);
+        this.setState({timeHighlight: false});
     }
 
     render() {
@@ -103,20 +129,25 @@ class CalendrWeek extends React.Component {
             <div>
                 <div className="calendr-week-wrapper">
                     <table className="calendr-week-table">
-                        <tbody>
+                        <tbody ref={(dayColumns) => (this.dayColumns = dayColumns)}>
                             <WeekCalendrTitle thisWeekMonday={this.state.thisWeekMonday} nextWeek={this.nextWeek} prevWeek={this.prevWeek} />
                             <WeekHeader thisWeekMonday={this.state.thisWeekMonday} />
-                            <DayColumns weekEventsList={this.state.weekEventsList} dayOnClick={this.dayOnClick} startTimeOnClick={this.startTimeOnClick}/>
+                            <DayColumns weekEventsList={this.state.weekEventsList} 
+                                        dayOnClick={this.dayOnClick} startTimeOnClick={this.startTimeOnClick}
+                                        thisWeekMonday={this.state.thisWeekMonday}
+                                        timeHighlight={this.state.timeHighlight} selectedDate={this.state.selectedDate}
+                                        eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime}/>
                         </tbody>
                     </table>
                 </div>
-                <AddEvent selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback} 
-                          eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
-                          startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
+                <div ref={(addEventComp) => {this.addEventComp = addEventComp}} >
+                    <AddEvent selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback} 
+                              eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
+                              startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
+                </div>
             </div>
         )
     }
-                            // <WeekGrid startTimeOnClick={this.startTimeOnClick} />
 }
 
 CalendrWeek.defaultProps = {
@@ -181,66 +212,6 @@ class WeekHeader extends React.Component {
     }
 }
 
-class WeekGrid extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    getHourSeparator() {
-        var separators = [];
-        for(var i = 0; i < 24; i++){
-            separators.push(
-                <HourCell id={i} key={i} startTimeOnClick={this.props.startTimeOnClick}/>
-            );
-        }
-        return separators;
-    }
-                // <HourCell id={i} key={i} startTimeOnClick={this.props.startTimeOnClick}/>
-
-    render() {
-        let separators = null;
-        separators = this.getHourSeparator();
-        return (
-            <tr>
-                <td className="time-buffer-col"></td>
-                <td colSpan="7">
-                    <div className="hours-grid">
-                        <div className="hour-separator">
-                            {separators}
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        )
-    }
-}
-
-class HourCell extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleClick = this.handleClick.bind(this);
-        this.handleHalfClick = this.handleHalfClick.bind(this);
-    }
-
-    handleClick() {
-        var timeSelected = this.props.id.toString() + ':00';
-        this.props.startTimeOnClick(timeSelected);
-    }
-
-    handleHalfClick() {
-        var timeSelected = this.props.id.toString() + ':30';
-        this.props.startTimeOnClick(timeSelected);
-    }
-
-    render() {
-        return (
-            <div className="hour-cell">
-                <div className="hour-cell-split" onClick={this.handleClick}></div>
-                <div className="hour-cell-split" onClick={this.handleHalfClick}></div>
-            </div>
-        )
-    }
-}
-
 class DayColumns extends React.Component {
     constructor(props) {
         super(props);
@@ -248,8 +219,16 @@ class DayColumns extends React.Component {
 
     getDayCols() {
         var dayCols = [];
+        // Monday is 1 in JS, but 0 in python
         for(var i = 0; i < 7; i++){
-            dayCols.push(<DayColumn id={i} key={i} dayOnClick={this.props.dayOnClick} events={this.props.weekEventsList[i]} startTimeOnClick={this.props.startTimeOnClick}/>)
+            var dayDate = new Date(this.props.thisWeekMonday);
+            dayDate.setDate(dayDate.getDate() - dayDate.getDay() + 1 + i);
+            dayCols.push(
+                <DayColumn id={dayDate} key={dayDate} dayOnClick={this.props.dayOnClick} 
+                                    events={this.props.weekEventsList[i]} startTimeOnClick={this.props.startTimeOnClick}
+                                    selectedDate={this.props.selectedDate} eventStartTime={this.props.eventStartTime}
+                                    eventEndTime={this.props.eventEndTime} timeHighlight={this.props.timeHighlight} />
+                                    )
         }
         return dayCols;
     }
@@ -270,17 +249,42 @@ class DayColumns extends React.Component {
 class DayColumn extends React.Component {
     constructor(props) {
         super(props);
+
         this.handleClick = this.handleClick.bind(this);
+        this.isBetweenSelectedTime = this.isBetweenSelectedTime.bind(this);
     }
 
     getHourCells() {
         var separators = [];
         for(var i = 0; i < 24; i++){
+            var fullHour = i + ':00';
+            var halfHour = i + ':30';
+            var fullHourHighlight = this.isBetweenSelectedTime(fullHour);
+            var halfHourHighlight = this.isBetweenSelectedTime(halfHour);
             separators.push(
-                <HourCell id={i} key={i} startTimeOnClick={this.props.startTimeOnClick}/>
+                <div className='hour-cell' key={i}>
+                    <HalfHourCell id={fullHour} highlight={fullHourHighlight} startTimeOnClick={this.props.startTimeOnClick}/>
+                    <HalfHourCell id={halfHour} highlight={halfHourHighlight} startTimeOnClick={this.props.startTimeOnClick}/>
+                </div>
             );
         }
         return separators;
+    }
+
+    parseDateAndTime(date, hourMin) {
+        var date = new Date(date)
+        var hourMin = hourMin.split(':');
+        date.setHours(hourMin[0]);
+        date.setMinutes(hourMin[1]);
+        return date
+    }
+
+    isBetweenSelectedTime(cellTime) {
+        var selectedStartDateTime = this.parseDateAndTime(this.props.selectedDate, this.props.eventStartTime);
+        var selectedEndDateTime = this.parseDateAndTime(this.props.selectedDate, this.props.eventEndTime);
+        var cellDateTime = this.parseDateAndTime(this.props.id, cellTime);
+
+        return (cellDateTime >= selectedStartDateTime && cellDateTime < selectedEndDateTime && this.props.timeHighlight);
     }
 
     handleClick() {
@@ -296,6 +300,25 @@ class DayColumn extends React.Component {
                     {separators}
                 </div>
             </td>
+        )
+    }
+}
+
+class HalfHourCell extends React.Component {
+    constructor(props) {
+        super(props);        
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick() {
+        var timeSelected = this.props.id.toString();
+        this.props.startTimeOnClick(timeSelected);
+    }
+
+    render() {
+        var className = this.props.highlight ? 'hour-cell-split selected' : 'hour-cell-split'
+        return (
+            <div className={className} onClick={this.handleClick}></div>
         )
     }
 }
