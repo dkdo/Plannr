@@ -2,6 +2,7 @@ from rest_framework import serializers
 from position.models import Position
 
 class PositionSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(max_length=100, required=True)
     salary = serializers.FloatField(required=False)
     department = serializers.CharField(max_length=100, default='Main', required=False)
