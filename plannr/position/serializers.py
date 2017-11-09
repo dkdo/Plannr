@@ -5,7 +5,7 @@ class PositionSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=100, required=True)
     salary = serializers.FloatField(required=False)
     department = serializers.CharField(max_length=100, default='Main', required=False)
-    manager = serializers.IntegerField(required=False)
+    manager_id = serializers.IntegerField(required=False)
 
     def create(self, validated_data):
         """
