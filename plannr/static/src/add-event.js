@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
+import {getCookie} from './shared/getCookie';
 
 class AddEvent extends React.Component {
     constructor(props){
@@ -38,6 +39,12 @@ class AddEvent extends React.Component {
                 start_date: start_date,
                 end_date: end_date
             }
+            var csrfToken = getCookie('csrftoken');
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                }
+            });
             $.ajax({
                 type: 'POST',
                 url: this.props.url,
