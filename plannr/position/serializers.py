@@ -24,9 +24,9 @@ class PositionSerializer(serializers.Serializer):
         Update and return an existing Profile instance, given the validated data.
         """
         print "went into the position update method"
-        instance.title = validated_data.get('title', '')
-        instance.salary = validated_data.get('salary', '')
+        instance.title = validated_data.get('title', instance.title)
+        instance.salary = validated_data.get('salary', 0)
         instance.department = validated_data.get('department', '')
-        instance.manager = validated_data.get('manager', '')
+        instance.manager = validated_data.get('manager', instance.manager)
         instance.save()
         return instance

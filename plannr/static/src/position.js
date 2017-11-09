@@ -45,6 +45,7 @@ class Position extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.addNewPosition = this.addNewPosition.bind(this);
     this.handleAddClick = this.handleAddClick.bind(this);
+    this.modifyPosition = this.modifyPosition.bind(this);
 
   }
 
@@ -108,13 +109,12 @@ class Position extends React.Component {
 
   sanitizeInput() {
       var isGood = true;
-      if(isNaN(this.state.newSalary)) {
+      if(isNaN(this.state.newSalary) || isNaN(this.state.selectedSalary)) {
           isGood = false;
       }
-      if(this.state.newTitle.length > 100 || this.state.newDep.length > 100) {
+      if(this.state.newTitle.length > 100 || this.state.newDep.length > 100 || this.state.selectedDep.length > 100) {
           isGood = false;
       }
-      console.log('is it good?' + isGood);
       return isGood;
   }
 
@@ -143,18 +143,76 @@ class Position extends React.Component {
                   if(data != "") {
                       var positions = this.state.positionList;
                       positions.push(data);
-                      this.setState({positionList: positions});
+                      this.setState({positionList: positions,
+                      newTitle: '', newDep: '', newSalary: ''});
+                      alert('Position has been succesfully added!')
                   }
               }.bind(this),
               error: function() {
                   alert("ERROR ADDING NEW POSITION");
               }.bind(this)
           })
-          event.preventDefault();
       }
       else {
           alert('Salary needs to be a number and title,Department need to be under 100 characters');
       }
+      event.preventDefault();
+  }
+
+  updatePositionList() {
+      var positions = this.state.positionList;
+      if (this.state.selectedId != 0) {
+          var id = this.state.selectedId;
+          for(var i = 0; i < positions.length; i++) {
+              var pos = positions[i];
+              if (pos.id == id) {
+                  if (this.state.selectedSalary == '') {
+                      this.setState({selectedSalary: 0});
+                  }
+                  positions[i].salary = this.state.selectedSalary;
+                  positions[i].department = this.state.selectedDep;
+              }
+          }
+      }
+      this.setState({positionList: positions});
+  }
+
+  modifyPosition(event) {
+      var canSave = this.sanitizeInput();
+      if (canSave) {
+          var inData = {
+              id: this.state.selectedId,
+              title: this.state.selectedTitle,
+              salary: this.state.selectedSalary,
+              department: this.state.selectedDep
+          }
+          var csrfToken = getCookie('csrftoken');
+          $.ajaxSetup({
+              beforeSend: function(xhr, settings) {
+                  xhr.setRequestHeader("X-CSRFToken", csrfToken);
+              }
+          });
+          $.ajax({
+              type: 'POST',
+              url: this.props.getpos_url,
+              datatype: 'json',
+              data: inData,
+              cache: false,
+              success: function(data){
+                  if(data != "") {
+                      this.updatePositionList();
+                      alert('Position has been succesfully updated!')
+                  }
+              }.bind(this),
+              error: function() {
+                  alert("ERROR ADDING NEW POSITION");
+              }.bind(this)
+          })
+      }
+      else {
+          alert('Salary needs to be a number and title,Department need to be under 100 characters');
+      }
+      event.preventDefault();
   }
 
   render() {
@@ -176,7 +234,7 @@ class Position extends React.Component {
                 </div>
             </div>
         <div className="position-pane" id="right_position_pane">
-        <DisplayInformation show={this.state.appearDetail} handleInputChange={this.handleInputChange}
+        <DisplayInformation modifyPosition={this.modifyPosition} show={this.state.appearDetail} handleInputChange={this.handleInputChange}
         posId={this.state.selectedId} posTitle={this.state.selectedTitle}
         posSalary={this.state.selectedSalary} posDep={this.state.selectedDep}/>
         <DisplayNewPosition addNewPosition={this.addNewPosition} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
@@ -202,10 +260,10 @@ function DisplayInformation(props) {
             </div>
             <div className="position-group">
                 <span className="position-info-label">Department:</span>
-                <input onChange={props.handleInputChange} name="positionDep" value={props.posDep} className="position-info-input" placeholder="Customer Service"></input>
+                <input onChange={props.handleInputChange} name="selectedDep" value={props.posDep} className="position-info-input" placeholder="Customer Service"></input>
             </div>
             <div className="position-save-btn-wrapper">
-                <button className="position-save-btn plannr-btn btn">SAVE</button>
+                <button onClick={props.modifyPosition} className="position-save-btn plannr-btn btn">SAVE</button>
             </div>
         </form>
     );
