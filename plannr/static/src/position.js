@@ -61,7 +61,7 @@ class Position extends React.Component {
           success: function(data){
               if(!(data == "" || data == [])) {
                   this.setState({positionList: data});
-                  console.log(this.state.positionList);
+                  console.log(JSON.stringify(this.state.positionList));
               }
           }.bind(this),
           error: function() {

@@ -4,20 +4,16 @@ from position.models import Position
 class PositionSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     title = serializers.CharField(max_length=100, required=True)
-    salary = serializers.FloatField(required=False)
-    department = serializers.CharField(max_length=100, default='Main', required=False)
-    manager_id = serializers.IntegerField(required=False)
+    salary = serializers.FloatField()
+    department = serializers.CharField(max_length=100, default='Main')
+    manager_id = serializers.IntegerField()
 
     def create(self, validated_data):
         """
         Create and return a new Profile instance, given the validated data.
         """
         print "went into the position create method"
-        uid = self.context['user_id']
-        print ("uid is: ", uid)
-        position = Position.objects.create(
-            manager_id=uid,
-            **validated_data)
+        position = Position.objects.create(**validated_data)
         return position
 
     def update(self, instance, validated_data):
