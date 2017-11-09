@@ -144,5 +144,4 @@ REACT_ROUTES = [
     'about',
     'topics',
     'profil',
-    'position'
 ]

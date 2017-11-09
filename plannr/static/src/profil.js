@@ -21,14 +21,8 @@ class MasterProfile extends React.Component {
             datatype: 'json',
             cache: false,
             success: function(data){
-				if(data != "") {
-					this.setState(data);
-				}
-            }.bind(this),
-			error: function() {
-				alert("Get out please");
-				this.setState({logged_in: 'Unauthorized User'});
-			}.bind(this)
+                this.setState(data);
+            }.bind(this)
         })
 	}
 
@@ -95,9 +89,6 @@ class UserInformation extends React.Component {
 				if(data != "") {
 					this.setState(data);
 				}
-			}.bind(this),
-			error: function() {
-				console.log('This is an Unauthorized User');
 			}.bind(this)
 		})
 	}
@@ -189,7 +180,7 @@ class UserInformation extends React.Component {
   					<span className='user-info-label input-group-addon'>Status </span>
   					<textarea className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status' placeholder='You can write your status here...'></textarea>
 				</div>
-				<button type="submit" className="user-info-input-btn plannr-btn btn" id="user_info_btn">Save</button>
+				<button type="submit" className="user-info-input-btn btn" id="user_info_btn">Save</button>
 			</form>
 		);
 	}

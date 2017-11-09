@@ -35,18 +35,15 @@ class ProfileInfo(APIView):
 				return Response(serializer.data)
 			else:
 				return Response(status=status.HTTP_200_OK)
-		return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class Username(APIView):
 	def get(self, request, format=None):
 		if request.user.is_authenticated():
-			print "authenticated user"
 			current_user = request.user
 			data = {'logged_in': request.user.username}
 			print "Username is " + request.user.username
 			return Response(data)
-		return Response(status=status.HTTP_400_BAD_REQUEST)
 
 def exists_or_not(classmodel, **kwargs):
 	num_results = classmodel.objects.filter(**kwargs).count()
