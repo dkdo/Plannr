@@ -61,7 +61,6 @@ class Position extends React.Component {
           success: function(data){
               if(!(data == "" || data == [])) {
                   this.setState({positionList: data});
-                  console.log(JSON.stringify(this.state.positionList));
               }
           }.bind(this),
           error: function() {
@@ -107,36 +106,55 @@ class Position extends React.Component {
       })
   }
 
-  addNewPosition(event) {
-      var inData = {
-          title: this.state.newTitle,
-          salary: this.state.newSalary,
-          department: this.state.newDep
+  sanitizeInput() {
+      var isGood = true;
+      if(isNaN(this.state.newSalary)) {
+          isGood = false;
       }
-      var csrfToken = getCookie('csrftoken');
-      $.ajaxSetup({
-          beforeSend: function(xhr, settings) {
-              xhr.setRequestHeader("X-CSRFToken", csrfToken);
+      if(this.state.newTitle.length > 100 || this.state.newDep.length > 100) {
+          isGood = false;
+      }
+      console.log('is it good?' + isGood);
+      return isGood;
+  }
+
+  addNewPosition(event) {
+      var canAdd = this.sanitizeInput();
+      console.log('canAdd is' + canAdd);
+      if (canAdd) {
+          var inData = {
+              title: this.state.newTitle,
+              salary: this.state.newSalary,
+              department: this.state.newDep
           }
-      });
-      $.ajax({
-          type: 'POST',
-          url: this.props.getpos_url,
-          datatype: 'json',
-          data: inData,
-          cache: false,
-          success: function(data){
-              if(data != "") {
-                  var positions = this.state.positionList;
-                  positions.push(data);
-                  this.setState({positionList: positions});
+          var csrfToken = getCookie('csrftoken');
+          $.ajaxSetup({
+              beforeSend: function(xhr, settings) {
+                  xhr.setRequestHeader("X-CSRFToken", csrfToken);
               }
-          }.bind(this),
-          error: function() {
-              alert("ERROR ADDING NEW POSITION");
-          }.bind(this)
-      })
-      event.preventDefault();
+          });
+          $.ajax({
+              type: 'POST',
+              url: this.props.getpos_url,
+              datatype: 'json',
+              data: inData,
+              cache: false,
+              success: function(data){
+                  if(data != "") {
+                      var positions = this.state.positionList;
+                      positions.push(data);
+                      this.setState({positionList: positions});
+                  }
+              }.bind(this),
+              error: function() {
+                  alert("ERROR ADDING NEW POSITION");
+              }.bind(this)
+          })
+          event.preventDefault();
+      }
+      else {
+          alert('Salary needs to be a number and title,Department need to be under 100 characters');
+      }
   }
 
   render() {
