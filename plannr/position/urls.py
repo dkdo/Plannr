@@ -3,5 +3,5 @@ from django.conf.urls import url
 
 app_name = 'position'
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    url(r'^positionList/$', views.PositionList.as_view()),
 ]
