@@ -59,10 +59,9 @@ class Position extends React.Component {
           datatype: 'json',
           cache: false,
           success: function(data){
-              console.log(JSON.stringify(data));
               if(!(data == "" || data == [])) {
-                  console.log("updating positionList");
                   this.setState({positionList: data});
+                  console.log(this.state.positionList);
               }
           }.bind(this),
           error: function() {
