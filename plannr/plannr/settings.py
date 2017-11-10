@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'position.apps.PositionConfig',
     'event.apps.EventConfig',
     'login.apps.LoginConfig',
-    'profil.apps.ProfilConfig'
+    'profil.apps.ProfilConfig',
+    'organization.apps.OrganizationConfig',
 ]
 
 MIDDLEWARE = [
