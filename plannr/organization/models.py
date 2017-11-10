@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Organization(models.Model):
-    organization_name = models.TextField(null=False)
+    organization_name = models.TextField(null=False, unique=True)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
