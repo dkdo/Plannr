@@ -9,8 +9,10 @@ from django.contrib.auth import authenticate as django_auth
 from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
 from django.shortcuts import redirect
+from organization.serializers import OrganizationSerializer
 from profil.serializers import ProfileSerializer
 from profil.models import Profile
+
 
 class SignOutRequest(APIView):
     def post(self, request, format=None):
@@ -38,27 +40,39 @@ class SignInRequest(APIView):
         except:
             print "SIGN IN ERROR"
 
+
 class SignUpRequest(APIView):
     def post(self, request, format=None):
         first_name = request.POST['firstname']
         last_name = request.POST['lastname']
         email = request.POST['email']
         password = request.POST['password']
+        organization_name = request.POST['organization']
+
+        if organization_name is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if type(organization_name) is unicode:
+            organization_name = organization_name.encode('utf-8')
+
         try:
             user = User.objects.create_user(email, email, password)
             user.first_name = first_name
             user.last_name = last_name
             if user is not None:
-                user.save()
                 print "USER CREATED SUCCESSFULLY"
+                organization_name = str.lower(organization_name)
+                org_data = {'organization_name': organization_name}
+                org_serializer = OrganizationSerializer(data=org_data)
                 try:
-                    data = {'first_name': first_name, 'last_name': last_name, 'email': email}
-                    serializer = ProfileSerializer(data=data, context={'user': user})
-                    if serializer.is_valid():
-                        serializer.save()
+                    prof_data = {'first_name': first_name, 'last_name': last_name, 'email': email}
+                    prof_serializer = ProfileSerializer(data=prof_data, context={'user': user})
+                    if prof_serializer.is_valid() and org_serializer.is_valid():
+                        user.save()
+                        prof_serializer.save()
+                        org_serializer.save()
                         print "PROFILE CREATED SUCCESSFULLY"
                         return Response(status=status.HTTP_201_CREATED)
-                    else: 
+                    else:
                         return Response(status=status.HTTP_400_BAD_REQUEST)
 
                 except:
