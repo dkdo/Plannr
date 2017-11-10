@@ -6,13 +6,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from position.models import Position
+from profil.models import Profile
 
 class PositionList(APIView):
     def get(self, request, format=None):
         if request.user.is_authenticated():
-            user_id = request.user.id
-            print user_id
-            positions = Position.objects.filter(manager_id=user_id)
+            uid = request.user.id
+            user_profile = Profile.objects.get(user_id=uid)
+            org_id = user_profile.organization_id
+            print ("user_id: ", uid)
+            print ("org_id: ", org_id)
+            positions = Position.objects.filter(organization_id=org_id)
             print positions
             serializer = PositionSerializer(positions, many=True)
             print serializer
@@ -27,7 +31,10 @@ class PositionList(APIView):
             current_position = Position.objects.get(id=pos_id)
             serializer = PositionSerializer(current_position, data=request.data)
         else:
-            serializer = PositionSerializer(data=request.data, context={'user_id': user_id})
+            user_profile = Profile.objects.get(user_id=user_id)
+            org_id = user_profile.organization_id
+            print ('org_id_add', org_id)
+            serializer = PositionSerializer(data=request.data, context={'user_id': user_id, 'org_id': org_id})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

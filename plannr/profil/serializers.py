@@ -9,6 +9,9 @@ class ProfileSerializer(serializers.Serializer):
     phone_num = serializers.CharField(max_length=12, required=False)
     birth_date = serializers.CharField(max_length=11, required=False)
     status = serializers.CharField(max_length=140, required=False)
+    ismanager = serializers.BooleanField(required=False)
+    position_id = serializers.IntegerField(required=False)
+    organization_id = serializers.IntegerField(required=False)
 
     def create(self, validated_data):
         """
@@ -35,5 +38,6 @@ class ProfileSerializer(serializers.Serializer):
         instance.email = validated_data.get('email', '')
         instance.birth_date = validated_data.get('birth_date', '')
         instance.status = validated_data.get('status', '')
+        instance.position = validated_data.get('position', '')
         instance.save()
         return instance

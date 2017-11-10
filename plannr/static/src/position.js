@@ -123,6 +123,7 @@ class Position extends React.Component {
       console.log('canAdd is' + canAdd);
       if (canAdd) {
           var inData = {
+              id: -1,
               title: this.state.newTitle,
               salary: this.state.newSalary,
               department: this.state.newDep
