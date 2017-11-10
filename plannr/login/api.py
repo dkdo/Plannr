@@ -10,6 +10,7 @@ from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
 from django.shortcuts import redirect
 from organization.serializers import OrganizationSerializer
+from organization.models import Organization
 from profil.serializers import ProfileSerializer
 from profil.models import Profile
 
@@ -61,15 +62,27 @@ class SignUpRequest(APIView):
             if user is not None:
                 print "USER CREATED SUCCESSFULLY"
                 organization_name = str.lower(organization_name)
-                org_data = {'organization_name': organization_name}
-                org_serializer = OrganizationSerializer(data=org_data)
+                org_db = Organization.objects.filter(organization_name=organization_name)
+                create_org = False
+                if len(org_db) <= 0:
+                    create_org = True
+
                 try:
+                    if create_org is True:
+                        org_data = {'organization_name': organization_name}
+                        org_serializer = OrganizationSerializer(data=org_data)
+
+                        if org_serializer.is_valid():
+                            org_serializer.save()
+                        else:
+                            return Response(status=status.HTTP_400_BAD_REQUEST)
+
                     prof_data = {'first_name': first_name, 'last_name': last_name, 'email': email}
                     prof_serializer = ProfileSerializer(data=prof_data, context={'user': user})
-                    if prof_serializer.is_valid() and org_serializer.is_valid():
+
+                    if prof_serializer.is_valid():
                         user.save()
                         prof_serializer.save()
-                        org_serializer.save()
                         print "PROFILE CREATED SUCCESSFULLY"
                         return Response(status=status.HTTP_201_CREATED)
                     else:
