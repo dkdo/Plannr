@@ -16,12 +16,15 @@ class EventList(APIView):
         date_selected = request.GET.get('start_date')
         start_date = parse(date_selected)
         end_date = start_date + timedelta(hours=23, minutes=59, seconds=59)
-        events = Event.objects.filter(start_date__range=(start_date, end_date))
+        user_id = request.user.id
+        events = Event.objects.filter(start_date__range=(start_date, end_date),
+                                      user_id=user_id)
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = EventSerializer(data=request.data)
+        serializer = EventSerializer(data=request.data,
+                                     context={'request': request})
         print serializer
         if serializer.is_valid():
             serializer.save()
@@ -34,6 +37,7 @@ class MonthEvents(APIView):
         date_selected = request.GET.get('month_date')
         month_selected = parse(date_selected).month
         year_selected = parse(date_selected).year
+        user_id = request.user.id
 
         [month_start, month_end] = calendar.monthrange(year_selected,
                                                        month_selected)
@@ -43,7 +47,8 @@ class MonthEvents(APIView):
         end_date = (date(year_selected, month_selected, month_end) +
                     timedelta(hours=23, minutes=59, seconds=59))
 
-        events = Event.objects.filter(start_date__range=(start_date, end_date))
+        events = Event.objects.filter(start_date__range=(start_date, end_date),
+                                      user_id=user_id)
         serializer = EventSerializer(events, many=True)
 
         events_list = [[] for x in range(month_end)]
@@ -87,13 +92,15 @@ class WeekEvents(APIView):
         month = int(request.GET.get('month', 0))
         month = month + 1
         monday = int(request.GET.get('day', 0))
+        user_id = request.user.id
 
         start_date = datetime(year, month, monday, 0, 0, 0)
 
         end_date = start_date + timedelta(days=7)
 
         events = Event.objects.filter(start_date__range=(start_date,
-                                      end_date)).order_by('start_date')
+                                      end_date),
+                                      user_id=user_id).order_by('start_date')
         serializer = EventSerializer(events, many=True)
 
         events_list = [[] for x in range(7)]
@@ -105,7 +112,7 @@ class WeekEvents(APIView):
         return Response(events_list)
 
     def post(self, request, format=None):
-        serializer = EventSerializer(data=request.data)
+        serializer = EventSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

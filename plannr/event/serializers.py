@@ -6,12 +6,14 @@ class EventSerializer(serializers.Serializer):
     title = serializers.CharField(required=True)
     start_date = serializers.DateTimeField(required=True)
     end_date = serializers.DateTimeField(required=True)
+    user_id = serializers.IntegerField(required=False)
 
     def create(self, validated_data):
         """
         Create and return a new Event instance, given the validated data.
         """
-        return Event.objects.create(**validated_data)
+        user_id = self.context['request'].user.id
+        return Event.objects.create(user_id=user_id, **validated_data)
 
     def update(self, instance, validated_data):
         """
