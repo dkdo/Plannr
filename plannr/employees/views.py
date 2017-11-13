@@ -3,13 +3,17 @@ from employees.serializers import EmployeesSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from profil.models import Profile
+from profil.serializers import ProfileSerializer
 
 
 class EmployeesList(APIView):
     def get(self, request, format=None):
         user_id = request.user.id
-        events = Employees.objects.filter(manager_id=user_id)
-        serializer = EmployeesSerializer(events, many=True)
+        employees = Employees.objects.filter(manager_id=user_id).values('employee_id')
+        employee_profiles = Profile.objects.filter(user_id__in=employees)
+        serializer = ProfileSerializer(employee_profiles, many=True)
+        print serializer
         return Response(serializer.data)
 
     def post(self, request, format=None):
