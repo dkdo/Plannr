@@ -9,6 +9,7 @@ import CalendrWeek from './calendr-week';
 import MasterLogin from './login';
 import history from './history';
 import MasterProfile from './profil';
+import MasterPosition from './position';
 
 
 const App = () => (
@@ -19,6 +20,7 @@ const App = () => (
       <Route path="/week" component={CalendrWeek}/>
       <Route path="/login" component={MasterLogin}/>
       <Route path="/profil" component={MasterProfile}/>
+      <Route path="/position" component={MasterPosition}/>
     </div>
   </Router>
 )
