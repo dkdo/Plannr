@@ -10,7 +10,6 @@ class OrganizationSerializer(serializers.Serializer):
         """
         Create and return a new Event instance, given the validated data.
         """
-        print 'org create'
         return Organization.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
