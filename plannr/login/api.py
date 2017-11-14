@@ -76,7 +76,7 @@ class SignUpRequest(APIView):
 
                 if org_serializer.is_valid():
                     org_serializer.save()
-                    org_id = org_serializer.data.id
+                    org_id = org_serializer.data.get('id')
                     ismanager = True
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST)
