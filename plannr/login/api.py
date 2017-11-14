@@ -49,51 +49,54 @@ class SignUpRequest(APIView):
         email = request.POST['email']
         password = request.POST['password']
         organization_name = request.POST['organization']
+        create_org = False
+        ismanager = False
 
         if organization_name is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         if type(organization_name) is unicode:
             organization_name = organization_name.encode('utf-8')
 
-        try:
-            user = User.objects.create_user(email, email, password)
-            user.first_name = first_name
-            user.last_name = last_name
-            if user is not None:
-                print "USER CREATED SUCCESSFULLY"
-                organization_name = str.lower(organization_name)
-                org_db = Organization.objects.filter(organization_name=organization_name)
-                create_org = False
-                if len(org_db) <= 0:
-                    create_org = True
-
-                try:
-                    if create_org is True:
-                        org_data = {'organization_name': organization_name}
-                        org_serializer = OrganizationSerializer(data=org_data)
-
-                        if org_serializer.is_valid():
-                            org_serializer.save()
-                        else:
-                            return Response(status=status.HTTP_400_BAD_REQUEST)
-
-                    prof_data = {'first_name': first_name, 'last_name': last_name, 'email': email}
-                    prof_serializer = ProfileSerializer(data=prof_data, context={'user': user})
-
-                    if prof_serializer.is_valid():
-                        user.save()
-                        prof_serializer.save()
-                        print "PROFILE CREATED SUCCESSFULLY"
-                        return Response(status=status.HTTP_201_CREATED)
-                    else:
-                        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-                except:
-                    print "PROFILE CREATION ERROR"
-                    return Response(status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.create_user(email, email, password)
+        user.first_name = first_name
+        user.last_name = last_name
+        if user is not None:
+            print "USER CREATED SUCCESSFULLY"
+            organization_name = str.lower(organization_name)
+            org_db = Organization.objects.filter(organization_name=organization_name)
+            org_id = 0
+            if not org_db:
+                create_org = True
             else:
-                print "UNSUCCESSFUL CREATION"
+                org_id = org_db[0].id
+
+            if create_org is True:
+                org_data = {'organization_name': organization_name}
+                org_serializer = OrganizationSerializer(data=org_data)
+
+                if org_serializer.is_valid():
+                    org_serializer.save()
+                    org_id = org_serializer.data.id
+                    ismanager = True
+                else:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            prof_data = {'first_name': first_name,
+                         'last_name': last_name,
+                         'email': email,
+                         'organization_id': org_id,
+                         'ismanager': ismanager}
+            prof_serializer = ProfileSerializer(data=prof_data,
+                                                context={'user': user})
+
+            if prof_serializer.is_valid():
+                user.save()
+                prof_serializer.save()
+                print "PROFILE CREATED SUCCESSFULLY"
+                return Response(status=status.HTTP_201_CREATED)
+            else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-        except:
-            print "SIGN UP ERROR"
+
+        else:
+            print "UNSUCCESSFUL CREATION"
             return Response(status=status.HTTP_400_BAD_REQUEST)
