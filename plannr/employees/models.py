@@ -8,7 +8,7 @@ class Employees(models.Model):
                                     on_delete=models.CASCADE, primary_key=True)
     manager = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE, null=False,
-                                related_name='manager')
+                                related_name='manager_employees')
 
     class Meta:
         unique_together = ['manager', 'employee']
