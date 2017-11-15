@@ -82,7 +82,8 @@ class AddEvent extends React.Component {
             var data = {
                 title: this.props.eventTitle,
                 start_date: start_date,
-                end_date: end_date
+                end_date: end_date,
+                employee_id: this.state.employeeId
             }
             var csrfToken = getCookie('csrftoken');
             $.ajaxSetup({

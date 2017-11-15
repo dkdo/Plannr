@@ -1,14 +1,17 @@
 import calendar
 from datetime import timedelta, date, datetime
 from dateutil.parser import parse
-from event.models import Event
-from django.views.decorators.csrf import csrf_exempt
-from event.serializers import EventSerializer
-from rest_framework.decorators import api_view
+
 from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from event.models import Event
+from event.serializers import EventSerializer
+from profil.views import is_manager
 
 
 class EventList(APIView):
@@ -16,19 +19,28 @@ class EventList(APIView):
         date_selected = request.GET.get('start_date')
         start_date = parse(date_selected)
         end_date = start_date + timedelta(hours=23, minutes=59, seconds=59)
+
         user_id = request.user.id
-        events = Event.objects.filter(start_date__range=(start_date, end_date),
-                                      user_id=user_id)
+        user_manager = is_manager(request)
+
+        if user_manager:
+            events = Event.objects.filter(start_date__range=(start_date, end_date),
+                                          manager_id=user_id)
+        else:
+            events = Event.objects.filter(start_date__range=(start_date, end_date),
+                                          employee_id=user_id)
+
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
         serializer = EventSerializer(data=request.data,
                                      context={'request': request})
-        print serializer
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -37,18 +49,24 @@ class MonthEvents(APIView):
         date_selected = request.GET.get('month_date')
         month_selected = parse(date_selected).month
         year_selected = parse(date_selected).year
-        user_id = request.user.id
 
         [month_start, month_end] = calendar.monthrange(year_selected,
                                                        month_selected)
 
         start_date = date(year_selected, month_selected, month_start)
-
         end_date = (date(year_selected, month_selected, month_end) +
                     timedelta(hours=23, minutes=59, seconds=59))
 
-        events = Event.objects.filter(start_date__range=(start_date, end_date),
-                                      user_id=user_id)
+        user_id = request.user.id
+        user_manager = is_manager(request)
+
+        if user_manager:
+            events = Event.objects.filter(start_date__range=(start_date, end_date),
+                                          manager_id=user_id)
+        else:
+            events = Event.objects.filter(start_date__range=(start_date, end_date),
+                                          employee_id=user_id)
+
         serializer = EventSerializer(events, many=True)
 
         events_list = [[] for x in range(month_end)]
@@ -92,15 +110,21 @@ class WeekEvents(APIView):
         month = int(request.GET.get('month', 0))
         month = month + 1
         monday = int(request.GET.get('day', 0))
-        user_id = request.user.id
 
         start_date = datetime(year, month, monday, 0, 0, 0)
 
         end_date = start_date + timedelta(days=7)
 
-        events = Event.objects.filter(start_date__range=(start_date,
-                                      end_date),
-                                      user_id=user_id).order_by('start_date')
+        user_id = request.user.id
+        user_manager = is_manager(request)
+
+        if user_manager:
+            events = Event.objects.filter(start_date__range=(start_date, end_date),
+                                          manager_id=user_id).order_by('start_date')
+        else:
+            events = Event.objects.filter(start_date__range=(start_date, end_date),
+                                          employee_id=user_id).order_by('start_date')
+
         serializer = EventSerializer(events, many=True)
 
         events_list = [[] for x in range(7)]
