@@ -1,18 +1,63 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
+import Select from 'react-select';
 import {getCookie} from './shared/getCookie';
+
+class AddEventContainer extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isManager: false,
+        }
+    }
+
+    componentWillMount() {
+        this.isManager();
+    }
+
+    isManager() {
+        $.ajax({
+            type: 'GET',
+            url: this.props.isManagerUrl,
+            datatype: 'json',
+            cache: false,
+            success: function(data){
+                this.setState({'isManager': data});
+            }.bind(this)
+        })
+    }
+
+    render() {
+        var addEventComponent = null;
+        if (this.state.isManager) {
+            addEventComponent = <AddEvent selectedDate={this.props.selectedDate} addEventCallback={this.props.addEventCallback} 
+                                          eventStartTime={this.props.eventStartTime} eventEndTime={this.props.eventEndTime} eventTitle={this.props.eventTitle}
+                                          startTimeChange={this.props.startTimeChange} endTimeChange={this.props.endTimeChange} titleChange={this.props.titleChange}/>
+        }
+        return(
+            <div>{addEventComponent}</div>
+        )
+    }
+}
+
+AddEventContainer.defaultProps = {
+    isManagerUrl: '/profil/isManager/'
+};
 
 class AddEvent extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            endTimeOptions: []
+            endTimeOptions: [],
+            employeeId: null
         }
         this.startTimeChangeEvent = this.startTimeChangeEvent.bind(this);
         this.startTimeChange = this.startTimeChange.bind(this);
         this.endTimeChange = this.endTimeChange.bind(this);
         this.titleChange = this.titleChange.bind(this);
+        this.handleEmployeeChange = this.handleEmployeeChange.bind(this);
         this.addEvent = this.addEvent.bind(this);
     }
 
@@ -135,12 +180,15 @@ class AddEvent extends React.Component {
         var newEndTimeValues = this.getEndTimeValues(newStartTime);
         this.setEndTimeOptions(newStartTime);
         
-        // this.setState({endTimeOptions: newEndTimeOptions});
         this.props.startTimeChange(newStartTime);
 
         if(!newEndTimeValues.includes(this.props.eventEndTime)) {
             this.props.endTimeChange(newEndTimeValues[0]);
         }
+    }
+
+    handleEmployeeChange(selectedEmployee) {
+        this.setState({'employeeId': selectedEmployee});
     }
 
     endTimeChange(event) {
@@ -172,6 +220,9 @@ class AddEvent extends React.Component {
                             {this.state.endTimeOptions}
                         </select>
                     </div>
+                    <div>
+                        <EmployeeSelect handleEmployeeChange={this.handleEmployeeChange} employeeId={this.state.employeeId} />
+                    </div>
                 </div>
                 <div className="btn btn-default btn-md" onClick={this.addEvent} role="button">Add Event</div>
             </div>
@@ -184,4 +235,64 @@ AddEvent.defaultProps = {
     startTimeSelected: '0:00'
 };
 
-export default AddEvent
+class EmployeeSelect extends React.Component {
+    constructor(props){
+        super(props);
+
+        this.state = {
+            employeeOptions: []
+        }
+
+        this.onEmployeeChange = this.onEmployeeChange.bind(this);
+    }
+
+    componentWillMount() {
+        this.loadEmployees();
+    }
+
+    loadEmployees() {
+        $.ajax({
+            type: 'GET',
+            url: this.props.employeesUrl,
+            datatype: 'json',
+            cache: false,
+            success: function(data){
+                console.log('employees');
+                console.log(data);
+                this.getEmployeeOptions(data);
+            }.bind(this)
+        }) 
+    }
+
+    getEmployeeOptions(employees) {
+        var employeeOptions = [];
+
+        for(var i = 0; i < employees.length; i++) {
+            employeeOptions.push({value: employees[i].user_id, label: employees[i].first_name + ', ' + employees[i].last_name});
+        }
+
+        this.setState({employeeOptions: employeeOptions})
+        return employeeOptions;
+    }
+
+    onEmployeeChange(newEmployee) {
+        this.props.handleEmployeeChange(newEmployee.value);
+    }
+
+    render() {
+        return (
+            <div>
+                <Select value={this.props.employeeId} options={this.state.employeeOptions} 
+                        autosize={false} onChange={this.onEmployeeChange} 
+                        clearable={false} />
+            </div>
+        )
+    }
+
+}
+
+EmployeeSelect.defaultProps = {
+    employeesUrl: '/employees/'
+}
+
+export default AddEventContainer
