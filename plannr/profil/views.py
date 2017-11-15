@@ -62,15 +62,10 @@ class PositionChange(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def is_manager(self, request):
-        manager = request.user
-        employee_id = request.data.get('employee_id')
-        employees_list = Employees.objects.get(manager=manager,
-                                               employee_id=employee_id)
+        user = request.user
+        profile = Profile.objects.get(user_id=user.id)
 
-        if employees_list:
-            return True
-        else:
-            return False
+        return profile.ismanager
 
 
 def exists_or_not(classmodel, **kwargs):
