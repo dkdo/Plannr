@@ -1,0 +1,7 @@
+.employee-card {
+    border: 1px solid #3B5998;
+    width: 30%;
+}
+.employee-card > div > div {
+   display: inline-block;
+}

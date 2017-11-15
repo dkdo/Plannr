@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^calendr/', include('calendr.urls')),
     url(r'^position/', include('position.urls')),
     url(r'^events/', include('event.urls')),
+    url(r'^employees/', include('employees.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^(%s)?$' % '|'.join(react_routes), CalendrView.as_view()),
     url(r'^.*$', RedirectView.as_view(url='/', permanent=False), name='index'),

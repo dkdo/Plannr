@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'login.apps.LoginConfig',
     'profil.apps.ProfilConfig',
     'organization.apps.OrganizationConfig',
+    'employees.apps.EmployeesConfig',
 ]
 
 MIDDLEWARE = [
@@ -145,5 +146,6 @@ REACT_ROUTES = [
     'about',
     'topics',
     'profil',
-    'position'
+    'position',
+    'employees',
 ]

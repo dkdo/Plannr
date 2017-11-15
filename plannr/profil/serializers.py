@@ -17,7 +17,6 @@ class ProfileSerializer(serializers.Serializer):
         """
         Create and return a new Profile instance, given the validated data.
         """
-        print "went into the create method"
         user = self.context['user']
         user_id = user.id
         profile = Profile.objects.create(
@@ -29,15 +28,12 @@ class ProfileSerializer(serializers.Serializer):
         """
         Update and return an existing Profile instance, given the validated data.
         """
-        print "went into the update method"
-        print ("validated data: ", validated_data)
-        print ("instance: ", instance)
-        instance.first_name = validated_data.get('first_name', '')
-        instance.last_name = validated_data.get('last_name', '')
-        instance.phone_num = validated_data.get('phone_num', '')
-        instance.email = validated_data.get('email', '')
-        instance.birth_date = validated_data.get('birth_date', '')
-        instance.status = validated_data.get('status', '')
-        instance.position = validated_data.get('position', '')
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.phone_num = validated_data.get('phone_num', instance.phone_num)
+        instance.email = validated_data.get('email', instance.email)
+        instance.birth_date = validated_data.get('birth_date', instance.birth_date)
+        instance.status = validated_data.get('status', instance.status)
+        instance.position_id = validated_data.get('position_id', instance.position_id)
         instance.save()
         return instance
