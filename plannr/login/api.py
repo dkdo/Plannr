@@ -13,6 +13,7 @@ from organization.serializers import OrganizationSerializer
 from organization.models import Organization
 from profil.serializers import ProfileSerializer
 from profil.models import Profile
+from employees.models import Employees
 
 
 class SignOutRequest(APIView):
@@ -64,13 +65,12 @@ class SignUpRequest(APIView):
             print "USER CREATED SUCCESSFULLY"
             organization_name = str.lower(organization_name)
             org_db = Organization.objects.filter(organization_name=organization_name)
-            org_id = 0
-            if not org_db:
-                create_org = True
-            else:
-                org_id = org_db[0].id
 
-            if create_org is True:
+            if org_db:
+                org_id = org_db[0].id
+                manager = Profile.objects.get(ismanager=True, organization_id=org_id)
+                Employees.objects.create(manager_id=manager.user_id, employee_id=user.id)
+            else:
                 org_data = {'organization_name': organization_name}
                 org_serializer = OrganizationSerializer(data=org_data)
 
