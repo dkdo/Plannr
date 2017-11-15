@@ -47,7 +47,7 @@ class Username(APIView):
 
 class PositionChange(APIView):
     def patch(self, request, format=None):
-        if request.user.is_authenticated() and self.is_manager(request):
+        if request.user.is_authenticated() and is_manager(request):
             employee_id = request.data.get('employee_id')
             profile = Profile.objects.get(user_id=employee_id)
             new_position = {'position_id': request.data.get('position_id')}
@@ -61,11 +61,21 @@ class PositionChange(APIView):
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def is_manager(self, request):
-        user = request.user
-        profile = Profile.objects.get(user_id=user.id)
 
-        return profile.ismanager
+class Manager(APIView):
+    def get(self, request, format=None):
+        if request.user.is_authenticated():
+            user_manager = is_manager(request)
+            return Response(user_manager, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+def is_manager(request):
+    user = request.user
+    profile = Profile.objects.get(user_id=user.id)
+
+    return profile.ismanager
 
 
 def exists_or_not(classmodel, **kwargs):
