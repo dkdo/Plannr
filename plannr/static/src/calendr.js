@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
-import AddEvent from './add-event';
+import AddEventContainer from './add-event';
 import '../css/calendr-month.css';
 
 class Calendr extends React.Component {
@@ -194,7 +194,7 @@ class Calendr extends React.Component {
                 </div>
                 <div className="right-position-pane">
                     <EventList dayEventList={this.state.dayEventList}/>
-                    <AddEvent selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback} 
+                    <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback} 
                               eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                               startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
                 </div>
