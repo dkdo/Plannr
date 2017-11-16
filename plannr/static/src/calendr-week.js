@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
-import AddEvent from './add-event'
+import AddEventContainer from './add-event'
 import '../css/calendr-week.css';
 
 class CalendrWeek extends React.Component {
@@ -135,9 +135,9 @@ class CalendrWeek extends React.Component {
                     </table>
                 </div>
                 <div ref={(addEventComp) => {this.addEventComp = addEventComp}} >
-                    <AddEvent selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback} 
-                              eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
-                              startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
+                    <AddEventContainer selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback} 
+                                       eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
+                                       startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
                 </div>
             </div>
         )

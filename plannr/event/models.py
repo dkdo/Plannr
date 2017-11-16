@@ -8,7 +8,11 @@ class Event(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(null=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    manager = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE, null=True,
+                                related_name='manager_event')
+    employee = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 on_delete=models.CASCADE, null=True)
 
     class Meta:
         ordering = ('created',)
