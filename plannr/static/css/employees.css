@@ -1,7 +1,20 @@
-.employee-card {
-    border: 1px solid #3B5998;
-    width: 30%;
+.empl-btns {
+    margin-bottom: 20px;
 }
-.employee-card > div > div {
-   display: inline-block;
+
+.empl-grid {
+    display: grid;
+    grid-template-columns: [col-one] 30% [col-two] 30% [col-three] 30%;
+    grid-column-gap: 2%;
+    grid-row-gap: 10px;
+    background-color: #fff;
+    color: black;
+}
+
+.empl-card {
+    background-color: #fff;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid #0066ff;
+    padding: 10px;
 }
