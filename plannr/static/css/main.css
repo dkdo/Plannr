@@ -91,6 +91,7 @@
 .left-position-pane{
     float: left;
     width: 50%;
+    height: 70%;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px;
@@ -99,6 +100,7 @@
 .right-position-pane{
     float: left;
     width: 50%;
+    height: 70%;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px;
@@ -338,14 +340,6 @@
 }
 .r-calendar .r-title {
     text-align: center;
-}
-
-.eventAdder{
-    float: right;
-}
-
-.eventList{
-    float: left;
 }
 
 /* Login / Sign up CSS */
