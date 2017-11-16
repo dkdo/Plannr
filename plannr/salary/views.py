@@ -55,9 +55,9 @@ class SalaryComp(APIView):
         week_serializer = EventSerializer(events_week, many=True)
         month_serializer = EventSerializer(events_month, many=True)
 
-        today_hours, today_salary = self.get_total_hours(today_serializer, hourly_salary)
-        week_hours, week_salary = self.get_total_hours(week_serializer, hourly_salary)
-        month_hours, month_salary = self.get_total_hours(month_serializer, hourly_salary)
+        today_hours, today_salary = self.get_total_salary(today_serializer, hourly_salary)
+        week_hours, week_salary = self.get_total_salary(week_serializer, hourly_salary)
+        month_hours, month_salary = self.get_total_salary(month_serializer, hourly_salary)
 
         response = {'today_hours': today_hours,
                     'today_salary': today_salary,
