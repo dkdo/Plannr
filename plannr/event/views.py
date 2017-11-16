@@ -11,6 +11,8 @@ from rest_framework.views import APIView
 
 from event.models import Event
 from event.serializers import EventSerializer
+from profil.models import Profile
+from profil.serializers import ProfileSerializer
 from profil.views import is_manager
 
 
@@ -31,6 +33,15 @@ class EventList(APIView):
                                           employee_id=user_id)
 
         serializer = EventSerializer(events, many=True)
+
+        employees = events.values('employee_id')
+        employee_profiles = Profile.objects.filter(user_id__in=employees)
+
+        for event in serializer.data:
+            event_employee = next((e for e in employee_profiles if e.user_id == event.get('employee_id')), None)
+            event_employee = ProfileSerializer(event_employee)
+            event.update({'employee_profile': event_employee.data})
+
         return Response(serializer.data)
 
     def post(self, request, format=None):
@@ -69,10 +80,16 @@ class MonthEvents(APIView):
 
         serializer = EventSerializer(events, many=True)
 
+        employees = events.values('employee_id')
+        employee_profiles = Profile.objects.filter(user_id__in=employees)
+
         events_list = [[] for x in range(month_end)]
 
         for event in serializer.data:
             day = parse(event.get('start_date')).day
+            event_employee = next((e for e in employee_profiles if e.user_id == event.get('employee_id')), None)
+            event_employee = ProfileSerializer(event_employee)
+            event.update({'employee_profile': event_employee.data})
             events_list[day].append(event)
 
         return Response(events_list)
@@ -127,10 +144,18 @@ class WeekEvents(APIView):
 
         serializer = EventSerializer(events, many=True)
 
+        employees = events.values('employee_id')
+        employee_profiles = Profile.objects.filter(user_id__in=employees)
+
         events_list = [[] for x in range(7)]
 
         for event in serializer.data:
             weekday = parse(event.get('start_date')).weekday()
+
+            event_employee = next((e for e in employee_profiles if e.user_id == event.get('employee_id')), None)
+            event_employee = ProfileSerializer(event_employee)
+            event.update({'employee_profile': event_employee.data})
+
             events_list[weekday].append(event)
 
         return Response(events_list)
