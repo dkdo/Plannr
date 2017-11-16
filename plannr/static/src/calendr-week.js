@@ -60,12 +60,9 @@ class CalendrWeek extends React.Component {
     }
 
     dayOnClick(weekdayId) {
-        // var selectedDate = new Date(this.state.thisWeekMonday);
-        // // Monday is 1 in JS, but 0 in python
-        // selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 1 + weekdayId);
+        // Monday is 1 in JS, but 0 in python
         var selectedDate = new Date(weekdayId);
 
-        // TODO: ADD EVENT ADDER/REMOVER
         if (!this.state.timeHighlight) {
               document.addEventListener('click', this.handleOutsideClick, false);
         } 
