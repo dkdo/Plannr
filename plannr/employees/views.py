@@ -13,7 +13,6 @@ class EmployeesList(APIView):
         employees = Employees.objects.filter(manager_id=user_id).values('employee_id')
         employee_profiles = Profile.objects.filter(user_id__in=employees)
         serializer = ProfileSerializer(employee_profiles, many=True)
-        print serializer
         return Response(serializer.data)
 
     def post(self, request, format=None):
