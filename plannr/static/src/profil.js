@@ -187,7 +187,7 @@ class UserInformation extends React.Component {
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Status </span>
-  					<textarea className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status' placeholder='You can write your status here...'></textarea>
+  					<textarea maxLength="140" className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status' placeholder='You can write your status here...'></textarea>
 				</div>
 				<button type="submit" className="user-info-input-btn plannr-btn btn" id="user_info_btn">Save</button>
 			</form>

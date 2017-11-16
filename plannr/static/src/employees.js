@@ -36,7 +36,7 @@ class EmployeesList extends React.Component {
                 this.oldEmployees = JSON.parse(JSON.stringify(data));
                 this.setState({'newEmployees': data.slice(0)});
             }.bind(this)
-        }) 
+        })
     }
 
     loadPositions() {
@@ -67,7 +67,7 @@ class EmployeesList extends React.Component {
 
         var newEmployees = this.state.newEmployees.slice(0);
         var employeeIndex = newEmployees.indexOf(employee);
-        newEmployees[employeeIndex].position_id = newPosition.value;       
+        newEmployees[employeeIndex].position_id = newPosition.value;
         this.setState({'employees': newEmployees}, () => console.log(this.oldEmployees));
     }
 
@@ -81,8 +81,8 @@ class EmployeesList extends React.Component {
             this.setState({'positionChanges': positionChanges});
         }
 
-        if (this.isPositionOld(employee, newPosition)) 
-            return; 
+        if (this.isPositionOld(employee, newPosition))
+            return;
 
         positionChanges.push({employee_id: employee.user_id, position_id: newPosition.value});
         this.setState({positionChanges: positionChanges});
@@ -131,13 +131,13 @@ class EmployeesList extends React.Component {
         return (
             <div>
                 <h1 className="page-title">Employees</h1>
+                <div className="empl-btns text-center">
+                    <button className="plannr-btn btn" onClick={this.saveChanges}>SAVE</button>
+                    <button className="plannr-btn btn" onClick={this.resetChanges}>RESET</button>
+                </div>
                 <div className="employees-list">
                     <Employees employees={this.state.newEmployees} positionOptions={this.state.positionOptions}
                                handlePositionChange={this.handlePositionChange} />
-                </div>
-                <div className="text-center">
-                    <button className="plannr-btn btn" onClick={this.saveChanges}>SAVE</button>
-                    <button className="plannr-btn btn" onClick={this.resetChanges}>RESET</button>
                 </div>
             </div>
         )
@@ -164,7 +164,7 @@ class Employees extends React.Component {
         var employees = this.props.employees.slice(0);
         for(var i = 0; i < employees.length; i++){
             employeeCards.push(
-                <Employee id={employees[i].user_id} key={employees[i].user_id} 
+                <Employee id={employees[i].user_id} key={employees[i].user_id}
                           employee={employees[i]} positionOptions={this.props.positionOptions}
                           handlePositionChange={this.props.handlePositionChange} />
             )
@@ -172,25 +172,30 @@ class Employees extends React.Component {
         return employeeCards;
     }
 
+    /* OLD CODE
+    <table className="table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Position</th>
+                <th>Birthday</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {employeeCards}
+        </tbody>
+    </table>
+    */
     render() {
         var employeeCards = this.getEmployeeCards();
         return(
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Position</th>
-                        <th>Birthday</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {employeeCards}
-                </tbody>
-            </table>
+            <div className="empl-grid">
+                {employeeCards}
+            </div>
         )
     }
 }
@@ -210,21 +215,32 @@ class Employee extends React.Component {
 
     render() {
         return(
-            <tr>
-                <td>{this.props.employee.first_name}</td>
-                <td>{this.props.employee.last_name}</td>
-                <td>{this.props.employee.email}</td>
-                <td>{this.props.employee.phone_num}</td>
-                <td>
-                    <Select value={this.props.employee.position_id} options={this.props.positionOptions} 
-                            autosize={false} onChange={this.onPositionChange} 
-                            clearable={false} />
-                </td>
-                <td>{this.props.employee.birth_date}</td>
-                <td>{this.props.employee.status}</td>
-            </tr>
+            <div className="empl-card">
+                <h3 className="text-center">{this.props.employee.first_name} {this.props.employee.last_name}</h3>
+                {this.props.employee.status ? <h5>*{this.props.employee.status}*</h5> : null}
+                <ul className="empl-info-list list-unstyled">
+                    <li>
+                        <h5>Birthdate:</h5>
+                        <p>{this.props.employee.birth_date}</p>
+                    </li>
+                    <li>
+                        <h5>Position:</h5>
+                        <Select value={this.props.employee.position_id} options={this.props.positionOptions}
+                                autosize={false} onChange={this.onPositionChange}
+                                clearable={false} />
+                    </li>
+                    <li>
+                        <h5>Phone#:</h5>
+                        <p>{this.props.employee.phone_num}</p>
+                    </li>
+                    <li>
+                        <h5>Email:</h5>
+                        <p>{this.props.employee.email}</p>
+                    </li>
+                </ul>
+            </div>
         )
     }
 }
 
-export default EmployeesList 
+export default EmployeesList
