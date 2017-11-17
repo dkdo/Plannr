@@ -91,6 +91,7 @@
 .left-position-pane{
     float: left;
     width: 50%;
+    height: 70%;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px;
@@ -99,6 +100,7 @@
 .right-position-pane{
     float: left;
     width: 50%;
+    height: 70%;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px;
@@ -130,7 +132,9 @@
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
-    background: #000;
+    background: #fff;
+    border-radius: 5px;
+    border-right: 1px solid #999999;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -171,13 +175,14 @@
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    color: #999999;
+    color: #0066ff;
 }
 
 .sidebar-nav li a:hover {
     text-decoration: none;
-    color: #fff;
-    background: rgba(255,255,255,0.2);
+    color: #0052cc;
+    border-top: 1px solid #0052cc;
+    border-bottom: 1px solid #0052cc;
 }
 
 .sidebar-nav li a:active,
@@ -238,9 +243,9 @@
 }
 
 .sidebar-logout button{
-    background-color: black;
+    background-color: inherit;
     border: none;
-    color: #999999;
+    color: #0066ff;
     height: 100%;
     text-align: left;
     text-indent: 20px;
@@ -248,9 +253,9 @@
 }
 
 .sidebar-logout button:hover {
-    border-top: 2px solid #0066ff;
-    border-bottom: 2px solid #0066ff;
-    color: #ffffff;
+    border-top: 1px solid #0052cc;
+    border-bottom: 1px solid #0052cc;
+    color: #0052cc;
 }
 
 
@@ -338,14 +343,6 @@
 }
 .r-calendar .r-title {
     text-align: center;
-}
-
-.eventAdder{
-    float: right;
-}
-
-.eventList{
-    float: left;
 }
 
 /* Login / Sign up CSS */

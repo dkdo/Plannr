@@ -38,7 +38,7 @@ class Calendr extends React.Component {
         this.loadMonthEvents = this.loadMonthEvents.bind(this);
         this.addEventCallback = this.addEventCallback.bind(this);
     }
-    
+
     calc(year, month) {
         if (this.state.selectedElement) {
             if (this.state.selectedMonth != month || this.state.selectedYear != year) {
@@ -161,6 +161,8 @@ class Calendr extends React.Component {
     }
 
     endTimeChange(newEndTime) {
+        console.log('caca');
+        console.log(newEndTime)
         this.setState({eventEndTime: newEndTime});
     }
 
@@ -169,7 +171,7 @@ class Calendr extends React.Component {
         dateMonth = ('0' + dateMonth).slice(-2);
         var dateDay = this.state.selectedDate;
         dateDay = ('0' + dateDay).slice(-2);
-        var date = new Date(this.state.selectedYear, dateMonth, dateDay); 
+        var date = new Date(this.state.selectedYear, dateMonth, dateDay);
         return date;
     }
 
@@ -184,7 +186,7 @@ class Calendr extends React.Component {
                                 <Header monthNames={calendrConst.monthNamesFull} month={this.state.month} year={this.state.year} />
                                 <div className="calendar-table">
                                     <WeekDays dayNames={calendrConst.dayNames} weekNumbers={this.state.weekNumbers} />
-                                    <MonthDates month={this.state.month} year={this.state.year} daysInMonth={this.state.daysInMonth} firstOfMonth={this.state.firstOfMonth} 
+                                    <MonthDates month={this.state.month} year={this.state.year} daysInMonth={this.state.daysInMonth} firstOfMonth={this.state.firstOfMonth}
                                         startDay={this.state.startDay} onSelect={this.selectDate} weekNumbers={this.state.weekNumbers} disablePast={this.state.disablePast}
                                         minDate={this.state.minDate} monthEventList={this.state.monthEventList}/>
                                 </div>
@@ -193,10 +195,10 @@ class Calendr extends React.Component {
                     </div>
                 </div>
                 <div className="right-position-pane">
-                    <EventList dayEventList={this.state.dayEventList}/>
-                    <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback} 
+                    <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback}
                               eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                               startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
+                    <EventList dayEventList={this.state.dayEventList}/>
                 </div>
             </div>
         )
@@ -214,9 +216,24 @@ class EventList extends React.Component {
         var eventComponents = this.props.dayEventList.map(function(event) {
             var start_date = new Date(event.start_date).toLocaleString();
             var end_date = new Date(event.end_date).toLocaleString();
-            return <div className="event" key={event.id}>{event.title} {start_date} {end_date}</div>
+            return(
+                <div className="event-card" key={event.id}>
+                    <h3><u>{event.title}</u></h3>
+                    <ul className="list-unstyled">
+                        <li>
+                            <p><b>Starts:</b> {start_date}</p>
+                        </li>
+                        <li>
+                            <p><b>Ends:</b> {end_date}</p>
+                        </li>
+                    </ul>
+                </div>
+            )
         });
-        return <div className="dayEventList">{eventComponents}</div>;
+        return (
+            <div className="event-list">
+                {eventComponents}
+            </div>);
     }
 }
 
@@ -271,7 +288,7 @@ class MonthDates extends React.Component {
         this.hasEvents = this.hasEvents.bind(this);
     }
 
-    hasEvents(events) {        
+    hasEvents(events) {
         return (events !== undefined && events.length > 0);
     }
 

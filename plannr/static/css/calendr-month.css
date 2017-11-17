@@ -1,3 +1,43 @@
+.event-list{
+    display: grid;
+    grid-template-columns: [col-one] 100%;
+    grid-row-gap: 5px;
+    float: right;
+    height: 60vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #fff;
+    color: black;
+    width: 50%;
+}
+
+.event-card {
+    background-color: #fff;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid #0066ff;
+    padding: 10px;
+}
+
+.eventAdder{
+    float: left;
+    width: 47%;
+    padding: 5%;
+}
+
+.eventAdder-info {
+    margin-bottom: 10px;
+}
+
+.eventAdder-btn {
+    text-align: center;
+}
+
+.eventAdder-title {
+    font-size: 18px;
+    text-align: center;
+}
+
 .event-points {
     margin-left: 0.25em;
 }
@@ -10,4 +50,8 @@
     -webkit-border-radius: 3px;
     border-radius: 3px;
     margin-right: 0.25em;
+}
+
+.event-selectors {
+    margin-bottom: 10px;
 }

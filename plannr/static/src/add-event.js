@@ -32,7 +32,7 @@ class AddEventContainer extends React.Component {
     render() {
         var addEventComponent = null;
         if (this.state.isManager) {
-            addEventComponent = <AddEvent selectedDate={this.props.selectedDate} addEventCallback={this.props.addEventCallback} 
+            addEventComponent = <AddEvent selectedDate={this.props.selectedDate} addEventCallback={this.props.addEventCallback}
                                           eventStartTime={this.props.eventStartTime} eventEndTime={this.props.eventEndTime} eventTitle={this.props.eventTitle}
                                           startTimeChange={this.props.startTimeChange} endTimeChange={this.props.endTimeChange} titleChange={this.props.titleChange}/>
         }
@@ -61,7 +61,7 @@ class AddEvent extends React.Component {
         this.addEvent = this.addEvent.bind(this);
     }
 
-    componentDidMount() {
+    componentWilldMount() {
         this.setEndTimeOptions(this.props.eventStartTime);
     }
 
@@ -131,7 +131,8 @@ class AddEvent extends React.Component {
             minutes = i % 2 === 0 ? '00' : '30';
             hours = parseInt(i/2);
             timeValue = hours + ':' + minutes;
-            options.push(<option value={timeValue} key={timeValue}>{timeValue}</option>);
+            //options.push(<option value={timeValue} key={timeValue}>{timeValue}</option>);
+            options.push({value: timeValue, label: timeValue});
         }
         return options;
     }
@@ -159,7 +160,8 @@ class AddEvent extends React.Component {
         var endTimeValues = this.getEndTimeValues(startTime);
 
         for(let i = 0; i < endTimeValues.length; i++){
-            endTimeOptions.push(<option value={endTimeValues[i]} key={endTimeValues[i]}>{endTimeValues[i]}</option>);
+            //endTimeOptions.push(<option value={endTimeValues[i]} key={endTimeValues[i]}>{endTimeValues[i]}</option>);
+            endTimeOptions.push({value: endTimeValues[i], label: endTimeValues[i]});
         }
 
         this.setState({endTimeOptions: endTimeOptions});
@@ -167,20 +169,20 @@ class AddEvent extends React.Component {
         return endTimeOptions;
     }
 
-    startTimeChangeEvent(event){
-        var newStartTime = event.target.value;
-        this.startTimeChange(newStartTime);
+    startTimeChangeEvent(newStartTime){
+        var newStartTimeValue = newStartTime.value;
+        this.startTimeChange(newStartTimeValue);
 
         var startTimeChangeCallback = this.props.startTimeChangeCallback || null;
         if (startTimeChangeCallback) {
-            startTimeChangeCallback(event.target.value);
+            startTimeChangeCallback(newStartTimeValue);
         }
     }
 
     startTimeChange(newStartTime) {
         var newEndTimeValues = this.getEndTimeValues(newStartTime);
         this.setEndTimeOptions(newStartTime);
-        
+
         this.props.startTimeChange(newStartTime);
 
         if(!newEndTimeValues.includes(this.props.eventEndTime)) {
@@ -192,8 +194,8 @@ class AddEvent extends React.Component {
         this.setState({'employeeId': selectedEmployee});
     }
 
-    endTimeChange(event) {
-        this.props.endTimeChange(event.target.value);
+    endTimeChange(newEndTime) {
+        this.props.endTimeChange(newEndTime.value);
     }
 
 
@@ -202,30 +204,43 @@ class AddEvent extends React.Component {
     }
 
     render() {
-        let options = this.getStartTimeOptions();
+        let startOptions = this.getStartTimeOptions();
         return (
             <div className="eventAdder">
-                <div>
-                    <label>Title </label><input type="text" value={this.props.eventTitle} onChange={this.titleChange}/>
+                <p className="eventAdder-title"><u><b>New Event</b></u></p>
+                <div className="eventAdder-info">
+                    <div><b>Title: </b></div>
+                    <input className="form-control" type="text" value={this.props.eventTitle} onChange={this.titleChange}/>
                 </div>
-                <div className="time-selectors">
-                    <div>
-                        <div>Start time: </div>
-                        <select value={this.props.eventStartTime} onChange={this.startTimeChangeEvent}>
-                            {options}
-                        </select>
+                <div className="event-selectors">
+                    <div className="eventAdder-info">
+                        <div><b>Start time:</b></div>
+                        <Select
+                            value={this.props.eventStartTime}
+                            onChange={this.startTimeChangeEvent}
+                            options={startOptions}
+                            autosize={false}
+                            clearable={false} />
                     </div>
-                    <div>
-                        <div>End time:</div>
-                        <select onChange={this.endTimeChange}>
-                            {this.state.endTimeOptions}
-                        </select>
+                    <div className="eventAdder-info">
+                        <div><b>End time:</b></div>
+                        <Select
+                            value={this.props.eventEndTime}
+                            onChange={this.endTimeChange}
+                            autosize={false}
+                            clearable={false}
+                            options={this.state.endTimeOptions}
+                        />
                     </div>
-                    <div>
-                        <EmployeeSelect handleEmployeeChange={this.handleEmployeeChange} employeeId={this.state.employeeId} />
+                    <div className="eventAdder-info">
+                        <div><b>Employee: </b></div>
+                        <EmployeeSelect
+                            handleEmployeeChange={this.handleEmployeeChange}
+                            employeeId={this.state.employeeId}
+                        />
                     </div>
                 </div>
-                <div className="btn btn-default btn-md" onClick={this.addEvent} role="button">Add Event</div>
+                <div className="eventAdder-btn btn plannr-btn" onClick={this.addEvent} role="button">Add Event</div>
             </div>
         );
     }
@@ -262,7 +277,7 @@ class EmployeeSelect extends React.Component {
                 console.log(data);
                 this.getEmployeeOptions(data);
             }.bind(this)
-        }) 
+        })
     }
 
     getEmployeeOptions(employees) {
@@ -283,8 +298,8 @@ class EmployeeSelect extends React.Component {
     render() {
         return (
             <div>
-                <Select value={this.props.employeeId} options={this.state.employeeOptions} 
-                        autosize={false} onChange={this.onEmployeeChange} 
+                <Select value={this.props.employeeId} options={this.state.employeeOptions}
+                        autosize={false} onChange={this.onEmployeeChange}
                         clearable={false} />
             </div>
         )

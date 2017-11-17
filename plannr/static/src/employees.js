@@ -171,25 +171,7 @@ class Employees extends React.Component {
         }
         return employeeCards;
     }
-
-    /* OLD CODE
-    <table className="table">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Position</th>
-                <th>Birthday</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {employeeCards}
-        </tbody>
-    </table>
-    */
+    
     render() {
         var employeeCards = this.getEmployeeCards();
         return(
