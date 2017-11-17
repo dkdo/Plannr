@@ -2,6 +2,46 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import '../css/salary.css';
 
+class SalaryContainer extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isManager: true,
+        }
+    }
+
+    componentWillMount() {
+        this.isManager();
+    }
+
+    isManager() {
+        $.ajax({
+            type: 'GET',
+            url: this.props.isManagerUrl,
+            datatype: 'json',
+            cache: false,
+            success: function(data){
+                this.setState({'isManager': data});
+            }.bind(this)
+        })
+    }
+
+    render() {
+        var salaryComponent = null;
+        if (!this.state.isManager) {
+            salaryComponent = <Salary />
+        }
+        return(
+            <div>{salaryComponent}</div>
+        )
+    }
+}
+
+SalaryContainer.defaultProps = {
+    isManagerUrl: '/profil/isManager/'
+};
+
 class Salary extends React.Component {
     constructor(props){
         super(props);
@@ -50,4 +90,4 @@ class Salary extends React.Component {
     }
 }
 
-export default Salary
+export default SalaryContainer

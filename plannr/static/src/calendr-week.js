@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
 import AddEventContainer from './add-event'
-import Salary from './salary';
+import SalaryContainer from './salary';
 import '../css/calendr-week.css';
 
 class CalendrWeek extends React.Component {
@@ -138,7 +138,7 @@ class CalendrWeek extends React.Component {
                                        eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                                        startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
                 </div>
-                <Salary />
+                <SalaryContainer />
             </div>
         )
     }
