@@ -64,7 +64,8 @@ class SalaryComp(APIView):
                     'week_hours': week_hours,
                     'week_salary': week_salary,
                     'month_hours': month_hours,
-                    'month_salary': month_salary}
+                    'month_salary': month_salary,
+                    'hourly_salary': hourly_salary}
 
         return Response(response)
 
