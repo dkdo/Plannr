@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
 import AddEventContainer from './add-event'
+import SalaryContainer from './salary';
 import '../css/calendr-week.css';
 
 class CalendrWeek extends React.Component {
@@ -28,6 +29,7 @@ class CalendrWeek extends React.Component {
         this.handleOutsideClick = this.handleOutsideClick.bind(this);
         this.addEventCallback = this.addEventCallback.bind(this);
     }
+
 
     componentWillMount() {
         this.setState({thisWeekMonday: this.getPreviousMonday(this.state.today)})
@@ -56,19 +58,16 @@ class CalendrWeek extends React.Component {
     }
 
     startTimeOnClick(newStartTime) {
-        this.setState({eventStartTime: newStartTime}); 
+        this.setState({eventStartTime: newStartTime});
     }
 
     dayOnClick(weekdayId) {
-        // var selectedDate = new Date(this.state.thisWeekMonday);
-        // // Monday is 1 in JS, but 0 in python
-        // selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 1 + weekdayId);
+        // Monday is 1 in JS, but 0 in python
         var selectedDate = new Date(weekdayId);
 
-        // TODO: ADD EVENT ADDER/REMOVER
         if (!this.state.timeHighlight) {
               document.addEventListener('click', this.handleOutsideClick, false);
-        } 
+        }
         this.setState({
             selectedDate: selectedDate,
             timeHighlight: true
@@ -126,7 +125,7 @@ class CalendrWeek extends React.Component {
                         <tbody ref={(dayColumns) => (this.dayColumns = dayColumns)}>
                             <WeekCalendrTitle thisWeekMonday={this.state.thisWeekMonday} nextWeek={this.nextWeek} prevWeek={this.prevWeek} />
                             <WeekHeader thisWeekMonday={this.state.thisWeekMonday} />
-                            <DayColumns weekEventsList={this.state.weekEventsList} 
+                            <DayColumns weekEventsList={this.state.weekEventsList}
                                         dayOnClick={this.dayOnClick} startTimeOnClick={this.startTimeOnClick}
                                         thisWeekMonday={this.state.thisWeekMonday}
                                         timeHighlight={this.state.timeHighlight} selectedDate={this.state.selectedDate}
@@ -135,10 +134,11 @@ class CalendrWeek extends React.Component {
                     </table>
                 </div>
                 <div ref={(addEventComp) => {this.addEventComp = addEventComp}} >
-                    <AddEventContainer selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback} 
+                    <AddEventContainer selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback}
                                        eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                                        startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
                 </div>
+                <SalaryContainer />
             </div>
         )
     }
@@ -164,7 +164,7 @@ class WeekCalendrTitle extends React.Component {
                     </div>
                     <div className="calendr-title">
                         {monday} - {sunday}
-                    </div>   
+                    </div>
                     <div className="next-arrow arrow-wrapper" onClick={this.props.nextWeek.bind(null, this)} >
                         <div className="r-next" role="button" tabIndex="0"></div>
                     </div>
@@ -179,7 +179,7 @@ class WeekHeader extends React.Component {
         super(props);
         this.getDayTitle = this.getDayTitle.bind(this);
         this.getDateFromMondayOffset = this.getDateFromMondayOffset.bind(this);
-    }    
+    }
 
     getDateFromMondayOffset(offset) {
         var currentDay = new Date(this.props.thisWeekMonday);
@@ -218,7 +218,7 @@ class DayColumns extends React.Component {
             var dayDate = new Date(this.props.thisWeekMonday);
             dayDate.setDate(dayDate.getDate() - dayDate.getDay() + 1 + i);
             dayCols.push(
-                <DayColumn id={dayDate} key={dayDate} dayOnClick={this.props.dayOnClick} 
+                <DayColumn id={dayDate} key={dayDate} dayOnClick={this.props.dayOnClick}
                                     events={this.props.weekEventsList[i]} startTimeOnClick={this.props.startTimeOnClick}
                                     selectedDate={this.props.selectedDate} eventStartTime={this.props.eventStartTime}
                                     eventEndTime={this.props.eventEndTime} timeHighlight={this.props.timeHighlight} />
@@ -300,7 +300,7 @@ class DayColumn extends React.Component {
 
 class HalfHourCell extends React.Component {
     constructor(props) {
-        super(props);        
+        super(props);
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -321,7 +321,7 @@ class TimeColumn extends React.Component {
     getTime(rowIndex) {
         var timeString = rowIndex.toString() + ":00";
         return timeString;
-    } 
+    }
 
     getTimeColumns(){
         var timeCols = [];
@@ -343,7 +343,7 @@ class EventsContainer extends React.Component {
     constructEventBlocks(events) {
         var eventBlocks = [];
 
-        if(this.hasEvents(events)){ 
+        if(this.hasEvents(events)){
             for(var i = 0; i < events.length; i ++){
                 var eventBlock = <EventBlock event={events[i]} key={events[i].id}/>
                 eventBlocks.push(eventBlock)
@@ -353,7 +353,7 @@ class EventsContainer extends React.Component {
         return eventBlocks;
     }
 
-    hasEvents(events) {        
+    hasEvents(events) {
         return (events !== undefined && events.length > 0);
     }
 
@@ -377,7 +377,7 @@ class EventBlock extends React.Component {
     getTimePosition(datetime) {
         var datetime = new Date(datetime);
         var hours = datetime.getHours();
-        var minutes = datetime.getMinutes(); 
+        var minutes = datetime.getMinutes();
 
         var position = hours * calendrConst.hourWeekSize + minutes * calendrConst.minWeekSize;
 

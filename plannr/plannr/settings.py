@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'profil.apps.ProfilConfig',
     'organization.apps.OrganizationConfig',
     'employees.apps.EmployeesConfig',
+    'salary.apps.SalaryConfig'
 ]
 
 MIDDLEWARE = [
