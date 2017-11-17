@@ -560,3 +560,47 @@ img.logo-resize {
 }
 
 /* END POSITION */
+
+/* CALENDR WEEK AND MONTH */
+
+.event-list{
+    display: grid;
+    grid-template-columns: [col-one] 100%;
+    grid-row-gap: 5px;
+    float: left;
+    height: 70vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #fff;
+    color: black;
+    width: 100%;
+}
+
+.event-card {
+    background-color: #fff;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid #0066ff;
+    padding: 10px;
+}
+
+.eventAdder{
+    float: left;
+    width: 100%;
+    padding: 5%;
+}
+
+.eventAdder-info {
+    margin-bottom: 10px;
+}
+
+.eventAdder-btn {
+    text-align: center;
+}
+
+.eventAdder-title {
+    font-size: 18px;
+    text-align: center;
+}
+
+/* END CALENDAR WEEK AND MONTH */

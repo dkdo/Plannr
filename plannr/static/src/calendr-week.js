@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
 import AddEventContainer from './add-event'
 import SalaryContainer from './salary';
+import EventList from './event-list';
 import '../css/calendr-week.css';
 
 class CalendrWeek extends React.Component {
@@ -116,10 +117,10 @@ class CalendrWeek extends React.Component {
         document.removeEventListener('click', this.handleOutsideClick, false);
         this.setState({timeHighlight: false});
     }
-
     render() {
+        let weekEvents = [].concat.apply([], this.state.weekEventsList);
         return (
-            <div>
+            <div className="calendr-week-main-wrapper">
                 <div className="calendr-week-wrapper">
                     <table className="calendr-week-table">
                         <tbody ref={(dayColumns) => (this.dayColumns = dayColumns)}>
@@ -133,12 +134,23 @@ class CalendrWeek extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <div ref={(addEventComp) => {this.addEventComp = addEventComp}} >
-                    <AddEventContainer selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback}
-                                       eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
-                                       startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
-                </div>
-                <SalaryContainer />
+                <table className="calendr-week-modules" ref={(addEventComp) => {this.addEventComp = addEventComp}} >
+                    <tbody>
+                        <tr>
+                            <td>
+                                <SalaryContainer />
+                                <AddEventContainer selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback}
+                                                   eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
+                                                   startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <EventList dayEventList={weekEvents}/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         )
     }
