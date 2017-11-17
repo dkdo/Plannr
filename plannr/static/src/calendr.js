@@ -161,6 +161,8 @@ class Calendr extends React.Component {
     }
 
     endTimeChange(newEndTime) {
+        console.log('caca');
+        console.log(newEndTime)
         this.setState({eventEndTime: newEndTime});
     }
 

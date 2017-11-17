@@ -61,7 +61,7 @@ class AddEvent extends React.Component {
         this.addEvent = this.addEvent.bind(this);
     }
 
-    componentDidMount() {
+    componentWilldMount() {
         this.setEndTimeOptions(this.props.eventStartTime);
     }
 
@@ -169,13 +169,13 @@ class AddEvent extends React.Component {
         return endTimeOptions;
     }
 
-    startTimeChangeEvent(event){
-        var newStartTime = event.target.value;
-        this.startTimeChange(newStartTime);
+    startTimeChangeEvent(newStartTime){
+        var newStartTimeValue = newStartTime.value;
+        this.startTimeChange(newStartTimeValue);
 
         var startTimeChangeCallback = this.props.startTimeChangeCallback || null;
         if (startTimeChangeCallback) {
-            startTimeChangeCallback(event.target.value);
+            startTimeChangeCallback(newStartTimeValue);
         }
     }
 
@@ -194,8 +194,8 @@ class AddEvent extends React.Component {
         this.setState({'employeeId': selectedEmployee});
     }
 
-    endTimeChange(event) {
-        this.props.endTimeChange(event.target.value);
+    endTimeChange(newEndTime) {
+        this.props.endTimeChange(newEndTime.value);
     }
 
 
@@ -225,6 +225,7 @@ class AddEvent extends React.Component {
                     <div className="eventAdder-info">
                         <div><b>End time:</b></div>
                         <Select
+                            value={this.props.eventEndTime}
                             onChange={this.endTimeChange}
                             autosize={false}
                             clearable={false}

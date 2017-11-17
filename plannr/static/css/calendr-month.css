@@ -3,7 +3,7 @@
     grid-template-columns: [col-one] 100%;
     grid-row-gap: 5px;
     float: right;
-    height: 500px;
+    height: 60vh;
     overflow-y: scroll;
     background-color: #fff;
     color: black;
