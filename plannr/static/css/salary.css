@@ -1,0 +1,3 @@
+.salary-comp > div:not(.second-title) > div {
+    display: inline-block;
+}
