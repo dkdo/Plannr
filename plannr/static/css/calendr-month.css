@@ -5,6 +5,7 @@
     float: right;
     height: 60vh;
     overflow-y: scroll;
+    overflow-x: hidden;
     background-color: #fff;
     color: black;
     width: 50%;

@@ -134,7 +134,7 @@
     overflow-y: auto;
     background: #fff;
     border-radius: 5px;
-    border-right: 2px solid #000;
+    border-right: 1px solid #999999;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -243,9 +243,9 @@
 }
 
 .sidebar-logout button{
-    background-color: black;
+    background-color: inherit;
     border: none;
-    color: #999999;
+    color: #0066ff;
     height: 100%;
     text-align: left;
     text-indent: 20px;
@@ -253,9 +253,9 @@
 }
 
 .sidebar-logout button:hover {
-    border-top: 2px solid #0066ff;
-    border-bottom: 2px solid #0066ff;
-    color: #ffffff;
+    border-top: 1px solid #0052cc;
+    border-bottom: 1px solid #0052cc;
+    color: #0052cc;
 }
 
 
