@@ -20,8 +20,21 @@
 
 .eventAdder{
     float: left;
-    width: 50%;
-    padding-right: 5%;
+    width: 47%;
+    padding: 5%;
+}
+
+.eventAdder-info {
+    margin-bottom: 10px;
+}
+
+.eventAdder-btn {
+    text-align: center;
+}
+
+.eventAdder-title {
+    font-size: 18px;
+    text-align: center;
 }
 
 .event-points {
@@ -36,4 +49,8 @@
     -webkit-border-radius: 3px;
     border-radius: 3px;
     margin-right: 0.25em;
+}
+
+.event-selectors {
+    margin-bottom: 10px;
 }
