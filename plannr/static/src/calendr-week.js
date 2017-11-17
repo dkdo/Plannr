@@ -138,6 +138,7 @@ class CalendrWeek extends React.Component {
                                        eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                                        startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
                 </div>
+                <Salary />
             </div>
         )
     }
