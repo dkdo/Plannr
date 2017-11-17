@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'profil.apps.ProfilConfig',
     'organization.apps.OrganizationConfig',
     'employees.apps.EmployeesConfig',
-    'salary.apps.SalaryConfig'
+    'salary.apps.SalaryConfig',
+    'shift_replace.apps.ShiftReplaceConfig'
 ]
 
 MIDDLEWARE = [
