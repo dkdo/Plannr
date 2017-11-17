@@ -150,4 +150,5 @@ REACT_ROUTES = [
     'profil',
     'position',
     'employees',
+    'shift-center',
 ]
