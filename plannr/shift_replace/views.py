@@ -22,9 +22,12 @@ class ShiftCenterList(APIView):
         shifts = Shift.objects.filter(organization_id=organization_id, manager_approved=False)
         shifts_serializers = ShiftSerializer(shifts, many=True)
 
-        shifts_ids = shifts.values('id')
+        events_ids = shifts.values('event')
+        shifts_details = Event.objects.filter(id__in=events_ids)
+        shifts_details_serializer = EventSerializer(shifts_details, many=True)
+
         current_shifts = Event.objects.filter(start_date__gte=today, employee_id=user_id)
-        current_shifts = current_shifts.exclude(id__in=shifts_ids)
+        current_shifts = current_shifts.exclude(id__in=events_ids)
         current_shifts = EventSerializer(current_shifts, many=True)
 
         shifts = {'current_shifts': [],
@@ -34,23 +37,24 @@ class ShiftCenterList(APIView):
         shifts['current_shifts'] = current_shifts.data
 
         for shift in shifts_serializers.data:
+            shift_detail = next((sd for sd in shifts_details_serializer.data if sd.get('id') == shift.get('event_id')), None)
             if shift.get('searching'):
-                shifts['searching'].append(shift)
+                shifts['searching'].append({'shift': shift, 'shift_detail': shift_detail})
             elif not shift.get('manager_approved'):
-                shifts['waiting_approval'].append(shift)
+                shifts['waiting_approval'].append({'shift': shift, 'shift_detail': shift_detail})
 
         return Response(shifts)
 
 
 class ShiftSearchReplace(APIView):
-    def ppost(self, request, format=None):
+    def post(self, request, format=None):
         user_id = request.user.id
-        shift_id = request.POST.get('shift_id')
+        event_id = request.POST.get('event_id')
 
         profile = Profile.objects.get(user_id=user_id)
         organization_id = profile.organization_id
 
-        shift_data = {'shift_id': shift_id, 'organization_id': organization_id}
+        shift_data = {'event_id': event_id, 'organization_id': organization_id}
 
         shift_serializer = ShiftSerializer(data=shift_data)
 
@@ -66,11 +70,10 @@ class ShiftReplaceRequest(APIView):
         user_id = request.user.id
         shift_id = request.POST.get('shift_id')
 
-        shift = Shift.objects.get(shift_id=shift_id)
+        shift = Shift.objects.get(id=shift_id)
 
-        shift_data = {}
-        if not shift.interested_emp:
-            shift_data = {'interested_emp': user_id, 'searching': False}
+        if not shift.interested_emp_id:
+            shift_data = {'interested_emp_id': user_id, 'searching': False}
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -88,12 +91,12 @@ class ShiftManagerApprove(APIView):
         if request.user.is_authenticated() and is_manager(request):
             shift_id = request.POST.get('shift_id')
 
-            shift = Shift.objects.get(shift_id=shift_id)
+            shift = Shift.objects.get(id=shift_id)
             shift_data = {'manager_approved': True}
             shift_serializer = ShiftSerializer(shift, data=shift_data, partial=True)
 
-            event = Event.objects.get(id=shift_id)
-            event_data = {'employee_id': shift.interested_emp}
+            event = Event.objects.get(id=shift.event_id)
+            event_data = {'employee_id': shift.interested_emp_id}
             event_serializer = EventSerializer(event, data=event_data, partial=True)
 
             if shift_serializer.is_valid() and event_serializer.is_valid():

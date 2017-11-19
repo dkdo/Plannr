@@ -6,7 +6,7 @@ from organization.models import Organization
 
 
 class Shift(models.Model):
-    shift = models.OneToOneField(Event, blank=False)
+    event = models.ForeignKey(Event, blank=False)
     interested_emp = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
                                        default=None)
     searching = models.BooleanField(default=False)
