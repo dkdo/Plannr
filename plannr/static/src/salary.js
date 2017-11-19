@@ -71,19 +71,19 @@ class Salary extends React.Component {
 
     render() {
         return(
-            <table className="salary-comp">
+            <table className="salary-comp" id="salary-table">
+                <caption>Expected Salary</caption>
                 <tbody>
                 <tr>
-                    <th className="second-title"><b>Expected Salary</b></th>
-                </tr>
-                <tr>
                     <td>
-                        <div>Week:&nbsp;</div>
-                        <div>{this.state.salary.week_hours} hours x {this.state.salary.hourly_salary}$/h = {this.state.salary.week_salary}$</div>
+                        <div className="salary-title"><b>Month</b></div>
+                        <div className="salary-amount"><b>{this.state.salary.month_salary}$</b></div>
+                        <div><b><u><i>{this.state.salary.month_hours}</i> hours</u></b> x {this.state.salary.hourly_salary}$/h</div>
                     </td>
                     <td>
-                        <div>Month:&nbsp;</div>
-                        <div>{this.state.salary.month_hours} hours x {this.state.salary.hourly_salary}$/h = {this.state.salary.month_salary}$</div>
+                        <div className="salary-title"><b>Week</b></div>
+                        <div className="salary-amount"><b>{this.state.salary.week_salary}$</b></div>
+                        <div><b><u><i>{this.state.salary.week_hours}</i> hours</u></b> x {this.state.salary.hourly_salary}$/h</div>
                     </td>
                 </tr>
                 </tbody>

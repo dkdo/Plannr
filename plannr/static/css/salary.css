@@ -1,0 +1,42 @@
+#salary-table {
+    width: 100%;
+    margin-bottom: 15px;
+}
+    #salary-table caption {
+        text-align: center;
+        font-size: 16px;
+        color: black;
+    }
+
+    #salary-table th {
+        text-align: center;
+    }
+
+    #salary-table td {
+    text-align: center;
+    width: 50%;
+    }
+
+    #salary-table td:nth-child(2) {
+        border-left: 1px solid #0066ff;
+    }
+
+    #salary-table tr {
+        width: 100%;
+    }
+
+    #salary-table .salary-amount {
+        font-style: italic;
+        font-size: 40px;
+        color: white;
+        text-shadow:
+           -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+             1px 1px 0 #000;
+    }
+
+    #salary-table .salary-title {
+        text-align: left;
+        padding-left: 27%;
+    }
