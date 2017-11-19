@@ -1,5 +1,36 @@
+.calendr-week-main-wrapper {
+    display: grid;
+    grid-template-columns: [col-one] 60% [col-two] 40%;
+    grid-gap: 10px;
+    width: 80vw;
+    float: left;
+}
+
+.calendr-week-modules {
+    width: 100%;
+    grid-column-start: col-two;
+    margin-top: 15px;
+    overflow-x: scroll;
+    table-layout: fixed;
+}
+
+    /*.calendr-week-modules tr {
+        width: 100%;
+    }
+    .calendr-week-modules tbody {
+        width: 100%;
+    }*/
+    
+    .calendr-week-modules td {
+        overflow-y: scroll;
+        padding-bottom: 10px;
+        width: 100%;
+    }
+
 .calendr-week-wrapper {
-    width: 75%;
+    grid-column-start: col-one;
+    grid-column-end: col-two;
+    width: 100%;
     margin-top: 15px;
     float: left;
 }
@@ -39,7 +70,7 @@
 }
 
 .hours-grid {
-    position: relative; 
+    position: relative;
 }
 
     .hours-grid .hour-separator {
@@ -100,7 +131,7 @@
     opacity: 0.5;
     width: 90%;
 }
-    
+
     .event-block .event-name {
         overflow: hidden;
         white-space: nowrap;

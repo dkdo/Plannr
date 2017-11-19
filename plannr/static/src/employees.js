@@ -171,7 +171,6 @@ class Employees extends React.Component {
         }
         return employeeCards;
     }
-    
     render() {
         var employeeCards = this.getEmployeeCards();
         return(

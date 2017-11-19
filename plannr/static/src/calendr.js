@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
 import AddEventContainer from './add-event';
+import EventList from './event-list';
+import SalaryContainer from './salary';
 import '../css/calendr-month.css';
 
 class Calendr extends React.Component {
@@ -195,10 +197,22 @@ class Calendr extends React.Component {
                     </div>
                 </div>
                 <div className="right-position-pane">
-                    <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback}
-                              eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
-                              startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
-                    <EventList dayEventList={this.state.dayEventList}/>
+                    <table className="calendr-month-modules" id="calendr-modules-table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <SalaryContainer />
+                                    <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback}
+                                              eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
+                                              startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
+                                </td>
+                                <td>
+                                    <div className="event-list-title"><b>Shifts</b></div>
+                                    <EventList dayEventList={this.state.dayEventList}/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         )
@@ -209,33 +223,6 @@ Calendr.defaultProps = {
     url: '/events/',
     url_month: '/events/monthevents/'
 };
-
-class EventList extends React.Component {
-
-    render() {
-        var eventComponents = this.props.dayEventList.map(function(event) {
-            var start_date = new Date(event.start_date).toLocaleString();
-            var end_date = new Date(event.end_date).toLocaleString();
-            return(
-                <div className="event-card" key={event.id}>
-                    <h3><u>{event.title}</u></h3>
-                    <ul className="list-unstyled">
-                        <li>
-                            <p><b>Starts:</b> {start_date}</p>
-                        </li>
-                        <li>
-                            <p><b>Ends:</b> {end_date}</p>
-                        </li>
-                    </ul>
-                </div>
-            )
-        });
-        return (
-            <div className="event-list">
-                {eventComponents}
-            </div>);
-    }
-}
 
  class Arrows extends React.Component {
     render() {
