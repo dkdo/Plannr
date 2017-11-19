@@ -146,6 +146,7 @@ class CalendrWeek extends React.Component {
                         </tr>
                         <tr>
                             <td>
+                                <div className="event-list-title"><b>Shifts</b></div>
                                 <EventList dayEventList={weekEvents}/>
                             </td>
                         </tr>

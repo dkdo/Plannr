@@ -36,7 +36,12 @@
              1px 1px 0 #000;
     }
 
-    #salary-table .salary-title {
+    /*#salary-table .salary-title {
         text-align: left;
         padding-left: 27%;
+    }*/
+
+    #salary-table .salary-group {
+        display: inline-block;
+        text-align: left;
     }

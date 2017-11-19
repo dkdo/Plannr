@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
 import AddEventContainer from './add-event';
 import EventList from './event-list';
+import SalaryContainer from './salary';
 import '../css/calendr-month.css';
 
 class Calendr extends React.Component {
@@ -196,15 +197,17 @@ class Calendr extends React.Component {
                     </div>
                 </div>
                 <div className="right-position-pane">
-                    <table className="calendr-month-modules">
+                    <table className="calendr-month-modules" id="calendr-modules-table">
                         <tbody>
                             <tr>
                                 <td>
+                                    <SalaryContainer />
                                     <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback}
                                               eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                                               startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
                                 </td>
                                 <td>
+                                    <div className="event-list-title"><b>Shifts</b></div>
                                     <EventList dayEventList={this.state.dayEventList}/>
                                 </td>
                             </tr>

@@ -19,3 +19,7 @@
 .calendr-month-modules td{
     vertical-align: top;
 }
+
+#calendr-modules-table {
+    width: 100%;
+}

@@ -576,6 +576,13 @@ img.logo-resize {
     width: 100%;
 }
 
+.event-list-title {
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 16px;
+    color: black;
+}
+
 .event-card {
     background-color: #fff;
     color: black;
