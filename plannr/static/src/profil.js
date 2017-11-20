@@ -1,42 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import DjangoCSRFToken from './shared/csrf';
+import '../css/profil.css';
+import { isPhoneValid } from './shared/isPhoneValid';
+import { getCookie } from './shared/getCookie';
+import {isBirthDateValid } from './shared/isBirthDateValid';
 
 class MasterProfile extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			logged_in: '',
-		};
+		this.state = {};
 
-	}
-
-	componentWillMount() {
-		this.loadUsername();
-	}
-
-	loadUsername() {
-		$.ajax({
-            url: this.props.loadUsername_url,
-            datatype: 'json',
-            cache: false,
-            success: function(data){
-				if(data != "") {
-					this.setState(data);
-				}
-            }.bind(this),
-			error: function() {
-				alert("Get out please");
-				this.setState({logged_in: 'Unauthorized User'});
-			}.bind(this)
-        })
 	}
 
 	render() {
 		return (
 			<div className="profile-container">
 				<div className="profile-content-container">
-					<UserInformation saveprofile_url={this.props.saveprofile_url} logged_in={this.state.logged_in}/>
+					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
 				</div>
 			</div>
 		);
@@ -48,25 +29,11 @@ MasterProfile.defaultProps = {
 	loadUsername_url: '/profil/user/',
 };
 
-// class PictureUpload extends React.Component {
-// 	constructor(props) {
-// 		super(props);
-// 		this.state = {};
-// 	}
-
-// 	render() {
-// 		return (
-// 			<div className="profile-sub-container" id="profile_picture">
-// 				<span>PICTURE</span>
-// 			</div>
-// 		);
-// 	}
-// }
-
 class UserInformation extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			fixed_first_name: '',
 			first_name: '',
 			last_name: '',
 			email: '',
@@ -94,6 +61,7 @@ class UserInformation extends React.Component {
 				console.log(JSON.stringify(data));
 				if(data != "") {
 					this.setState(data);
+					this.setState({fixed_first_name: this.state.first_name});
 				}
 			}.bind(this),
 			error: function() {
@@ -102,29 +70,43 @@ class UserInformation extends React.Component {
 		})
 	}
 
-	getCookie(name) {
-	    var cookieValue = null;
-	    if (document.cookie && document.cookie != '') {
-	        var cookies = document.cookie.split(';');
-	        for (var i = 0; i < cookies.length; i++) {
-	            var cookie = jQuery.trim(cookies[i]);
-	            // Does this cookie string begin with the name we want?
-	            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-	                cookieValue = decodeURIComponent(
-	                  cookie.substring(name.length + 1)
-	                  );
-	                break;
-	            }
-	        }
-	    }
-	    return cookieValue;
-  	}
+	inputValidation() {
+		var err_msg = 'Error saving due to these errors:\n';
+		var i = 1;
+		var valid = true;
+		if (this.state.phone_num != '') {
+			var isNumValid = isPhoneValid(this.state.phone_num);
+			console.log(this.state.phone_num);
+			console.log('isValid: ' + isNumValid);
+			if (!isNumValid) {
+				valid = false;
+				err_msg += i + '. Phone Number needs to have XXX-XXX-XXXX or XXXYYYZZZZ format';
+				i++;
+			}
+		}
+		if (this.state.birth_date != '') {
+			var isDateValid = isBirthDateValid(this.state.birth_date);
+			if (!isDateValid) {
+				valid = false;
+				err_msg += i + '. Birth Date needs to have YYYY/MM/DD format';
+				i++;
+			}
+		}
+		if (this.state.first_name == '') {
+			valid = false;
+			err_msg += i + '. First Name cannot be empty !';
+			i++;
+		}
+		var validObj = {
+			isValid: valid,
+			msg: err_msg
+		};
+		return validObj;
+	}
 
 	saveProfileInfo(event) {
-		if(this.state.fname == '') {
-			alert("Need to add first name");
-		}
-		else {
+		var validObj = this.inputValidation();
+		if(validObj.isValid) {
 			console.log('Went into saveProfileInfo');
 			var info = {
 				first_name: this.state.first_name,
@@ -135,7 +117,7 @@ class UserInformation extends React.Component {
 				status: this.state.status,
 			};
 			console.log('saved info is: ' + JSON.stringify(info));
-			var csrfToken = this.getCookie('csrftoken');
+			var csrfToken = getCookie('csrftoken');
 			$.ajaxSetup({
 	            beforeSend: function(xhr, settings) {
 	                xhr.setRequestHeader("X-CSRFToken", csrfToken);
@@ -153,8 +135,11 @@ class UserInformation extends React.Component {
 					alert("Saving Profile Info Failed");
 				}.bind(this)
 			})
-			event.preventDefault();
 		}
+		else {
+			alert(validObj.msg);
+		}
+		event.preventDefault();
 	}
 
 	handleInfoChange(event) {
@@ -164,13 +149,13 @@ class UserInformation extends React.Component {
 	render() {
 		return (
 			<form onSubmit={this.saveProfileInfo} className="profile-sub-container" id="profile_form">
-				<h1>{this.props.logged_in}</h1>
+				<h1>{this.state.fixed_first_name}&#39;s Profile</h1>
 				<div className='input-group user-info-group'>
-  					<span className='user-info-label input-group-addon'>FirstName </span>
+  					<span className='user-info-label input-group-addon'>First Name </span>
   					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.first_name} name="first_name" type='text' id='user_info_fname' placeholder='John'></input>
 				</div>
 				<div className='input-group user-info-group'>
-  					<span className='user-info-label input-group-addon'>LastName </span>
+  					<span className='user-info-label input-group-addon'>Last Name </span>
   					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.last_name} name="last_name" type='text' id='user_info_lname' placeholder='Doe'></input>
 				</div>
 				<div className='input-group user-info-group'>
@@ -179,7 +164,7 @@ class UserInformation extends React.Component {
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Phone </span>
-  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.phone_num} name="phone_num" type='text' id='user_info_phone' placeholder='111-222-3333'></input>
+  					<input className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.phone_num} name="phone_num" type='text' id='user_info_phone' placeholder='111-222-3333 or 1112223333'></input>
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Birth Date </span>
@@ -187,7 +172,7 @@ class UserInformation extends React.Component {
 				</div>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>Status </span>
-  					<textarea maxLength="140" className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status' placeholder='You can write your status here...'></textarea>
+  					<textarea maxLength="140" className='user-info-input form-control' onChange={this.handleInfoChange} value={this.state.status} name="status" type='text' id='user_info_status' placeholder='Out of Town for the weekend...140 characters max'></textarea>
 				</div>
 				<button type="submit" className="user-info-input-btn plannr-btn btn" id="user_info_btn">Save</button>
 			</form>

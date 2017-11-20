@@ -477,49 +477,6 @@ img.logo-resize {
 
 /* END Login / Sign up CSS*/
 
-/* PROFILE */
-.profile-container {
-    height: 100%;
-    width: 100%;
-    position: fixed;
-}
-
-.profile-content-container {
-    margin-right: 20px;
-    margin-top: 30px;
-    margin-left: 30px;
-    position: fixed;
-}
-
-.profile-sub-container {
-    float: left;
-    height: 100%;
-    position: relative;
-}
-
-.profile-sub-container h1 {
-    padding-bottom: 25px;
-    text-align: center;
-}
-
-#profile_picture {
-    width: 35%;
-}
-
-#profile_form {
-    width: 65%;
-}
-
-.profile-sub-container .user-info-group {
-    padding-bottom: 15px;
-}
-
-.input-group-addon {
-    min-width: 90px;
-}
-
-/* END PROFILE */
-
 /* POSITION */
 
 .position-add-btn {
