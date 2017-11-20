@@ -11,7 +11,7 @@ class EmployeesList(APIView):
     def get(self, request, format=None):
         user_id = request.user.id
         employees = Employees.objects.filter(manager_id=user_id).values('employee_id')
-        employee_profiles = Profile.objects.filter(user_id__in=employees)
+        employee_profiles = Profile.objects.filter(user_id__in=employees).order_by('user_id')
         serializer = ProfileSerializer(employee_profiles, many=True)
         return Response(serializer.data)
 
