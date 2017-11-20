@@ -128,8 +128,6 @@ class Calendr extends React.Component {
                 this.setState({
                     monthEventList: data
                 });
-                console.log('called montevesnt');
-                console.log(date)
                 console.log(data);
             }.bind(this)
         })
@@ -167,8 +165,6 @@ class Calendr extends React.Component {
     }
 
     endTimeChange(newEndTime) {
-        console.log('caca');
-        console.log(newEndTime)
         this.setState({eventEndTime: newEndTime});
     }
 

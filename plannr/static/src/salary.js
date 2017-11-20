@@ -85,8 +85,6 @@ class Salary extends React.Component {
             data: data,
             cache: false,
             success: function(data){
-                console.log('salary');
-                console.log(data);
                 this.setState({'salary': data});
             }.bind(this)
         })
@@ -101,8 +99,6 @@ class Salary extends React.Component {
             data: data,
             cache: false,
             success: function(data){
-                console.log('salary');
-                console.log(data);
                 this.setState({'salary': data});
             }.bind(this)
         })
