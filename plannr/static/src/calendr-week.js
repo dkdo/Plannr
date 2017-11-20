@@ -77,15 +77,15 @@ class CalendrWeek extends React.Component {
     }
 
     getWeekEvents() {
-        var thisWeekMonday = new Date(this.state.thisWeekMonday.getDate());
+        const calendrMonday = this.state.thisWeekMonday;
+        const weekMonday = new Date(calendrMonday.getFullYear(), calendrMonday.getMonth(),
+                                    calendrMonday.getDate(), 0, 0, 0).toISOString();
         $.ajax({
             url: this.props.url + 'weekevents/',
             datatype: 'json',
             cache: false,
             data: {
-                year: this.state.thisWeekMonday.getFullYear(),
-                month: this.state.thisWeekMonday.getMonth(),
-                day: this.state.thisWeekMonday.getDate()
+                week_monday: weekMonday
             },
             success: function(data){
                 console.log(data);
