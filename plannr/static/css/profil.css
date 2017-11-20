@@ -1,0 +1,38 @@
+.profile-container {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+}
+
+.profile-content-container {
+    margin-top: 30px;
+    margin-right: 50px;
+    position: fixed;
+    text-align: center;
+}
+
+.profile-sub-container {
+    width: 45%;
+    display: inline-block;
+    text-align: center;
+    height: 100%;
+    position: relative;
+}
+
+.profile-sub-container h1 {
+    padding-bottom: 25px;
+    text-align: center;
+}
+
+.profile-sub-container .user-info-group {
+    padding-bottom: 15px;
+}
+
+.input-group-addon {
+    min-width: 90px;
+}
+
+.user-info-label {
+    background: #fff;
+    color: #0066ff;
+}

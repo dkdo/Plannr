@@ -36,13 +36,13 @@ class ProfileInfo(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class Username(APIView):
-    def get(self, request, format=None):
-        if request.user.is_authenticated():
-            current_user = request.user
-            data = {'logged_in': request.user.username}
-            return Response(data)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+# class Username(APIView):
+#     def get(self, request, format=None):
+#         if request.user.is_authenticated():
+#             current_user = request.user
+#             data = {'logged_in': request.user.username}
+#             return Response(data)
+#         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class PositionChange(APIView):
