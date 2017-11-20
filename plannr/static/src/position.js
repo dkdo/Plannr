@@ -321,7 +321,7 @@ function DisplayNewPosition(props) {
             </div>
             <div className="input-group position-group">
                 <span className="input-group-addon position-info-label">Department</span>
-                <input className="form-control position-info-input" onChange={props.handleInputChange} name="newDep" value={props.newDep}  placeholder="Customer Service"></input>
+                <input className="form-control position-info-input" onChange={props.handleInputChange} name="newDep" value={props.newDep}  placeholder="ex:Clothes"></input>
             </div>
             <div className="position-save-btn-wrapper">
                 <button onClick={props.addNewPosition} className="position-save-btn plannr-btn btn">ADD NEW</button>
