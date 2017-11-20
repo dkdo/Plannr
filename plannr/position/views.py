@@ -16,7 +16,7 @@ class PositionList(APIView):
             org_id = user_profile.organization_id
             print ("user_id: ", uid)
             print ("org_id: ", org_id)
-            positions = Position.objects.filter(organization_id=org_id)
+            positions = Position.objects.filter(organization_id=org_id).order_by('id')
             print positions
             serializer = PositionSerializer(positions, many=True)
             print serializer
