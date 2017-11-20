@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from event.models import Event
 from event.serializers import EventSerializer
 from profil.models import Profile
+from profil.serializers import ProfileSerializer
 from profil.views import is_manager
 from shift_replace.models import Shift
 from shift_replace.serializers import ShiftSerializer
@@ -26,6 +27,14 @@ class ShiftCenterList(APIView):
         shifts_details = Event.objects.filter(id__in=events_ids)
         shifts_details_serializer = EventSerializer(shifts_details, many=True)
 
+        current_emp_ids = shifts_details.values('employee')
+        interested_emp_ids = shifts.values('interested_emp_id')
+
+        current_profiles = Profile.objects.filter(user_id__in=current_emp_ids)
+        interested_profiles = Profile.objects.filter(user_id__in=interested_emp_ids)
+        profiles = (current_profiles | interested_profiles).distinct()
+        profiles_serializer = ProfileSerializer(profiles, many=True)
+
         current_shifts = Event.objects.filter(start_date__gte=today, employee_id=user_id)
         current_shifts = current_shifts.exclude(id__in=events_ids)
         current_shifts = EventSerializer(current_shifts, many=True)
@@ -38,10 +47,17 @@ class ShiftCenterList(APIView):
 
         for shift in shifts_serializers.data:
             shift_detail = next((sd for sd in shifts_details_serializer.data if sd.get('id') == shift.get('event_id')), None)
+            current_profile = next((p for p in profiles_serializer.data if p.get('user_id') == shift_detail.get('employee_id')), None)
             if shift.get('searching'):
-                shifts['searching'].append({'shift': shift, 'shift_detail': shift_detail})
+                shifts['searching'].append({'shift': shift,
+                                            'shift_detail': shift_detail,
+                                            'current_profile': current_profile})
             elif not shift.get('manager_approved'):
-                shifts['waiting_approval'].append({'shift': shift, 'shift_detail': shift_detail})
+                interested_profile = next((p for p in profiles_serializer.data if p.get('user_id') == shift.get('interested_emp_id')), None)
+                shifts['waiting_approval'].append({'shift': shift,
+                                                   'shift_detail': shift_detail,
+                                                   'current_profile': current_profile,
+                                                   'interested_profile': interested_profile})
 
         return Response(shifts)
 
