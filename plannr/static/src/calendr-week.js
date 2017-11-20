@@ -4,6 +4,7 @@ import calendrConst from './shared/calendr-const';
 import AddEventContainer from './add-event'
 import SalaryContainer from './salary';
 import EventList from './event-list';
+import salaryConst from './shared/salary-const';
 import '../css/calendr-week.css';
 
 class CalendrWeek extends React.Component {
@@ -138,7 +139,7 @@ class CalendrWeek extends React.Component {
                     <tbody>
                         <tr>
                             <td>
-                                <SalaryContainer />
+                                <SalaryContainer type={salaryConst.weekSalary} selectedDate={this.state.thisWeekMonday} />
                                 <AddEventContainer selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback}
                                                    eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                                                    startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
