@@ -58,8 +58,15 @@ class EventList(APIView):
 class MonthEvents(APIView):
     def get(self, request, format=None):
         date_selected = request.GET.get('month_date')
-        month_selected = parse(date_selected).month
-        year_selected = parse(date_selected).year
+        date_selected = parse(date_selected)
+
+        if date_selected.hour != 0:
+            offset = timedelta(hours=date_selected.hour, seconds=1)
+        else:
+            offset = timedelta(hours=0)
+
+        month_selected = date_selected.month
+        year_selected = date_selected.year
 
         [month_start, month_end] = calendar.monthrange(year_selected,
                                                        month_selected)
@@ -86,7 +93,7 @@ class MonthEvents(APIView):
         events_list = [[] for x in range(month_end)]
 
         for event in serializer.data:
-            day = parse(event.get('start_date')).day
+            day = (parse(event.get('start_date')) - offset).day
             event_employee = next((e for e in employee_profiles if e.user_id == event.get('employee_id')), None)
             event_employee = ProfileSerializer(event_employee)
             event.update({'employee_profile': event_employee.data})
@@ -123,13 +130,15 @@ class EventDetail(APIView):
 
 class WeekEvents(APIView):
     def get(self, request, format=None):
-        year = int(request.GET.get('year', 0))
-        month = int(request.GET.get('month', 0))
-        month = month + 1
-        monday = int(request.GET.get('day', 0))
+        week_monday = request.GET.get('week_monday')
+        week_monday = parse(week_monday)
 
-        start_date = datetime(year, month, monday, 0, 0, 0)
+        if week_monday.hour != 0:
+            offset = timedelta(hours=week_monday.hour, seconds=1)
+        else:
+            offset = timedelta(hours=0)
 
+        start_date = datetime(week_monday.year, week_monday.month, week_monday.day)
         end_date = start_date + timedelta(days=7)
 
         user_id = request.user.id
@@ -150,7 +159,7 @@ class WeekEvents(APIView):
         events_list = [[] for x in range(7)]
 
         for event in serializer.data:
-            weekday = parse(event.get('start_date')).weekday()
+            weekday = (parse(event.get('start_date')) - offset).weekday()
 
             event_employee = next((e for e in employee_profiles if e.user_id == event.get('employee_id')), None)
             event_employee = ProfileSerializer(event_employee)
