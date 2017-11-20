@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import DjangoCSRFToken from './shared/csrf';
 import { getCookie } from './shared/csrf_methods';
+import '../css/position.css';
 
 export default class MasterPosition extends React.Component {
   constructor(props) {
@@ -258,22 +259,22 @@ class Position extends React.Component {
                     <div className="input-group">
                         <input onChange={this.handleInputChange} value={this.state.searchFilter} name="searchFilter" type="text" className="form-control" placeholder="Search for..."></input>
                         <span className="input-group-btn">
-                            <button onClick={this.searchPosition} className="btn btn-default" type="button">Go!</button>
+                            <button onClick={this.searchPosition} className="position-search-btn btn btn-default" type="button">Go!</button>
                         </span>
                     </div>
                 </div>
                 <div className="list-group">
                     {this.state.positionList.map(position => (
-                    <button type="button" onClick={this.handlePositionClick} className="list-group-item" id={position.id} key={position.id}>{position.title}</button>))}
+                    <button type="button" onClick={this.handlePositionClick} className="position-list-item list-group-item" id={position.id} key={position.id}>{position.title}</button>))}
                 </div>
             </div>
         <div className="position-pane" id="right_position_pane">
-        <DisplayInformation modifyPosition={this.modifyPosition} show={this.state.appearDetail} handleInputChange={this.handleInputChange}
-        posId={this.state.selectedId} posTitle={this.state.selectedTitle}
-        posSalary={this.state.selectedSalary} posDep={this.state.selectedDep}/>
-        <DisplayNewPosition addNewPosition={this.addNewPosition} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
-        newTitle={this.state.newTitle} newSalary={this.state.newSalary}
-        newDep={this.state.newDep}/>
+            <DisplayInformation modifyPosition={this.modifyPosition} show={this.state.appearDetail} handleInputChange={this.handleInputChange}
+            posId={this.state.selectedId} posTitle={this.state.selectedTitle}
+            posSalary={this.state.selectedSalary} posDep={this.state.selectedDep}/>
+            <DisplayNewPosition addNewPosition={this.addNewPosition} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
+            newTitle={this.state.newTitle} newSalary={this.state.newSalary}
+            newDep={this.state.newDep}/>
         </div>
       </div>
 
@@ -288,13 +289,13 @@ function DisplayInformation(props) {
     return(
         <form className="right-position-pane-content">
             <h2 className="position-title"> {props.posTitle} </h2>
-            <div className="position-group">
-                <span className="position-info-label">Hourly Salary:</span>
-                <input onChange={props.handleInputChange} name="selectedSalary" value={props.posSalary} className="position-info-input" placeholder="ex:13$"></input>
+            <div className="input-group position-group">
+                <span className="input-group-addon position-info-label">Salary&#47;h</span>
+                <input className="form-control position-info-input" onChange={props.handleInputChange} name="selectedSalary" value={props.posSalary} placeholder="ex:13$"></input>
             </div>
-            <div className="position-group">
-                <span className="position-info-label">Department:</span>
-                <input onChange={props.handleInputChange} name="selectedDep" value={props.posDep} className="position-info-input" placeholder="Customer Service"></input>
+            <div className="input-group position-group">
+                <span className="input-group-addon position-info-label">Department</span>
+                <input className="form-control position-info-input" onChange={props.handleInputChange} name="selectedDep" value={props.posDep} placeholder="Customer Service"></input>
             </div>
             <div className="position-save-btn-wrapper">
                 <button onClick={props.modifyPosition} className="position-save-btn plannr-btn btn">SAVE</button>
@@ -310,17 +311,17 @@ function DisplayNewPosition(props) {
     return(
         <form className="right-position-pane-content">
             <h2 className="position-title">NEW POSITION</h2>
-            <div className="position-group">
-                <span className="position-info-label">Title:</span>
-                <input onChange={props.handleInputChange} name="newTitle" value={props.newTitle} className="position-info-input" placeholder="ex:Cashier"></input>
+            <div className="input-group position-group">
+                <span className="input-group-addon position-info-label">Title</span>
+                <input className="form-control position-info-input" onChange={props.handleInputChange} name="newTitle" value={props.newTitle} placeholder="ex:Cashier"></input>
             </div>
-            <div className="position-group">
-                <span className="position-info-label">Hourly Salary:</span>
-                <input onChange={props.handleInputChange} name="newSalary" value={props.newSalary} className="position-info-input" placeholder="ex:13$"></input>
+            <div className="input-group position-group">
+                <span className="input-group-addon position-info-label">Salary&#47;h</span>
+                <input className="form-control position-info-input" onChange={props.handleInputChange} name="newSalary" value={props.newSalary} placeholder="ex:13$"></input>
             </div>
-            <div className="position-group">
-                <span className="position-info-label">Department:</span>
-                <input onChange={props.handleInputChange} name="newDep" value={props.newDep} className="position-info-input" placeholder="Customer Service"></input>
+            <div className="input-group position-group">
+                <span className="input-group-addon position-info-label">Department</span>
+                <input className="form-control position-info-input" onChange={props.handleInputChange} name="newDep" value={props.newDep}  placeholder="Customer Service"></input>
             </div>
             <div className="position-save-btn-wrapper">
                 <button onClick={props.addNewPosition} className="position-save-btn plannr-btn btn">ADD NEW</button>

@@ -1,0 +1,58 @@
+.position-add-btn {
+    margin-bottom: 15px;
+}
+.position-content-container {
+    margin-top: 50px;
+}
+
+.position-title {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.position-info-input {
+    text-indent: 10px;
+}
+
+.position-info-label {
+    min-width: 100px;
+    background-color: #fff;
+    color: #0066ff;
+}
+
+.position-pane {
+    width: 50%;
+    float: left;
+}
+
+.position-group {
+    width:100%;
+    margin-bottom: 30px;
+}
+
+.position-save-btn-wrapper {
+    width: 100%;
+    text-align: center;
+}
+
+.list-group {
+    height: 70vh;
+    overflow : auto;
+}
+
+.position-list-item {
+    color: #0066ff !important;
+}
+
+.right-position-pane-content {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 55%;
+    border-left: 1px solid #999999;
+    padding: 4% 7%;
+}
+
+.position-search-btn {
+    color: #0066ff;
+}
