@@ -11,6 +11,7 @@ import history from './history';
 import MasterProfile from './profil';
 import MasterPosition from './position';
 import Employees from './employees';
+import ShiftCenter from './shift-center';
 
 
 const App = () => (
@@ -23,6 +24,7 @@ const App = () => (
       <Route path="/profil" component={MasterProfile}/>
       <Route path="/position" component={MasterPosition}/>
       <Route path="/employees" component={Employees}/>
+      <Route path="/shift-center" component={ShiftCenter}/>
     </div>
   </Router>
 )

@@ -8,10 +8,23 @@
     overflow-x: hidden;
  }
 
+ /* BOOTSTRAP EDIT */
+ .equal {
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+}
+
  .page-title {
     text-align: center;
     margin-bottom: 20px;
     margin-top: 20px;
+ }
+
+ .sub-title {
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
  }
 
  /* PLANNR THEME BUTTONS */

@@ -23,5 +23,7 @@ class EventSerializer(serializers.Serializer):
         """
         instance.title = validated_data.get('title', instance.title)
         instance.start_date = validated_data.get('start_date', instance.start_date)
+        instance.end_date = validated_data.get('end_date', instance.end_date)
+        instance.employee_id = validated_data.get('employee_id', instance.employee_id)
         instance.save()
         return instance

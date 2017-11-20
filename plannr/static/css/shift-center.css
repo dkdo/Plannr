@@ -1,0 +1,3 @@
+.shifts-col:not(:last-child) {
+    border-right: solid 1px #d3d3d3;
+}

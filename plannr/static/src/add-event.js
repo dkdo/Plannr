@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import calendrConst from './shared/calendr-const';
 import Select from 'react-select';
 import {getCookie} from './shared/getCookie';
+import {isManager} from './shared/isManager';
 
 class AddEventContainer extends React.Component {
     constructor(props) {
@@ -14,19 +15,7 @@ class AddEventContainer extends React.Component {
     }
 
     componentWillMount() {
-        this.isManager();
-    }
-
-    isManager() {
-        $.ajax({
-            type: 'GET',
-            url: this.props.isManagerUrl,
-            datatype: 'json',
-            cache: false,
-            success: function(data){
-                this.setState({'isManager': data});
-            }.bind(this)
-        })
+        isManager((isUserManager) => this.setState({isManager: isUserManager}));
     }
 
     render() {
@@ -41,10 +30,6 @@ class AddEventContainer extends React.Component {
         )
     }
 }
-
-AddEventContainer.defaultProps = {
-    isManagerUrl: '/profil/isManager/'
-};
 
 class AddEvent extends React.Component {
     constructor(props){
