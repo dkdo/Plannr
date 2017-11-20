@@ -13,8 +13,11 @@ from event.serializers import EventSerializer
 from position.models import Position
 
 
-class SalaryComp(APIView):
+class SalaryCompWeek(APIView):
     def get(self, request, format=None):
+        selected_date = request.GET.get('selected_date')
+        selected_date = parse(selected_date)
+
         user_id = request.user.id
         profile = Profile.objects.get(user_id=user_id)
         position_id = profile.position_id
@@ -22,46 +25,20 @@ class SalaryComp(APIView):
         if not position_id:
             return Response(0)
 
-        # date_selected = request.GET.get('selected_date')
         today = datetime.today()
-        today_start = datetime(today.year, today.month, today.day)
-        today_end = today_start + timedelta(hours=23, minutes=59, seconds=59)
-
-        month_selected = today.month
-        year_selected = today.year
-
-        week_start = date(year_selected, month_selected, today.day)
-        week_start = today - timedelta(days=today.weekday())
-        week_end = week_start + timedelta(days=7, hours=23, minutes=59,
-                                          seconds=59)
-
-        [month_start, month_end] = calendar.monthrange(year_selected,
-                                                       month_selected)
-        month_start = date(year_selected, month_selected, month_start)
-        month_end = (date(year_selected, month_selected, month_end) +
-                     timedelta(hours=23, minutes=59, seconds=59))
-
-        events_today = Event.objects.filter(start_date__range=(today_start, today_end),
-                                            employee_id=user_id)
-        events_week = Event.objects.filter(start_date__range=(week_start, week_end),
-                                           employee_id=user_id)
-        events_month = Event.objects.filter(start_date__range=(month_start, month_end),
-                                            employee_id=user_id)
+        events_week = get_week_events(selected_date, user_id)
+        events_month = get_month_events(today, user_id)
 
         position = Position.objects.get(id=position_id)
         hourly_salary = position.salary
 
-        today_serializer = EventSerializer(events_today, many=True)
         week_serializer = EventSerializer(events_week, many=True)
         month_serializer = EventSerializer(events_month, many=True)
 
-        today_hours, today_salary = self.get_total_salary(today_serializer, hourly_salary)
-        week_hours, week_salary = self.get_total_salary(week_serializer, hourly_salary)
-        month_hours, month_salary = self.get_total_salary(month_serializer, hourly_salary)
+        week_hours, week_salary = get_total_salary(week_serializer, hourly_salary)
+        month_hours, month_salary = get_total_salary(month_serializer, hourly_salary)
 
-        response = {'today_hours': today_hours,
-                    'today_salary': today_salary,
-                    'week_hours': week_hours,
+        response = {'week_hours': week_hours,
                     'week_salary': week_salary,
                     'month_hours': month_hours,
                     'month_salary': month_salary,
@@ -69,15 +46,76 @@ class SalaryComp(APIView):
 
         return Response(response)
 
-    def get_total_salary(self, events_serializer, hourly_salary):
-        total_hours = 0.0
 
-        for event in events_serializer.data:
-            start_hour = parse(event.get('start_date'))
-            end_hour = parse(event.get('end_date'))
-            delta = (end_hour - start_hour).total_seconds() / 3600.0
-            total_hours += delta
+class SalaryCompMonth(APIView):
+    def get(self, request, format=None):
+        selected_date = request.GET.get('selected_date')
+        selected_date = parse(selected_date)
 
-        total_salary = total_hours * hourly_salary
+        user_id = request.user.id
+        profile = Profile.objects.get(user_id=user_id)
+        position_id = profile.position_id
 
-        return (total_hours, total_salary)
+        if not position_id:
+            return Response(0)
+
+        today = datetime.today()
+        events_week = get_week_events(today, user_id)
+        events_month = get_month_events(selected_date, user_id)
+
+        position = Position.objects.get(id=position_id)
+        hourly_salary = position.salary
+
+        week_serializer = EventSerializer(events_week, many=True)
+        month_serializer = EventSerializer(events_month, many=True)
+
+        week_hours, week_salary = get_total_salary(week_serializer, hourly_salary)
+        month_hours, month_salary = get_total_salary(month_serializer, hourly_salary)
+
+        response = {'week_hours': week_hours,
+                    'week_salary': week_salary,
+                    'month_hours': month_hours,
+                    'month_salary': month_salary,
+                    'hourly_salary': hourly_salary}
+
+        return Response(response)
+
+
+def get_week_events(selected_date, user_id):
+    week_start = selected_date - timedelta(days=selected_date.weekday())
+    week_end = week_start + timedelta(days=7, hours=23, minutes=59,
+                                      seconds=59)
+    events_week = Event.objects.filter(start_date__range=(week_start, week_end),
+                                       employee_id=user_id)
+
+    return events_week
+
+
+def get_month_events(selected_date, user_id):
+    month_selected = selected_date.month
+    year_selected = selected_date.year
+
+    [month_start, month_end] = calendar.monthrange(year_selected,
+                                                   month_selected)
+    month_start = date(year_selected, month_selected, 1)
+    month_end = (date(year_selected, month_selected, month_end) +
+                 timedelta(hours=23, minutes=59, seconds=59))
+
+    events_month = Event.objects.filter(start_date__range=(month_start, month_end),
+                                        employee_id=user_id)
+
+    return events_month
+
+
+def get_total_salary(events_serializer, hourly_salary):
+    total_hours = 0.0
+
+    for event in events_serializer.data:
+        start_hour = parse(event.get('start_date'))
+        end_hour = parse(event.get('end_date'))
+        delta = (end_hour - start_hour).total_seconds() / 3600.0
+        total_hours += delta
+
+    total_salary = total_hours * hourly_salary
+
+    return (total_hours, total_salary)
