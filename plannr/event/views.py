@@ -64,7 +64,7 @@ class MonthEvents(APIView):
         [month_start, month_end] = calendar.monthrange(year_selected,
                                                        month_selected)
 
-        start_date = date(year_selected, month_selected, month_start)
+        start_date = date(year_selected, month_selected, 1)
         end_date = (date(year_selected, month_selected, month_end) +
                     timedelta(hours=23, minutes=59, seconds=59))
 

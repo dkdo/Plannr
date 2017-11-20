@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '../css/salary.css';
+import salaryConst from './shared/salary-const';
 
 class SalaryContainer extends React.Component {
     constructor(props) {
@@ -29,9 +30,11 @@ class SalaryContainer extends React.Component {
 
     render() {
         var salaryComponent = null;
+
         if (!this.state.isManager) {
-            salaryComponent = <Salary />
+            salaryComponent = <Salary selectedDate={this.props.selectedDate} type={this.props.type}/>
         }
+
         return(
             <div>{salaryComponent}</div>
         )
@@ -52,14 +55,50 @@ class Salary extends React.Component {
     }
 
     componentWillMount() {
-        this.getWeekSalary();
+        this.getSalary();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.getSalary();
+    }
+
+    getSalary() {
+        switch(this.props.type) {
+            case salaryConst.weekSalary:
+                this.getWeekSalary();
+                break;
+            case salaryConst.monthSalary:
+                this.getMonthSalary();
+                break;
+            default:
+                this.setState({salary: {today_hours: 0, today_salary: 0, week_hours: 0, week_salary: 0,
+                                        month_hours: 0, month_salary: 0, hourly_salary: 0}});
+        }
     }
 
     getWeekSalary() {
+        let data = {selected_date: this.props.selectedDate}
         $.ajax({
             type: 'GET',
-            url: '/salary/compute/',
+            url: '/salary/compute_week/',
             datatype: 'json',
+            data: data,
+            cache: false,
+            success: function(data){
+                console.log('salary');
+                console.log(data);
+                this.setState({'salary': data});
+            }.bind(this)
+        })
+    }
+
+    getMonthSalary() {
+        let data = {selected_date: this.props.selectedDate}
+        $.ajax({
+            type: 'GET',
+            url: '/salary/compute_month/',
+            datatype: 'json',
+            data: data,
             cache: false,
             success: function(data){
                 console.log('salary');

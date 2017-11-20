@@ -4,6 +4,7 @@ import calendrConst from './shared/calendr-const';
 import AddEventContainer from './add-event';
 import EventList from './event-list';
 import SalaryContainer from './salary';
+import salaryConst from './shared/salary-const';
 import '../css/calendr-month.css';
 
 class Calendr extends React.Component {
@@ -60,7 +61,7 @@ class Calendr extends React.Component {
     }
 
     componentDidMount() {
-        this.loadMonthEvents(this.getSelectedDate());
+        this.loadMonthEvents();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -79,7 +80,7 @@ class Calendr extends React.Component {
             state.year = this.state.year - 1;
         }
         Object.assign(state, this.calc.call(null, state.year, state.month));
-        this.setState(state);
+        this.setState(state, () => this.loadMonthEvents());
     }
 
     getNext() {
@@ -92,7 +93,7 @@ class Calendr extends React.Component {
             state.year = this.state.year + 1;
         }
         Object.assign(state, this.calc.call(null, state.year, state.month));
-        this.setState(state);
+        this.setState(state, () => this.loadMonthEvents());
     }
 
     loadDateEvents(date){
@@ -112,12 +113,13 @@ class Calendr extends React.Component {
         })
     }
 
-    loadMonthEvents(date) {
-        var date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0).toISOString();
+    loadMonthEvents() {
+        var date = new Date(this.state.year, this.state.month, 1, 0, 0, 0).toISOString();
         var data = {
             month_date: date
         }
         $.ajax({
+            type: 'GET',
             url: this.props.url_month,
             datatype: 'json',
             data: data,
@@ -126,7 +128,9 @@ class Calendr extends React.Component {
                 this.setState({
                     monthEventList: data
                 });
-                console.log(data)
+                console.log('called montevesnt');
+                console.log(date)
+                console.log(data);
             }.bind(this)
         })
     }
@@ -135,7 +139,7 @@ class Calendr extends React.Component {
         var dayEventList = this.state.dayEventList;
         dayEventList.push(event);
         this.setState({dayEventList: dayEventList});
-        this.loadMonthEvents(this.getSelectedDate());
+        this.loadMonthEvents();
     }
 
     selectDate(year, month, date, element) {
@@ -201,7 +205,7 @@ class Calendr extends React.Component {
                         <tbody>
                             <tr>
                                 <td>
-                                    <SalaryContainer />
+                                    <SalaryContainer type={salaryConst.monthSalary} selectedDate={new Date(this.state.year, this.state.month, 1)} />
                                     <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback}
                                               eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                                               startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
