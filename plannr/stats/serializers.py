@@ -23,10 +23,14 @@ class StatSerializer(serializers.Serializer):
         """
         Update and return an existing Stat instance, given the validated data.
         """
-
+        situation = self.context['situation']
         instance.hours = validated_data.get('hours', instance.hours)
+        instance.total = validated_data.get('total', instance.total)
         instance.taken_shifts = validated_data.get('taken_shifts', instance.taken_shifts)
         instance.given_shifts = validated_data.get('given_shifts', instance.given_shifts)
-        instance.total = validated_data.get('total', instance.total)
+        if situation == 'giver':
+            instance.given_shifts = instance.given_shifts + 1
+        if situation == 'taker':
+            instance.taken_shifts = instance.taken_shifts + 1
         instance.save()
         return instance
