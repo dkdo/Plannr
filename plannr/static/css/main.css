@@ -505,21 +505,15 @@ img.logo-resize {
     border-radius: 5px;
     border: 1px solid #0066ff;
     padding: 10px;
-    max-width: 25vw;
-}
-
-.eventAdder{
-    float: left;
-    width: 100%;
-    padding: 5%;
-}
-
-.eventAdder-info {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .eventAdder-btn {
     text-align: center;
+}
+
+.eventAdder-info {
+    margin-bottom: 5px;
 }
 
 .eventAdder-title {

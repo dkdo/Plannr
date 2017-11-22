@@ -14,13 +14,6 @@
     table-layout: fixed;
 }
 
-    /*.calendr-week-modules tr {
-        width: 100%;
-    }
-    .calendr-week-modules tbody {
-        width: 100%;
-    }*/
-    
     .calendr-week-modules td {
         overflow-y: scroll;
         padding-bottom: 10px;
