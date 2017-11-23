@@ -19,8 +19,8 @@ class MasterProfile extends React.Component {
 			<div className="profile-container">
 				<div className="profile-content-container">
 					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
+					<StatsContainer />
 				</div>
-				<StatsContainer />
 			</div>
 		);
 	}
