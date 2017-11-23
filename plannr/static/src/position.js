@@ -3,20 +3,29 @@ import ReactDOM from 'react-dom';
 import DjangoCSRFToken from './shared/csrf';
 import { getCookie } from './shared/csrf_methods';
 import '../css/position.css';
+import { isManager } from './shared/isManager.js';
 
 export default class MasterPosition extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+        isManager: false,
     };
 
   }
 
+  componentWillMount() {
+      isManager((isUserManager) => this.setState({isManager: isUserManager}));
+  }
+
   render() {
+      var positionContainer = null;
+      if (this.state.isManager) {
+          positionContainer = <Position getpos_url={this.props.getPositions_url}/>
+      }
     return (
       <div className="position-content-container">
-        <Position getpos_url={this.props.getPositions_url}/>
+        {positionContainer}
       </div>
 
     );
