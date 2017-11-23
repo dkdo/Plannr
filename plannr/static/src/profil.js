@@ -5,6 +5,7 @@ import '../css/profil.css';
 import { isPhoneValid } from './shared/isPhoneValid';
 import { getCookie } from './shared/getCookie';
 import {isBirthDateValid } from './shared/isBirthDateValid';
+import StatsContainer from './stats.js';
 
 class MasterProfile extends React.Component {
 	constructor(props) {
@@ -18,6 +19,7 @@ class MasterProfile extends React.Component {
 			<div className="profile-container">
 				<div className="profile-content-container">
 					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
+					<StatsContainer />
 				</div>
 			</div>
 		);

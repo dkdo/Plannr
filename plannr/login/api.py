@@ -14,6 +14,8 @@ from organization.models import Organization
 from profil.serializers import ProfileSerializer
 from profil.models import Profile
 from employees.models import Employees
+from stats.models import Stat
+from stats.serializers import StatSerializer
 
 
 class SignOutRequest(APIView):
@@ -66,10 +68,13 @@ class SignUpRequest(APIView):
             organization_name = str.lower(organization_name)
             org_db = Organization.objects.filter(organization_name=organization_name)
 
+            #if organization already exists
             if org_db:
                 org_id = org_db[0].id
                 manager = Profile.objects.get(ismanager=True, organization_id=org_id)
                 Employees.objects.create(manager_id=manager.user_id, employee_id=user.id)
+
+            #if the organization does not exist
             else:
                 org_data = {'organization_name': organization_name}
                 org_serializer = OrganizationSerializer(data=org_data)
@@ -80,6 +85,10 @@ class SignUpRequest(APIView):
                     ismanager = True
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            if ismanager is False:
+                stat_serializer = StatSerializer(data={}, context={'user': user})
+                stat_serializer.is_valid(raise_exception=True)
 
             prof_data = {'first_name': first_name,
                          'last_name': last_name,
@@ -92,7 +101,9 @@ class SignUpRequest(APIView):
             if prof_serializer.is_valid():
                 user.save()
                 prof_serializer.save()
+                stat_serializer.save()
                 print "PROFILE CREATED SUCCESSFULLY"
+                print "STAT PROFILE SUCCESS"
                 return Response(status=status.HTTP_201_CREATED)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)

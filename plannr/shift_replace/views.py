@@ -11,6 +11,8 @@ from profil.serializers import ProfileSerializer
 from profil.views import is_manager
 from shift_replace.models import Shift
 from shift_replace.serializers import ShiftSerializer
+from stats.models import Stat
+from stats.serializers import StatSerializer
 
 
 class ShiftCenterList(APIView):
@@ -112,8 +114,17 @@ class ShiftManagerApprove(APIView):
             shift_serializer = ShiftSerializer(shift, data=shift_data, partial=True)
 
             event = Event.objects.get(id=shift.event_id)
+            current_emp_id = event.employee_id
             event_data = {'employee_id': shift.interested_emp_id}
             event_serializer = EventSerializer(event, data=event_data, partial=True)
+
+            stat_giver = Stat.objects.get(user_id=current_emp_id)
+            stat_taker = Stat.objects.get(user_id=shift.interested_emp_id)
+            stat_giver_serializer = StatSerializer(stat_giver, data={}, context={'situation': 'giver'})
+            stat_taker_serializer = StatSerializer(stat_taker, data={}, context={'situation': 'taker'})
+            if stat_giver_serializer.is_valid() and stat_taker_serializer.is_valid():
+                stat_giver_serializer.save()
+                stat_taker_serializer.save()
 
             if shift_serializer.is_valid() and event_serializer.is_valid():
                 shift_serializer.save()
