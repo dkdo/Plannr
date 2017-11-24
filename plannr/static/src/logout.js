@@ -67,7 +67,4 @@ MasterLogout.defaultProps = {
 	logout_url: '/login/logoutaction/',
 };
 
-ReactDOM.render(     
-  <MasterLogout />,
-  document.getElementById('logout-option')        
-);
+export default MasterLogout
