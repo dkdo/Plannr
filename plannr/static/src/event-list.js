@@ -17,6 +17,9 @@ class EventList extends React.Component {
                         <li>
                             <p><b>Ends:</b> {end_date}</p>
                         </li>
+                        <li>
+                            <p><b>Employee:</b>  {event.employee_profile.last_name}, {event.employee_profile.first_name}</p>
+                        </li>
                     </ul>
                 </div>
             )
