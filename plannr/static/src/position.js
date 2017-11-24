@@ -24,8 +24,11 @@ export default class MasterPosition extends React.Component {
           positionContainer = <Position getpos_url={this.props.getPositions_url}/>
       }
     return (
-      <div className="position-content-container">
-        {positionContainer}
+      <div>
+        <h1 className="page-title">Position</h1>
+        <div className="position-content-container">
+          {positionContainer}
+        </div>
       </div>
 
     );
