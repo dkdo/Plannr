@@ -5,7 +5,7 @@
 .empl-grid {
     display: grid;
     grid-template-columns: [col-one] 30% [col-two] 30% [col-three] 30%;
-    grid-column-gap: 2%;
+    grid-column-gap: 5%;
     grid-row-gap: 10px;
     background-color: #fff;
     color: black;
