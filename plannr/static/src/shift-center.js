@@ -305,11 +305,11 @@ class ShiftBlock extends React.Component {
         }
 
         if(this.props.currentProfile) {
-            currentEmployeeName = <div><b>Current:</b> {this.props.currentProfile.first_name}, {this.props.currentProfile.last_name}</div>
+            currentEmployeeName = <div><b>Current:</b> {this.props.currentProfile.first_name} {this.props.currentProfile.last_name}</div>
         }
 
         if(this.props.interestedProfile) {
-            interestedEmployeeName = <div><b>Interested:</b> {this.props.interestedProfile.first_name}, {this.props.interestedProfile.last_name}</div>
+            interestedEmployeeName = <div><b>Interested:</b> {this.props.interestedProfile.first_name} {this.props.interestedProfile.last_name}</div>
         }
 
         return(
