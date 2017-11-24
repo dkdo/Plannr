@@ -142,7 +142,8 @@ class CalendrWeek extends React.Component {
                                 <SalaryContainer type={salaryConst.weekSalary} selectedDate={this.state.thisWeekMonday} />
                                 <AddEventContainer selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback}
                                                    eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
-                                                   startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
+                                                   startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}
+                                                   events={this.state.weekEventsList}/>
                             </td>
                         </tr>
                         <tr>

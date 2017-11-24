@@ -23,7 +23,8 @@ class AddEventContainer extends React.Component {
         if (this.state.isManager) {
             addEventComponent = <AddEvent selectedDate={this.props.selectedDate} addEventCallback={this.props.addEventCallback}
                                           eventStartTime={this.props.eventStartTime} eventEndTime={this.props.eventEndTime} eventTitle={this.props.eventTitle}
-                                          startTimeChange={this.props.startTimeChange} endTimeChange={this.props.endTimeChange} titleChange={this.props.titleChange}/>
+                                          startTimeChange={this.props.startTimeChange} endTimeChange={this.props.endTimeChange} titleChange={this.props.titleChange}
+                                          events={this.props.events}/>
         }
         return(
             <div>{addEventComponent}</div>
@@ -44,6 +45,8 @@ class AddEvent extends React.Component {
         this.titleChange = this.titleChange.bind(this);
         this.handleEmployeeChange = this.handleEmployeeChange.bind(this);
         this.addEvent = this.addEvent.bind(this);
+        this.checkShiftFit = this.checkShiftFit.bind(this);
+        this.doesShiftOverlap = this.doesShiftOverlap.bind(this);
     }
 
     componentWilldMount() {
@@ -56,10 +59,33 @@ class AddEvent extends React.Component {
         }
     }
 
+    checkShiftFit() {
+        for(let i = 0; i < this.props.events.length; i++){
+            if(this.props.events[i].employee_profile.user_id == this.state.employeeId){
+                console.log('found shift stuff')
+                if(this.doesShiftOverlap(new Date(this.parseEventStartDate()), new Date(this.parseEventEndDate()),
+                                    new Date(this.props.events[i].start_date), new Date(this.props.events[i].end_date))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    doesShiftOverlap(newStart, newEnd, oldStart, oldEnd) {
+        var startsAfter = newStart >= oldStart && newStart < oldEnd;
+        var startsBefore = newStart <= oldStart && newEnd <= oldEnd;
+        var englobes = newStart <= oldStart && newEnd >= oldStart;
+        var isIn = newStart >= oldStart && newEnd <= oldEnd;
+        return startsAfter || startsBefore || englobes || isIn;
+    }
 
     addEvent(){
         if (this.props.eventTitle == ''){
             alert('Select a date and/or add a title!');
+        }
+        else if (!this.checkShiftFit()) {
+            alert('Employee already has an overlapping shift at that time period!');
         }
         else{
             var start_date = this.parseEventStartDate().toISOString();

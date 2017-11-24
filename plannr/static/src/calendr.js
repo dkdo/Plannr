@@ -202,7 +202,8 @@ class Calendr extends React.Component {
                                 <SalaryContainer type={salaryConst.monthSalary} selectedDate={new Date(this.state.year, this.state.month, 1)} />
                                 <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback}
                                     eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
-                                    startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}/>
+                                    startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}
+                                    events={this.state.dayEventList}/>
                             </div>
                             <div className="col-sm-6">
                                 <div className="event-list-title"><b><u>Shifts</u></b></div>
