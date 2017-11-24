@@ -27,6 +27,7 @@ class ShiftCenter extends React.Component {
             datatype: 'json',
             cache: false,
             success: function(data){
+                console.log(data);
                 this.setState({shifts: data});
             }.bind(this)
         })
@@ -167,13 +168,15 @@ class SearchingShifts extends React.Component {
 
     getCurrentShiftBlocks() {
         var shiftBlocks = [];
+        var showButton = false;
         var shifts = this.props.shifts.slice(0);
         for(var i = 0; i < shifts.length; i++) {
+            showButton = !shifts[i].is_current_user
             shiftBlocks.push(
                 <ShiftBlock id={shifts[i].shift_detail.id} key={shifts[i].shift_detail.id}
                             shift={shifts[i].shift} shift_detail={shifts[i].shift_detail}
                             handleClick={this.handleRequest} buttonText={this.buttonText}
-                            currentProfile={shifts[i].current_profile} />
+                            currentProfile={shifts[i].current_profile} showButton={showButton}/>
             )
         }
         return shiftBlocks;
