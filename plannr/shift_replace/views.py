@@ -51,9 +51,11 @@ class ShiftCenterList(APIView):
             shift_detail = next((sd for sd in shifts_details_serializer.data if sd.get('id') == shift.get('event_id')), None)
             current_profile = next((p for p in profiles_serializer.data if p.get('user_id') == shift_detail.get('employee_id')), None)
             if shift.get('searching'):
+                is_current_user = (shift_detail.get('employee_id') == user_id)
                 shifts['searching'].append({'shift': shift,
                                             'shift_detail': shift_detail,
-                                            'current_profile': current_profile})
+                                            'current_profile': current_profile,
+                                            'is_current_user': is_current_user})
             elif not shift.get('manager_approved'):
                 interested_profile = next((p for p in profiles_serializer.data if p.get('user_id') == shift.get('interested_emp_id')), None)
                 shifts['waiting_approval'].append({'shift': shift,
