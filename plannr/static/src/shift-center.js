@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import {getCookie} from './shared/getCookie';
 import '../css/shift-center.css';
 import {isManager} from './shared/isManager';
+import Modal from 'react-modal';
+import centerModal from './shared/centerModal';
 
 class ShiftCenter extends React.Component {
     constructor(props){
@@ -86,6 +88,7 @@ class CurrentShifts extends React.Component {
     constructor(props) {
         super(props);
         this.buttonText = 'Look for Replacement';
+        this.modalText = 'Do you wish to look for replacement for this shift?';
         this.handleSearch = this.handleSearch.bind(this);
     }
 
@@ -115,7 +118,8 @@ class CurrentShifts extends React.Component {
         for(var i = 0; i < shifts.length; i++){
             shiftBlocks.push(
                 <ShiftBlock id={shifts[i].id} key={shifts[i].id} shift_detail={shifts[i]}
-                            handleClick={this.handleSearch} buttonText={this.buttonText} />
+                            handleClick={this.handleSearch} buttonText={this.buttonText}
+                            modalText={this.modalText} />
             )
         }
         return shiftBlocks;
@@ -143,6 +147,7 @@ class SearchingShifts extends React.Component {
     constructor(props) {
         super(props);
         this.buttonText = 'Request';
+        this.modalText = 'Do you wish to request this shift?';
         this.handleRequest = this.handleRequest.bind(this);
     }
 
@@ -176,7 +181,8 @@ class SearchingShifts extends React.Component {
                 <ShiftBlock id={shifts[i].shift_detail.id} key={shifts[i].shift_detail.id}
                             shift={shifts[i].shift} shift_detail={shifts[i].shift_detail}
                             handleClick={this.handleRequest} buttonText={this.buttonText}
-                            currentProfile={shifts[i].current_profile} showButton={showButton}/>
+                            currentProfile={shifts[i].current_profile} showButton={showButton}
+                            modalText={this.modalText} />
             )
         }
         return shiftBlocks;
@@ -204,6 +210,7 @@ class WaitingApprovalShifts extends React.Component {
     constructor(props) {
         super(props);
         this.buttonText = 'Approve';
+        this.modalText = 'Do you wish to approve this shift replacement?';
         this.handleApproval = this.handleApproval.bind(this);
     }
 
@@ -236,7 +243,8 @@ class WaitingApprovalShifts extends React.Component {
                             shift={shifts[i].shift} shift_detail={shifts[i].shift_detail}
                             handleClick={this.handleApproval} showButton={this.props.isManager}
                             buttonText={this.buttonText} currentProfile={shifts[i].current_profile}
-                            interestedProfile={shifts[i].interested_profile} />
+                            interestedProfile={shifts[i].interested_profile} 
+                            modalText={this.modalText}/>
             )
         }
         return shiftBlocks;
@@ -263,7 +271,12 @@ WaitingApprovalShifts.defaultProps = {
 class ShiftBlock extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            showModal: false,
+        }
         this.onClick = this.onClick.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.openModal = this.openModal.bind(this);
     }
 
     onClick() {
@@ -274,13 +287,21 @@ class ShiftBlock extends React.Component {
         }
     }
 
+    openModal() {
+        this.setState({showModal: true});
+    }
+
+    closeModal() {
+        this.setState({showModal: false});
+    }
+
     render() {
         var button = null;
         var currentEmployeeName = null;
         var interestedEmployeeName = null;
 
         if(this.props.showButton) {
-            button = <button className="plannr-btn btn" onClick={this.onClick}>{this.props.buttonText}</button>;
+            button = <button className="plannr-btn btn" onClick={this.openModal}>{this.props.buttonText}</button>;
         }
 
         if(this.props.currentProfile) {
@@ -296,10 +317,10 @@ class ShiftBlock extends React.Component {
                 <h3><u>{this.props.shift_detail.title}</u></h3>
                 <ul className="list-unstyled">
                     <li>
-                        <p><b>Starts:</b> {this.props.shift_detail.start_date}</p>
+                        <p><b>Starts:</b> {new Date(this.props.shift_detail.start_date).toLocaleString()}</p>
                     </li>
                     <li>
-                        <p><b>Ends:</b> {this.props.shift_detail.end_date}</p>
+                        <p><b>Ends:</b> {new Date(this.props.shift_detail.end_date).toLocaleString()}</p>
                     </li>
                     <li>
                         {currentEmployeeName}
@@ -310,6 +331,21 @@ class ShiftBlock extends React.Component {
                     <li>
                         {button}
                     </li>
+                    <Modal
+                        isOpen={this.state.showModal}
+                        onRequestClose={this.closeModal}
+                        contentLabel="Modal"
+                        style={centerModal}>
+                        <div>
+                            <div className="modal-text">
+                                {this.props.modalText}
+                            </div>
+                            <div className="modal-btns">
+                                <button className="plannr-btn btn" onClick={this.onClick}>{this.props.buttonText}</button>
+                                <button className="plannr-btn btn" onClick={this.closeModal}>Cancel</button>
+                            </div>
+                        </div>
+                    </Modal>
                 </ul>
             </div>
         )
