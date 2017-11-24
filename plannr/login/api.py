@@ -101,7 +101,8 @@ class SignUpRequest(APIView):
             if prof_serializer.is_valid():
                 user.save()
                 prof_serializer.save()
-                stat_serializer.save()
+                if not ismanager:
+                    stat_serializer.save()
                 print "PROFILE CREATED SUCCESSFULLY"
                 print "STAT PROFILE SUCCESS"
                 return Response(status=status.HTTP_201_CREATED)
