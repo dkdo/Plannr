@@ -6,6 +6,7 @@ import { isPhoneValid } from './shared/isPhoneValid';
 import { getCookie } from './shared/getCookie';
 import {isBirthDateValid } from './shared/isBirthDateValid';
 import StatsContainer from './stats.js';
+import '../css/stats.css';
 
 class MasterProfile extends React.Component {
 	constructor(props) {
