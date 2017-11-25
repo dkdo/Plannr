@@ -15,6 +15,7 @@ import ShiftCenter from './shift-center';
 import MasterLogout from './logout';
 import { isManager } from './shared/isManager';
 import Sidebar from './sidebar'
+import MasterReward from './rewards';
 
 
 class App extends React.Component {
@@ -45,6 +46,7 @@ class App extends React.Component {
                         <Route path="/position" component={MasterPosition}/>
                         <Route path="/employees" component={Employees}/>
                         <Route path="/shift-center" component={ShiftCenter}/>
+                        <Route path="/rewards" component={MasterReward}/>
                        </div>
                   </div>
             </Router>

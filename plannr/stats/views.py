@@ -17,15 +17,17 @@ class StatList(APIView):
             events = Event.objects.filter(end_date__lte=timezone.now(), employee_id=user_id)
             print '{} {}'.format('total events:', events)
             total_hours = 0.0
+            shifts = 0
             if events:
                 for e in events:
                     event_seconds = e.end_date - e.start_date
                     print '{} {}'.format('event_seconds', event_seconds.seconds)
                     event_hours = float(event_seconds.seconds) / float(3600)
                     total_hours += event_hours
+                    shifts += 1
                 print '{} {}'.format('total_hours:', total_hours)
             stat = Stat.objects.get(user_id=user_id)
-            stat_data = {'hours': total_hours}
+            stat_data = {'hours': total_hours, 'shifts': shifts}
             stat_serializer = StatSerializer(stat, data=stat_data, context={'situation': 'other'}, partial=True)
 
             if stat_serializer.is_valid():
