@@ -1,0 +1,58 @@
+.reward-add-btn {
+    margin-bottom: 15px;
+}
+.reward-content-container {
+    margin-top: 50px;
+}
+
+.reward-name {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.reward-info-input {
+    text-indent: 10px;
+}
+
+.reward-info-label {
+    min-width: 100px;
+    background-color: #fff;
+    color: #0066ff;
+}
+
+.reward-pane {
+    width: 50%;
+    float: left;
+}
+
+.reward-group {
+    width:100%;
+    margin-bottom: 30px;
+}
+
+.reward-save-btn-wrapper {
+    width: 100%;
+    text-align: center;
+}
+
+.list-group {
+    height: 70vh;
+    overflow : auto;
+}
+
+.reward-list-item {
+    color: #0066ff !important;
+}
+
+.right-reward-pane-content {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    border-left: 1px solid #999999;
+    padding: 4% 7%;
+}
+
+.reward-search-btn {
+    color: #0066ff;
+}

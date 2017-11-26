@@ -4,6 +4,7 @@ from stats.models import Stat
 class StatSerializer(serializers.Serializer):
     user_id = serializers.IntegerField(read_only=True)
     hours = serializers.FloatField(required=False)
+    shifts = serializers.IntegerField(required=False)
     taken_shifts = serializers.IntegerField(required=False)
     given_shifts = serializers.IntegerField(required=False)
     total = serializers.FloatField(required=False)
@@ -25,6 +26,7 @@ class StatSerializer(serializers.Serializer):
         """
         situation = self.context['situation']
         instance.hours = validated_data.get('hours', instance.hours)
+        instance.shifts = validated_data.get('shifts', instance.shifts)
         instance.total = validated_data.get('total', instance.total)
         instance.taken_shifts = validated_data.get('taken_shifts', instance.taken_shifts)
         instance.given_shifts = validated_data.get('given_shifts', instance.given_shifts)

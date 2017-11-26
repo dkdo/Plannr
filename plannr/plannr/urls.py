@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^salary/', include('salary.urls')),
     url(r'^shift/', include('shift_replace.urls')),
     url(r'^stats/', include('stats.urls')),
+    url(r'^rewards/', include('rewards.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^(%s)?$' % '|'.join(react_routes), CalendrView.as_view()),
     url(r'^.*$', RedirectView.as_view(url='/', permanent=False), name='index'),

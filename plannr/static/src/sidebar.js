@@ -70,6 +70,10 @@ class Sidebar extends React.Component {
                         <li>
                             <a href="/position">Position</a>
                         </li> : null}
+                    {this.state.isManager ?
+                        <li>
+                            <a href="/rewards">Rewards</a>
+                        </li> : null}
                 </ul>
                 <div className="sidebar-logout">
                   <MasterLogout />

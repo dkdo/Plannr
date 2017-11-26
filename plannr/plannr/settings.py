@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'employees.apps.EmployeesConfig',
     'salary.apps.SalaryConfig',
     'shift_replace.apps.ShiftReplaceConfig',
-    'stats.apps.StatsConfig'
+    'stats.apps.StatsConfig',
+    'rewards.apps.RewardsConfig',
 ]
 
 MIDDLEWARE = [
@@ -152,5 +153,6 @@ REACT_ROUTES = [
     'position',
     'employees',
     'shift-center',
-    'stats'
+    'stats',
+    'rewards',
 ]
