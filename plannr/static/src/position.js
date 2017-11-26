@@ -140,7 +140,7 @@ class Position extends React.Component {
 
   sanitizeInput() {
       var isGood = true;
-      if(isNaN(this.state.newSalary) || isNaN(this.state.selectedSalary)) {
+      if(!isNaN(this.state.newSalary) || !isNaN(this.state.selectedSalary)) {
           isGood = false;
       }
       if(this.state.newTitle.length > 100 || this.state.newDep.length > 100 || this.state.selectedDep.length > 100) {
@@ -252,7 +252,7 @@ class Position extends React.Component {
                   }
               }.bind(this),
               error: function() {
-                  alert("ERROR ADDING NEW POSITION");
+                  alert("ERROR UPDATING POSITION");
               }.bind(this)
           })
       }

@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from profil.views import is_manager
 from rewards.models import Reward
 from rewards.serializers import RewardSerializer
+from profil.models import Profile
 
 class RewardList(APIView):
     def get(self, request, format=None):

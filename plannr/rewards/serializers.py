@@ -21,6 +21,6 @@ class RewardSerializer(serializers.Serializer):
         """
         print "went into the reward update method"
         instance.name = validated_data.get('name', instance.name)
-        instance.required_points = validated_data.get('salary', instance.required_points)
+        instance.required_points = validated_data.get('required_points', instance.required_points)
         instance.save()
         return instance
