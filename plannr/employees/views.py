@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from profil.models import Profile
 from profil.serializers import ProfileSerializer
+from profil.views import is_manager
 
 
 class EmployeesList(APIView):

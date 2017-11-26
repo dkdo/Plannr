@@ -14,6 +14,7 @@ class EmployeesList extends React.Component {
             newEmployees: [],
             positionOptions: [],
             positionChanges: [],
+            newStats: {},
         };
         this.handlePositionChange = this.handlePositionChange.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
@@ -23,6 +24,20 @@ class EmployeesList extends React.Component {
     componentWillMount() {
         this.loadEmployees();
         this.loadPositions();
+        this.loadStats();
+    }
+
+    loadStats() {
+        $.ajax({
+            url: this.props.statsUrl,
+            datatype: 'json',
+            cache: false,
+            success: function(data){
+                console.log('stats');
+                console.log(data);
+                this.getEmployeeStats(data);
+            }.bind(this)
+        })
     }
 
     loadEmployees() {
@@ -51,6 +66,20 @@ class EmployeesList extends React.Component {
                 this.getPositionOptions(data);
             }.bind(this),
         })
+    }
+
+    getEmployeeStats(stats) {
+        var employeeStats = {};
+        for(var i = 0; i < stats.length; i++) {
+            var hours = stats[i].hours * 10;
+            var taken = stats[i].taken_shifts * 30;
+            var given = stats[i].given_shifts * 30;
+            var total_pts = hours + taken - given;
+            employeeStats[stats[i].user_id] = total_pts;
+        }
+        console.log('changed stats');
+        console.log(JSON.stringify(employeeStats));
+        this.setState({newStats: employeeStats});
     }
 
     getPositionOptions(positions) {
@@ -137,7 +166,7 @@ class EmployeesList extends React.Component {
                 </div>
                 <div className="employees-list">
                     <Employees employees={this.state.newEmployees} positionOptions={this.state.positionOptions}
-                               handlePositionChange={this.handlePositionChange} />
+                               handlePositionChange={this.handlePositionChange} stats={this.state.newStats}/>
                 </div>
             </div>
         )
@@ -147,7 +176,8 @@ class EmployeesList extends React.Component {
 EmployeesList.defaultProps = {
     url: '/employees/',
     positionsUrl: '/position/positionList/',
-    positionUpdateUrl: '/profil/changePosition/'
+    positionUpdateUrl: '/profil/changePosition/',
+    statsUrl: '/stats/updateStatsList/',
 };
 
 class Employees extends React.Component {
@@ -163,10 +193,13 @@ class Employees extends React.Component {
         var employeeCards = [];
         var employees = this.props.employees.slice(0);
         for(var i = 0; i < employees.length; i++){
+            var user_id = employees[i].user_id;
+            var hasStats = this.props.stats.hasOwnProperty(user_id);
             employeeCards.push(
-                <Employee id={employees[i].user_id} key={employees[i].user_id}
+                <Employee id={user_id} key={employees[i].user_id}
                           employee={employees[i]} positionOptions={this.props.positionOptions}
-                          handlePositionChange={this.props.handlePositionChange} />
+                          handlePositionChange={this.props.handlePositionChange}
+                          totals={hasStats ? this.props.stats[user_id]: 0}/>
             )
         }
         return employeeCards;
@@ -217,6 +250,10 @@ class Employee extends React.Component {
                     <li>
                         <h5>Email:</h5>
                         <p>{this.props.employee.email}</p>
+                    </li>
+                    <li>
+                        <h5>Total Points:</h5>
+                        <p>{this.props.totals}</p>
                     </li>
                 </ul>
             </div>

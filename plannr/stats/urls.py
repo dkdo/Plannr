@@ -4,6 +4,7 @@ from stats import views
 
 urlpatterns = [
     url(r'^stat_list/$', views.StatList.as_view()),
+    url(r'^updateStatsList/$', views.EmployeesStats.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
