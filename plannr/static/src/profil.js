@@ -7,6 +7,7 @@ import { getCookie } from './shared/getCookie';
 import {isBirthDateValid } from './shared/isBirthDateValid';
 import StatsContainer from './stats.js';
 import '../css/stats.css';
+import EmployeeRewardsContainer from './employee-rewards.js';
 
 class MasterProfile extends React.Component {
 	constructor(props) {
@@ -21,6 +22,7 @@ class MasterProfile extends React.Component {
 				<div className="profile-content-container">
 					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
 					<StatsContainer />
+					<EmployeeRewardsContainer />
 				</div>
 			</div>
 		);

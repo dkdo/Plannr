@@ -16,7 +16,8 @@ class Reward(models.Model):
 class Employee_Rewards(models.Model):
     reward = models.ForeignKey(Reward, on_delete=models.CASCADE, null=False)
     employee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False)
-    points = models.IntegerField()
+    needed_points = models.IntegerField()
+    emp_points = models.IntegerField()
 
     class Meta:
         unique_together = ['reward', 'employee']
