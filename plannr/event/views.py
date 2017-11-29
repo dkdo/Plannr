@@ -67,7 +67,7 @@ class MonthEvents(APIView):
         date_selected = parse(date_selected)
 
         if date_selected.hour != 0:
-            offset = timedelta(hours=date_selected.hour, seconds=1)
+            offset = timedelta(hours=date_selected.hour)
         else:
             offset = timedelta(hours=0)
 
@@ -77,9 +77,9 @@ class MonthEvents(APIView):
         [month_start, month_end] = calendar.monthrange(year_selected,
                                                        month_selected)
 
-        start_date = date(year_selected, month_selected, 1)
-        end_date = (date(year_selected, month_selected, month_end) +
-                    timedelta(hours=23, minutes=59, seconds=59))
+        start_date = datetime(year_selected, month_selected, 1) + offset
+        end_date = (datetime(year_selected, month_selected, month_end) +
+                    timedelta(hours=24) + offset)
 
         user_id = request.user.id
         user_manager = is_manager(request)
@@ -96,10 +96,14 @@ class MonthEvents(APIView):
         employees = events.values('employee_id')
         employee_profiles = Profile.objects.filter(user_id__in=employees)
 
-        events_list = [[] for x in range(month_end)]
+        events_list = [[] for x in range(month_end + 1)]
 
         for event in serializer.data:
-            day = (parse(event.get('start_date')) - offset).day
+            if parse(event.get('start_date')).month != month_selected:
+                day = month_end
+            else:
+                day = (parse(event.get('start_date')) - offset).day
+
             event_employee = next((e for e in employee_profiles if e.user_id == event.get('employee_id')), None)
             event_employee = ProfileSerializer(event_employee)
             event.update({'employee_profile': event_employee.data})
