@@ -37,6 +37,7 @@ class StatsContainer extends React.Component {
             cache: false,
             success: function(data){
                 if(data != '') {
+                    console.log(data);
                     this.setState(data);
                 }
             }.bind(this),

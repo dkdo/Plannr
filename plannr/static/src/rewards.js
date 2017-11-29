@@ -88,7 +88,7 @@ class Reward extends React.Component {
   handleRewardClick(event) {
       //if the one clicked is not the same as the one being viewed right now
       if (event.target.id != this.state.selectedId) {
-          var rewards = this.state.rewardList;
+          var rewards = this.state.rewardList.slice(0);
           for (var i = 0; i < rewards.length; i++) {
               var reward = rewards[i];
               if (reward.id == event.target.id) {
@@ -124,7 +124,7 @@ class Reward extends React.Component {
   searchReward(event) {
       var filter = this.state.searchFilter;
       var filteredRewards = [];
-      var list = this.state.fixedRewardList;
+      var list = this.state.fixedRewardList.slice(0);
       for(var i = 0; i < list.length; i++) {
           var reward = list[i];
           if(reward.name.indexOf(filter) > -1) {
@@ -134,12 +134,29 @@ class Reward extends React.Component {
       this.setState({rewardList: filteredRewards});
   }
 
-  sanitizeInput() {
+  addSanitize() {
+      console.log('addSanitize method');
       var isGood = true;
-      if(!isNaN(this.state.newPoints) || !isNaN(this.state.selectedPoints)) {
+      if(isNaN(this.state.newPoints) || this.state.newPoints == '') {
+          console.log('went into addSanitize for the points');
           isGood = false;
       }
-      if(this.state.newName.length > 100 || this.state.selectedName.length > 100) {
+      if(this.state.newName.length > 100 || this.state.newName.length == 0) {
+          console.log('went into addSanitize for the name')
+          isGood = false;
+      }
+      return isGood;
+  }
+
+  updateSanitize() {
+      console.log('updateSanitize method');
+      var isGood = true;
+      if(isNaN(this.state.selectedPoints) || this.state.selectedPoints == '') {
+          console.log('went into updateSanitize for the points');
+          isGood = false;
+      }
+      if(this.state.selectedName.length > 100 || this.state.selectedName.length == 0) {
+          console.log('went into updateSanitize for the name')
           isGood = false;
       }
       return isGood;
@@ -156,7 +173,7 @@ class Reward extends React.Component {
   }
 
   addNewReward(event) {
-      var canAdd = this.sanitizeInput();
+      var canAdd = this.addSanitize();
       if (canAdd) {
           var inData = {
               name: this.state.newName,
@@ -176,15 +193,16 @@ class Reward extends React.Component {
               cache: false,
               success: function(data){
                   if(data != "") {
-                      var rewards = this.state.fixedRewardList;
-                      var filteredRewards = this.state.rewardList;
+                      var rewards = this.state.fixedRewardList.slice(0);
+                      var filteredRewards = this.state.rewardList.slice(0);
                       rewards.push(data);
                       var putInFiltered = this.appliesToSearch(data);
                       if(putInFiltered) {
                           filteredRewards.push(data);
                       }
                       this.setState({fixedRewardList: rewards,
-                      newName: '', newPoints: '',
+                      newName: '',
+                      newPoints: '',
                       rewardList: filteredRewards});
                       alert('Reward has been succesfully added!')
                   }
@@ -201,7 +219,7 @@ class Reward extends React.Component {
   }
 
   updateRewardList() {
-      var rewards = this.state.rewardList;
+      var rewards = this.state.rewardList.slice(0);
       if (this.state.selectedId != 0) {
           var id = this.state.selectedId;
           for(var i = 0; i < rewards.length; i++) {
@@ -216,7 +234,7 @@ class Reward extends React.Component {
   }
 
   modifyReward(event) {
-      var canSave = this.sanitizeInput();
+      var canSave = this.updateSanitize();
       if (canSave) {
           var inData = {
               id: this.state.selectedId,

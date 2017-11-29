@@ -91,7 +91,7 @@ class Position extends React.Component {
   handlePositionClick(event) {
       //if the one clicked is not the same as the one being viewed right now
       if (event.target.id != this.state.selectedId) {
-          var positions = this.state.positionList;
+          var positions = this.state.positionList.slice(0);
           for (var i = 0; i < positions.length; i++) {
               var pos = positions[i];
               if (pos.id == event.target.id) {
@@ -128,7 +128,7 @@ class Position extends React.Component {
   searchPosition(event) {
       var filter = this.state.searchFilter;
       var filteredPositions = [];
-      var list = this.state.fixedPositionList;
+      var list = this.state.fixedPositionList.slice(0);
       for(var i = 0; i < list.length; i++) {
           var position = list[i];
           if(position.title.indexOf(filter) > -1) {
@@ -138,12 +138,23 @@ class Position extends React.Component {
       this.setState({positionList: filteredPositions});
   }
 
-  sanitizeInput() {
+  addSanitize() {
       var isGood = true;
-      if(!isNaN(this.state.newSalary) || !isNaN(this.state.selectedSalary)) {
+      if(isNaN(this.state.newSalary) || this.state.newSalary == '') {
           isGood = false;
       }
-      if(this.state.newTitle.length > 100 || this.state.newDep.length > 100 || this.state.selectedDep.length > 100) {
+      if(this.state.newTitle.length > 100 || this.state.newDep.length > 100 || this.state.newTitle.length == 100) {
+          isGood = false;
+      }
+      return isGood;
+  }
+
+  updateSanitize() {
+      var isGood = true;
+      if(isNaN(this.state.selectedSalary) || this.state.selectedSalary == '') {
+          isGood = false;
+      }
+      if(this.state.selectedTitle.length > 100 || this.state.selectedDep.length > 100 || this.state.selectedTitle.length == 0) {
           isGood = false;
       }
       return isGood;
@@ -160,7 +171,7 @@ class Position extends React.Component {
   }
 
   addNewPosition(event) {
-      var canAdd = this.sanitizeInput();
+      var canAdd = this.addSanitize();
       if (canAdd) {
           var inData = {
               id: -1,
@@ -182,8 +193,8 @@ class Position extends React.Component {
               cache: false,
               success: function(data){
                   if(data != "") {
-                      var positions = this.state.fixedPositionList;
-                      var filteredPositions = this.state.positionList;
+                      var positions = this.state.fixedPositionList.slice(0);
+                      var filteredPositions = this.state.positionList.slice(0);
                       positions.push(data);
                       var putInFiltered = this.appliesToSearch(data);
                       if(putInFiltered) {
@@ -207,7 +218,7 @@ class Position extends React.Component {
   }
 
   updatePositionList() {
-      var positions = this.state.positionList;
+      var positions = this.state.positionList.slice(0);
       if (this.state.selectedId != 0) {
           var id = this.state.selectedId;
           for(var i = 0; i < positions.length; i++) {
@@ -225,7 +236,7 @@ class Position extends React.Component {
   }
 
   modifyPosition(event) {
-      var canSave = this.sanitizeInput();
+      var canSave = this.updateSanitize();
       if (canSave) {
           var inData = {
               id: this.state.selectedId,

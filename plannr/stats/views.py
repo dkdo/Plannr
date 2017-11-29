@@ -16,8 +16,9 @@ class StatList(APIView):
         if not is_user_manager:
             user_id = request.user.id
             stat_serializer = update_stats(user_id)
-            if not stat_serializer:
+            if stat_serializer is not None:
                 if stat_serializer.is_valid():
+                    print "stat_serializer is valid"
                     stat_serializer.save()
                     return Response(stat_serializer.data)
                 return Response(stat_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -52,8 +53,10 @@ def update_stats(user_id):
             shifts += 1
         print '{} {}'.format('total_hours:', total_hours)
     if Stat.objects.filter(user_id=user_id):
+        print "this user has stats"
         stat = Stat.objects.get(user_id=user_id)
         stat_data = {'hours': total_hours, 'shifts': shifts}
+        print '{} {}'.format('stat_data: ', stat_data)
         stat_serializer = StatSerializer(stat, data=stat_data, context={'situation': 'other'}, partial=True)
         return stat_serializer
     return None
