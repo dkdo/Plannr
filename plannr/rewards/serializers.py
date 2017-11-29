@@ -28,8 +28,8 @@ class RewardSerializer(serializers.Serializer):
 
 class Employee_RewardsSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    reward_id = serializers.IntegerField(required=True)
-    employee_id = serializers.IntegerField(required=True)
+    reward_id = serializers.IntegerField(required=False)
+    employee_id = serializers.IntegerField(required=False)
     needed_points = serializers.IntegerField(required=False)
     emp_points = serializers.IntegerField(required=False)
 

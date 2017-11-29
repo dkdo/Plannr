@@ -16,11 +16,11 @@ class EmployeeRewardsContainer extends React.Component {
         isManager((isUserManager) => this.setState({isManager: isUserManager}));
         if(!this.state.isManager) {
             this.updateRewards();
-            this.getRewards();
         }
     }
 
     updateRewards() {
+        this.setState({postFinished: false});
         var csrfToken = getCookie('csrftoken');
         $.ajaxSetup({
             beforeSend: function(xhr, settings) {
@@ -38,9 +38,11 @@ class EmployeeRewardsContainer extends React.Component {
             cache: false,
             success: function(data){
                 console.log('updated the rewards successfully');
+                this.getRewards();
             }.bind(this),
             error: function() {
                 console.log("something went wrong with the rewards update");
+                this.getRewards();
             }.bind(this)
         })
     }
@@ -53,14 +55,20 @@ class EmployeeRewardsContainer extends React.Component {
             success: function(data){
                 console.log('rewards');
                 console.log(data);
-                // this.setState({'allRewards': data.slice(0)});
+                if(data != '') {
+                    this.setState({'allRewards': data.slice(0)});
+                }
             }.bind(this)
         })
     }
 
     render() {
         return(
-            <div>
+            <div className="employee-rewards-container">
+                <h3>Earned Rewards</h3>
+                <div className="employee-rewards-list">
+                    <EmployeeRewards rewards={this.state.allRewards}/>
+                </div>
             </div>
         );
     }
@@ -68,19 +76,26 @@ class EmployeeRewardsContainer extends React.Component {
 
 EmployeeRewardsContainer.defaultProps = {
     rewardsUrl: '/rewards/assignRewards/',
-    points: 45,
+    points: 0,
 };
 
 class EmployeeRewards extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
+
     }
 
     render() {
+        var rewards = this.props.rewards.slice(0);
         return(
-            <div>
-            </div>
+            <ul className="employee-rewards list-unstyled">
+                {rewards.map(reward =>
+                    (<li id={reward.id} key={reward.id}>
+                        <p>{reward.name} || {reward.required_points}</p>
+                    </li>)
+                )}
+            </ul>
         );
     }
 }

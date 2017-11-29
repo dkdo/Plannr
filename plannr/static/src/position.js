@@ -138,12 +138,23 @@ class Position extends React.Component {
       this.setState({positionList: filteredPositions});
   }
 
-  sanitizeInput() {
+  addSanitize() {
       var isGood = true;
-      if(isNaN(this.state.newSalary) || isNaN(this.state.selectedSalary)) {
+      if(isNaN(this.state.newSalary) || this.state.newSalary == '') {
           isGood = false;
       }
-      if(this.state.newTitle.length > 100 || this.state.newDep.length > 100 || this.state.selectedDep.length > 100) {
+      if(this.state.newTitle.length > 100 || this.state.newDep.length > 100 || this.state.newTitle.length == 100) {
+          isGood = false;
+      }
+      return isGood;
+  }
+
+  updateSanitize() {
+      var isGood = true;
+      if(isNaN(this.state.selectedSalary) || this.state.selectedSalary == '') {
+          isGood = false;
+      }
+      if(this.state.selectedTitle.length > 100 || this.state.selectedDep.length > 100 || this.state.selectedTitle.length == 0) {
           isGood = false;
       }
       return isGood;
@@ -160,7 +171,7 @@ class Position extends React.Component {
   }
 
   addNewPosition(event) {
-      var canAdd = this.sanitizeInput();
+      var canAdd = this.addSanitize();
       if (canAdd) {
           var inData = {
               id: -1,
@@ -225,7 +236,7 @@ class Position extends React.Component {
   }
 
   modifyPosition(event) {
-      var canSave = this.sanitizeInput();
+      var canSave = this.updateSanitize();
       if (canSave) {
           var inData = {
               id: this.state.selectedId,

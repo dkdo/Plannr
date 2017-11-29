@@ -45,19 +45,17 @@ class RewardList(APIView):
 
 class AssignRewards(APIView):
     def post(self, request, format=None):
-        print "went into AssignRewards post method"
         if request.user.is_authenticated() and not is_manager(request):
-            print "user is not a manager"
+            print "BLABLABLABLA BLUBLU"
             emp_points = request.POST['points']
-            print '{} {}'.format('user points: ', emp_points);
             user = request.user
-            earned_rewards = Reward.objects.filter(required_points__lte=emp_points)
+            current_rewards = Employee_Rewards.objects.filter(employee_id=user.id).values('reward_id')
+            earned_rewards = Reward.objects.filter(required_points__lte=emp_points).exclude(id__in=current_rewards)
             print '{} {}'.format('earned_rewards: ', earned_rewards);
             for reward in earned_rewards:
                 r_data = {'reward_id': reward.id,
                           'needed_points': reward.required_points,
                           'emp_points': emp_points}
-                print '{} {}'.format('r_data: ', r_data);
                 serializer = Employee_RewardsSerializer(data=r_data, context={'user': user})
                 if serializer.is_valid():
                     print('serializer is valid')
@@ -72,7 +70,7 @@ class AssignRewards(APIView):
             user_id = request.user.id
             rewards_id = Employee_Rewards.objects.filter(employee_id=user_id).values('reward_id')
             if rewards_id:
-                rewards = Rewards.objects.filter(id__in=rewards_id).order_by('id')
+                rewards = Reward.objects.filter(id__in=rewards_id).order_by('id')
                 serializers = RewardSerializer(rewards, many=True)
                 return Response(serializers.data)
             return Response(status=status.HTTP_200_OK)

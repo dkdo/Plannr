@@ -134,12 +134,29 @@ class Reward extends React.Component {
       this.setState({rewardList: filteredRewards});
   }
 
-  sanitizeInput() {
+  addSanitize() {
+      console.log('addSanitize method');
       var isGood = true;
-      if(isNaN(this.state.newPoints) || isNaN(this.state.selectedPoints) || this.state.newPoints == '') {
+      if(isNaN(this.state.newPoints) || this.state.newPoints == '') {
+          console.log('went into addSanitize for the points');
           isGood = false;
       }
-      if(this.state.newName.length > 100 || this.state.selectedName.length > 100 || this.state.newName.length == 0) {
+      if(this.state.newName.length > 100 || this.state.newName.length == 0) {
+          console.log('went into addSanitize for the name')
+          isGood = false;
+      }
+      return isGood;
+  }
+
+  updateSanitize() {
+      console.log('updateSanitize method');
+      var isGood = true;
+      if(isNaN(this.state.selectedPoints) || this.state.selectedPoints == '') {
+          console.log('went into updateSanitize for the points');
+          isGood = false;
+      }
+      if(this.state.selectedName.length > 100 || this.state.selectedName.length == 0) {
+          console.log('went into updateSanitize for the name')
           isGood = false;
       }
       return isGood;
@@ -156,7 +173,7 @@ class Reward extends React.Component {
   }
 
   addNewReward(event) {
-      var canAdd = this.sanitizeInput();
+      var canAdd = this.addSanitize();
       if (canAdd) {
           var inData = {
               name: this.state.newName,
@@ -217,7 +234,7 @@ class Reward extends React.Component {
   }
 
   modifyReward(event) {
-      var canSave = this.sanitizeInput();
+      var canSave = this.updateSanitize();
       if (canSave) {
           var inData = {
               id: this.state.selectedId,
