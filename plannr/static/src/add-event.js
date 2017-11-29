@@ -62,7 +62,6 @@ class AddEvent extends React.Component {
     checkShiftFit() {
         for(let i = 0; i < this.props.events.length; i++){
             if(this.props.events[i].employee_profile.user_id == this.state.employeeId){
-                console.log('found shift stuff')
                 if(this.doesShiftOverlap(new Date(this.parseEventStartDate()), new Date(this.parseEventEndDate()),
                                     new Date(this.props.events[i].start_date), new Date(this.props.events[i].end_date))) {
                     return false;
@@ -74,10 +73,9 @@ class AddEvent extends React.Component {
 
     doesShiftOverlap(newStart, newEnd, oldStart, oldEnd) {
         var startsAfter = newStart >= oldStart && newStart < oldEnd;
-        var startsBefore = newStart <= oldStart && newEnd <= oldEnd;
-        var englobes = newStart <= oldStart && newEnd >= oldStart;
+        var startsBefore = newStart <= oldStart && newEnd > oldStart;
         var isIn = newStart >= oldStart && newEnd <= oldEnd;
-        return startsAfter || startsBefore || englobes || isIn;
+        return startsAfter || startsBefore || isIn;
     }
 
     addEvent(){
@@ -109,7 +107,6 @@ class AddEvent extends React.Component {
                 datatype: 'json',
                 cache: false,
                 success: function(data) {
-                    console.log(data);
                     this.props.addEventCallback(data);
                 }.bind(this)
             })
@@ -284,8 +281,6 @@ class EmployeeSelect extends React.Component {
             datatype: 'json',
             cache: false,
             success: function(data){
-                console.log('employees');
-                console.log(data);
                 this.getEmployeeOptions(data);
             }.bind(this)
         })

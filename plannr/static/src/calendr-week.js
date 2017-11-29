@@ -143,7 +143,7 @@ class CalendrWeek extends React.Component {
                                 <AddEventContainer selectedDate={this.state.selectedDate} addEventCallback={this.addEventCallback}
                                                    eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
                                                    startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}
-                                                   events={this.state.weekEventsList}/>
+                                                   events={weekEvents}/>
                             </td>
                         </tr>
                         <tr>

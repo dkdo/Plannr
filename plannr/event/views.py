@@ -48,9 +48,15 @@ class EventList(APIView):
         serializer = EventSerializer(data=request.data,
                                      context={'request': request})
 
+        employee_id = request.data.get('employee_id')
+        employee_profile = Profile.objects.get(user_id=employee_id)
+        profile_serializer = ProfileSerializer(employee_profile)
+
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            add_event_data = serializer.data
+            add_event_data.update({'employee_profile': profile_serializer.data})
+            return Response(add_event_data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
