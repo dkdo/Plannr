@@ -1,5 +1,4 @@
 from django.shortcuts import HttpResponseRedirect
-from django.template.response import TemplateResponse
 from django.urls import reverse
 
 

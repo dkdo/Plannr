@@ -22,8 +22,14 @@ class SalaryCompWeek(APIView):
         profile = Profile.objects.get(user_id=user_id)
         position_id = profile.position_id
 
+        response = {'week_hours': 0,
+                    'week_salary': 0,
+                    'month_hours': 0,
+                    'month_salary': 0,
+                    'hourly_salary': 0}
+
         if not position_id:
-            return Response(0)
+            return Response(response)
 
         today = datetime.today()
         events_week = get_week_events(selected_date, user_id)
@@ -56,8 +62,14 @@ class SalaryCompMonth(APIView):
         profile = Profile.objects.get(user_id=user_id)
         position_id = profile.position_id
 
+        response = {'week_hours': 0,
+                    'week_salary': 0,
+                    'month_hours': 0,
+                    'month_salary': 0,
+                    'hourly_salary': 0}
+
         if not position_id:
-            return Response(0)
+            return Response(response)
 
         today = datetime.today()
         events_week = get_week_events(today, user_id)
