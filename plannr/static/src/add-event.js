@@ -49,7 +49,7 @@ class AddEvent extends React.Component {
         this.doesShiftOverlap = this.doesShiftOverlap.bind(this);
     }
 
-    componentWilldMount() {
+    componentDidMount() {
         this.setEndTimeOptions(this.props.eventStartTime);
     }
 
@@ -173,7 +173,8 @@ class AddEvent extends React.Component {
         }
 
         this.setState({endTimeOptions: endTimeOptions});
-
+        console.log('settting options');
+        console.log(endTimeOptions)
         return endTimeOptions;
     }
 
@@ -215,7 +216,7 @@ class AddEvent extends React.Component {
         let startOptions = this.getStartTimeOptions();
         return (
             <div className="eventAdder">
-                <p className="eventAdder-title"><u><b>New Event</b></u></p>
+                <p className="calendar-subtitle"><u><b>New Event</b></u></p>
                 <div className="eventAdder-info">
                     <div><b>Title: </b></div>
                     <input className="form-control" type="text" value={this.props.eventTitle} onChange={this.titleChange}/>

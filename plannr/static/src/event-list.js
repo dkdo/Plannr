@@ -9,7 +9,7 @@ class EventList extends React.Component {
             var end_date = new Date(event.end_date).toLocaleString();
             return(
                 <div className="event-card" key={event.id}>
-                    <h3><u>{event.title}</u></h3>
+                    <h3><u className="event-title">{event.title}</u></h3>
                     <ul className="list-unstyled">
                         <li>
                             <p><b>Starts:</b> {start_date}</p>

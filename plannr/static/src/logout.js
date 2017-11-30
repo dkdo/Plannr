@@ -58,7 +58,7 @@ class MasterLogout extends React.Component {
 
 	render() {
 		return (
-			<button type="submit" className="logout-btn" onClick={this.attemptLogout} name="logout_btn">Log Out</button>
+			<div className="logout-btn" onClick={this.attemptLogout}>Log Out</div>
 		);
 	}
 }
