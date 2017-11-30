@@ -9,6 +9,7 @@ from rewards.serializers import RewardSerializer
 from profil.models import Profile
 from rewards.serializers import Employee_RewardsSerializer
 from rewards.models import Employee_Rewards
+from stats.models import Stat
 
 class RewardList(APIView):
     def get(self, request, format=None):
@@ -44,13 +45,15 @@ class RewardList(APIView):
         return Response(reward_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AssignRewards(APIView):
-    def post(self, request, format=None):
+    def patch(self, request, format=None):
         if request.user.is_authenticated() and not is_manager(request):
-            print "BLABLABLABLA BLUBLU"
-            emp_points = request.POST['points']
             user = request.user
+            print '{} {}'.format('user_id: ', user.id)
+            emp_stats = Stat.objects.get(user_id=user.id)
+            emp_points = emp_stats.total
             current_rewards = Employee_Rewards.objects.filter(employee_id=user.id).values('reward_id')
             earned_rewards = Reward.objects.filter(required_points__lte=emp_points).exclude(id__in=current_rewards)
+            print earned_rewards
             print '{} {}'.format('earned_rewards: ', earned_rewards);
             for reward in earned_rewards:
                 r_data = {'reward_id': reward.id,

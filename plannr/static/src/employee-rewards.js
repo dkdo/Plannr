@@ -2,21 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { getCookie } from './shared/getCookie';
 import { isManager } from './shared/isManager';
+import '../css/employee-rewards.css';
 
 class EmployeeRewardsContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            allRewards: [],
             isManager: false,
+            allRewards: [],
         };
     }
 
+
     componentWillMount() {
         isManager((isUserManager) => this.setState({isManager: isUserManager}));
-        if(!this.state.isManager) {
-            this.updateRewards();
-        }
+    }
+
+    componentDidMount() {
+        this.updateRewards();
     }
 
     updateRewards() {
@@ -27,14 +30,11 @@ class EmployeeRewardsContainer extends React.Component {
                 xhr.setRequestHeader("X-CSRFToken", csrfToken);
             }
         });
-        var data = {
-            points: this.props.points,
-        };
         $.ajax({
-            type: 'POST',
+            type: 'PATCH',
             url: this.props.rewardsUrl,
             datatype: 'json',
-            data: data,
+            data: {},
             cache: false,
             success: function(data){
                 console.log('updated the rewards successfully');
@@ -64,8 +64,8 @@ class EmployeeRewardsContainer extends React.Component {
 
     render() {
         return(
-            <div className="employee-rewards-container">
-                <h3>Earned Rewards</h3>
+            <div className="employee-rewards-container col-sm-3">
+                <h1>Earned Rewards</h1>
                 <div className="employee-rewards-list">
                     <EmployeeRewards rewards={this.state.allRewards}/>
                 </div>
@@ -76,7 +76,6 @@ class EmployeeRewardsContainer extends React.Component {
 
 EmployeeRewardsContainer.defaultProps = {
     rewardsUrl: '/rewards/assignRewards/',
-    points: 0,
 };
 
 class EmployeeRewards extends React.Component {
@@ -86,16 +85,50 @@ class EmployeeRewards extends React.Component {
 
     }
 
-    render() {
+    getRenderRows() {
+        var tableRows = [];
         var rewards = this.props.rewards.slice(0);
+        for (var i = 0; i < rewards.length; i++) {
+            tableRows.push(
+                <EmployeeReward key={rewards[i].id} number={i+1} name={rewards[i].name} points={rewards[i].required_points} />
+            )
+        }
+        return tableRows;
+    }
+
+    render() {
+        var rows = this.getRenderRows();
         return(
-            <ul className="employee-rewards list-unstyled">
-                {rewards.map(reward =>
-                    (<li id={reward.id} key={reward.id}>
-                        <p>{reward.name} || {reward.required_points}</p>
-                    </li>)
-                )}
-            </ul>
+            <table className="table table-striped employee-rewards-table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Reward</th>
+                        <th scope="col">Needed Points</th>
+                    </tr>
+                </thead>
+                <tbody className="employee-rewards-tbody">
+                    {rows}
+                </tbody>
+            </table>
+        );
+    }
+}
+
+class EmployeeReward extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+
+    }
+
+    render() {
+        return(
+            <tr>
+              <th scope="row">{this.props.number}</th>
+              <td>{this.props.name}</td>
+              <td>{this.props.points}</td>
+            </tr>
         );
     }
 }

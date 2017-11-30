@@ -55,7 +55,10 @@ def update_stats(user_id):
     if Stat.objects.filter(user_id=user_id):
         print "this user has stats"
         stat = Stat.objects.get(user_id=user_id)
-        stat_data = {'hours': total_hours, 'shifts': shifts}
+        taken_pts = stat.taken_shifts * 30;
+        given_pts = stat.given_shifts * 30;
+        total_pts = (total_hours * 10) + taken_pts - given_pts
+        stat_data = {'hours': total_hours, 'shifts': shifts, 'total': total_pts}
         print '{} {}'.format('stat_data: ', stat_data)
         stat_serializer = StatSerializer(stat, data=stat_data, context={'situation': 'other'}, partial=True)
         return stat_serializer

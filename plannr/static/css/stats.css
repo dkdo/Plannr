@@ -1,0 +1,11 @@
+table.table-bordered > tbody > tr > th {
+    border: 1px solid #0066ff;
+}
+
+table.table-bordered > tbody > tr > td {
+    border: 1px solid #0066ff;
+}
+
+.stats-content-container h1{
+    padding-bottom: 25px;
+}

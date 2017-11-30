@@ -6,13 +6,10 @@
 
 .profile-content-container {
     margin-top: 30px;
-    margin-right: 50px;
-    position: fixed;
-    text-align: center;
+    position: relative;
 }
 
 .profile-sub-container {
-    width: 45%;
     display: inline-block;
     text-align: center;
     height: 100%;
