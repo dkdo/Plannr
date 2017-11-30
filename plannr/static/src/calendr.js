@@ -5,6 +5,7 @@ import AddEventContainer from './add-event';
 import EventList from './event-list';
 import SalaryContainer from './salary';
 import salaryConst from './shared/salary-const';
+import EventDetail from './event-detail';
 import { isManager } from './shared/isManager';
 import '../css/calendr-month.css';
 
@@ -42,6 +43,7 @@ class Calendr extends React.Component {
         this.endTimeChange = this.endTimeChange.bind(this);
         this.loadMonthEvents = this.loadMonthEvents.bind(this);
         this.addEventCallback = this.addEventCallback.bind(this);
+        this.refreshPage = this.refreshPage.bind(this);
     }
 
     calc(year, month) {
@@ -72,6 +74,11 @@ class Calendr extends React.Component {
         if (this.props.onSelect && prevState.selectedDt != this.state.selectedDt) {
             this.props.onSelect.call(this.getDOMNode(), this.state);
         }
+    }
+
+    refreshPage() {
+        this.loadMonthEvents();
+        this.loadDateEvents(this.getSelectedDate());
     }
 
     getPrev() {
@@ -209,7 +216,8 @@ class Calendr extends React.Component {
                                     <WeekDays dayNames={calendrConst.dayNames} weekNumbers={this.state.weekNumbers} />
                                     <MonthDates month={this.state.month} year={this.state.year} daysInMonth={this.state.daysInMonth} firstOfMonth={this.state.firstOfMonth}
                                         startDay={this.state.startDay} onSelect={this.selectDate} weekNumbers={this.state.weekNumbers} disablePast={this.state.disablePast}
-                                        minDate={this.state.minDate} monthEventList={this.state.monthEventList} selectedDate={this.state.selectedDt}/>
+                                        minDate={this.state.minDate} monthEventList={this.state.monthEventList} selectedDate={this.state.selectedDt}
+                                        refreshPage={this.refreshPage}/>
                                 </div>
                             </div>
                         </div>
@@ -229,7 +237,7 @@ class Calendr extends React.Component {
                         <tr>
                             <td className={managerClass}>
                                 <div className="calendar-subtitle"><b>Shifts</b></div>
-                                <EventList dayEventList={this.state.dayEventList}/>
+                                <EventList dayEventList={this.state.dayEventList} refreshPage={this.refreshPage}/>
                             </td>
                         </tr>
                     </tbody>
@@ -314,6 +322,7 @@ class MonthDates extends React.Component {
 
         var monthEventList = this.props.monthEventList;
         var selectedDate = (new Date(this.props.selectedDate)).getDate();
+        var refreshPage = this.props.refreshPage;
 
         if ((startDay == 6 && this.props.daysInMonth == 31) || ((startDay == 0 || startDay == 6) && this.props.daysInMonth > 29)) {
             rows = 6;
@@ -361,7 +370,7 @@ class MonthDates extends React.Component {
                                 var limit = events.length > 4 ? 4 : events.length;
 
                                 for(var i = 0; i < limit; i ++){
-                                    var eventBlock = <EventPoint event={events[i]} key={events[i].id}/>
+                                    var eventBlock = <EventPoint event={events[i]} key={events[i].id} refreshPage={refreshPage}/>
                                     eventPoints.push(eventBlock)
                                 }
 
@@ -404,15 +413,31 @@ class EventPoint extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-
+            showModal: false,
         }
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.deleteCallback = this.deleteCallback.bind(this);
+    }
+
+    openModal() {
+        this.setState({showModal: true});
+    }
+
+    deleteCallback() {
+        this.props.refreshPage();
+    }
+
+    closeModal() {
+        this.setState({showModal: false});
     }
 
     render() {
         return (
             <div className="calendar-event">
                 <div className="event-point"></div>
-                <div className="event-title">{this.props.event.title}</div>
+                <div className="event-title" onDoubleClick={this.openModal}>{this.props.event.title}</div>
+                <EventDetail event={this.props.event} showModal={this.state.showModal} closeModal={this.closeModal} deleteCallback={this.deleteCallback}/>
             </div>
         )
     }

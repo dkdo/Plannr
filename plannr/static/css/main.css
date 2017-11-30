@@ -63,13 +63,13 @@
 /* MODAL */
 .modal-text {
     padding-top: 10px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     text-align: center;
 }
 
 .modal-btns {
     text-align: center;
-    padding-top: 5px;
+    padding-top: 15px;
     padding-bottom: 5px;
 }
 
