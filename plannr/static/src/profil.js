@@ -8,21 +8,63 @@ import {isBirthDateValid } from './shared/isBirthDateValid';
 import StatsContainer from './stats.js';
 import '../css/stats.css';
 import EmployeeRewardsContainer from './employee-rewards.js';
+import { calculateTotalPoints } from './shared/calculateTotalPoints';
 
 class MasterProfile extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {
+            hours: 0,
+            taken_shifts: 0,
+            given_shifts: 0,
+			total_points: 0,
+            isManager: false,
+        };
 
 	}
+
+	componentWillMount() {
+        isManager((isUserManager) => this.setState({isManager: isUserManager}));
+        if(!this.state.isManager) {
+            this.getStats();
+        }
+    }
+
+	getStats() {
+        var csrfToken = getCookie('csrftoken');
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrfToken);
+            }
+        });
+        var data = {};
+        $.ajax({
+            type: 'PATCH',
+            url: this.props.getStats_url,
+            datatype: 'json',
+            data: data,
+            cache: false,
+            success: function(data){
+                if(data != '') {
+                    console.log(data);
+                    this.setState(data);
+					tot_pts = calculateTotalPoints(this.state.hours, this.state.taken_shifts, this.state.given_shifts);
+					this.setState(total_points: tot_pts);
+                }
+            }.bind(this),
+            error: function() {
+                alert("something went wrong with the stats");
+            }.bind(this)
+        })
+    }
 
 	render() {
 		return (
 			<div className="profile-container">
 				<div className="profile-content-container">
 					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
-					<StatsContainer />
-					<EmployeeRewardsContainer />
+					{this.state.isManager ? <StatsContainer hours={this.state.hours} taken={this.state.taken_shifts} given={this.state.given_shifts} total_points={this.state.total_points}/> : null}
+					{this.state.isManager ? <EmployeeRewardsContainer total_points={this.state.total_points}/> : null}
 				</div>
 			</div>
 		);
@@ -32,6 +74,7 @@ class MasterProfile extends React.Component {
 MasterProfile.defaultProps = {
 	saveprofile_url: '/profil/profileInfo/',
 	loadUsername_url: '/profil/user/',
+	getStats_url: '/stats/stat_list/',
 };
 
 class UserInformation extends React.Component {
