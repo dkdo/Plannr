@@ -59,7 +59,7 @@ class Calendr extends React.Component {
     componentWillMount() {
         this.setState(this.calc.call(null, this.state.year, this.state.month));
         this.loadMonthEvents();
-        this.loadDateEvents(this.getSelectedDate());
+        this.loadDateEvents(this.getSelectedDate().toISOString());
     }
 
     componentDidMount() {
@@ -87,7 +87,7 @@ class Calendr extends React.Component {
         Object.assign(state, this.calc.call(null, state.year, state.month));
         this.setState(state, () => {
             this.loadMonthEvents();
-            this.loadDateEvents(this.getSelectedDate());
+            this.loadDateEvents(this.getSelectedDate().toISOString());
         });
     }
 
@@ -107,7 +107,7 @@ class Calendr extends React.Component {
         Object.assign(state, this.calc.call(null, state.year, state.month));
         this.setState(state, () => {
             this.loadMonthEvents();
-            this.loadDateEvents(this.getSelectedDate());
+            this.loadDateEvents(this.getSelectedDate().toISOString());
         });
     }
 
@@ -188,7 +188,7 @@ class Calendr extends React.Component {
         dateMonth = ('0' + dateMonth).slice(-2);
         var dateDay = this.state.selectedDate;
         dateDay = ('0' + dateDay).slice(-2);
-        var date = new Date(this.state.selectedYear, dateMonth, dateDay);
+        var date = new Date(this.state.selectedYear, dateMonth, dateDay, 0, 0,0);
         return date;
     }
 
