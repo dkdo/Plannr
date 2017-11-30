@@ -194,8 +194,8 @@ class Calendr extends React.Component {
 
     render() {
         return (
-            <div className="calendar-event-container">
-                <div className="left-position-pane">
+            <div className="calendar-event-container row">
+                <div className="col-xs-7">
                     <div className="r-calendar">
                         <div className="r-outer">
                             <div className="r-inner">
@@ -211,21 +211,25 @@ class Calendr extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="right-position-pane container">
-                        <div className="row">
-                            <div className="col-sm-6">
+                <table className="calendar-modules col-xs-5" ref={(addEventComp) => {this.addEventComp = addEventComp}} >
+                    <tbody>
+                        <tr>
+                            <td>
                                 <SalaryContainer type={salaryConst.monthSalary} selectedDate={new Date(this.state.year, this.state.month, 1)} />
                                 <AddEventContainer selectedDate={this.state.selectedDt} addEventCallback={this.addEventCallback}
-                                    eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
-                                    startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}
-                                    events={this.state.dayEventList}/>
-                            </div>
-                            <div className="col-sm-6">
-                                <div className="calendar-subtitle"><b><u>Shifts</u></b></div>
+                                                   eventStartTime={this.state.eventStartTime} eventEndTime={this.state.eventEndTime} eventTitle={this.state.eventTitle}
+                                                   startTimeChange={this.startTimeChange} endTimeChange={this.endTimeChange} titleChange={this.titleChange}
+                                                   events={this.state.dayEventList}/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div className="calendar-subtitle"><b>Shifts</b></div>
                                 <EventList dayEventList={this.state.dayEventList}/>
-                            </div>
-                        </div>
-                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         )
     }

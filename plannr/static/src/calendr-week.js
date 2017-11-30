@@ -121,8 +121,8 @@ class CalendrWeek extends React.Component {
     render() {
         let weekEvents = [].concat.apply([], this.state.weekEventsList);
         return (
-            <div className="calendr-week-main-wrapper">
-                <div className="calendr-week-wrapper">
+            <div className="calendr-week-main-wrapper row">
+                <div className="calendr-week-wrapper col-xs-7">
                     <table className="calendr-week-table">
                         <tbody ref={(dayColumns) => (this.dayColumns = dayColumns)}>
                             <WeekCalendrTitle thisWeekMonday={this.state.thisWeekMonday} nextWeek={this.nextWeek} prevWeek={this.prevWeek} />
@@ -135,7 +135,7 @@ class CalendrWeek extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <table className="calendr-week-modules" ref={(addEventComp) => {this.addEventComp = addEventComp}} >
+                <table className="calendar-modules col-xs-5" ref={(addEventComp) => {this.addEventComp = addEventComp}} >
                     <tbody>
                         <tr>
                             <td>
@@ -148,7 +148,7 @@ class CalendrWeek extends React.Component {
                         </tr>
                         <tr>
                             <td>
-                                <div className="event-list-title"><b><u>Shifts</u></b></div>
+                                <div className="calendar-subtitle"><b>Shifts</b></div>
                                 <EventList dayEventList={weekEvents}/>
                             </td>
                         </tr>
@@ -164,24 +164,47 @@ CalendrWeek.defaultProps = {
 };
 
 class WeekCalendrTitle extends React.Component {
+    constructor(props) {
+        super(props);
+        this.getWeekCalendrTitle = this.getWeekCalendrTitle.bind(this);
+    }
+
+    getWeekCalendrTitle() {
+        var mondayMonth = new Date(this.props.thisWeekMonday).getMonth();
+        var mondayYear = this.props.thisWeekMonday.getFullYear();
+        var sunday = new Date(this.props.thisWeekMonday);
+        sunday.setDate(this.props.thisWeekMonday.getDate() - this.props.thisWeekMonday.getDay() + 7);
+        var sundayMonth = sunday.getMonth();
+        var sundayYear = sunday.getFullYear();
+        var calendarTitle = '';
+        if(mondayMonth === sundayMonth) {
+            calendarTitle = calendrConst.monthNamesFull[mondayMonth] + ' ' + mondayYear;
+        } else {
+            console.log('monday month');
+            console.log(mondayMonth);
+            console.log(this.props.thisWeekMonday);
+            console.log('sunday month');
+            console.log(sundayMonth);
+            console.log(sunday)
+            calendarTitle = calendrConst.monthNames[mondayMonth] + ' ' + mondayYear + ' - ' + calendrConst.monthNames[sundayMonth] + ' ' + sundayYear;
+        }
+
+        return calendarTitle;
+    }
+
     render() {
-        var monday = this.props.thisWeekMonday.toLocaleDateString('en-GB');
-        var sunday = new Date();
-        sunday.setDate(this.props.thisWeekMonday.getDate() + 6);
-        sunday = sunday.toLocaleDateString('en-GB');
+        var calendarTitle = this.getWeekCalendrTitle();
 
         return (
             <tr className="title-row">
                 <td className="time-buffer-col"></td>
-                <td colSpan="7" className="calendr-week-header">
-                    <div className="prev-arrow arrow-wrapper" onClick={this.props.prevWeek.bind(null, this)} >
-                        <div className="r-prev" role="button" tabIndex="0"></div>
+                <td colSpan="7" className="calendar-header">
+                    <div className="r-arrows">
+                        <div className="glyphicon glyphicon-chevron-left" onClick={this.props.prevWeek.bind(null, this)} role="button" tabIndex="0"></div>
+                        <div className="glyphicon glyphicon-chevron-right" onClick={this.props.nextWeek.bind(null, this)} role="button" tabIndex="0"></div>
                     </div>
                     <div className="calendar-title">
-                        {monday} - {sunday}
-                    </div>
-                    <div className="next-arrow arrow-wrapper" onClick={this.props.nextWeek.bind(null, this)} >
-                        <div className="r-next" role="button" tabIndex="0"></div>
+                        {calendarTitle}
                     </div>
                 </td>
             </tr>

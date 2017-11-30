@@ -1,58 +1,15 @@
-.calendr-week-main-wrapper {
-    display: grid;
-    grid-template-columns: [col-one] 60% [col-two] 40%;
-    grid-gap: 10px;
-    width: 80vw;
-    float: left;
-}
-
-.calendr-week-modules {
-    width: 100%;
-    grid-column-start: col-two;
-    margin-top: 15px;
-    overflow-x: scroll;
+.calendr-week-wrapper .calendr-week-table {
     table-layout: fixed;
+    border-bottom: 1px solid #ddd;
 }
 
-    .calendr-week-modules td {
-        overflow-y: scroll;
-        padding-bottom: 10px;
-        width: 100%;
-    }
-
-.calendr-week-wrapper {
-    grid-column-start: col-one;
-    grid-column-end: col-two;
-    width: 100%;
-    margin-top: 15px;
-    float: left;
+.calendr-week-wrapper .calendr-week-table tr:not(.title-row) {
+    border-right: 1px solid #ddd;
 }
 
-    .calendr-week-wrapper .calendr-week-table {
-        margin-top: 10px;
-        table-layout: fixed;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .calendr-week-wrapper .calendr-week-table tr:not(.title-row) {
-        border-right: 1px solid #ddd;
-    }
-
-.calendr-week-header {
-    text-align: center;
+.calendr-week-header > div {
+    display: inline-block;
 }
-
-    .calendr-week-header > div {
-        display: inline-block;
-    }
-
-    .calendr-week-header .next-arrow {
-        float: right;
-    }
-
-    .calendr-week-header .prev-arrow {
-        float: left;
-    }
 
 .r-next {
     float: right;
@@ -120,8 +77,8 @@
 
 .event-block {
     position: absolute;
-    background-color: #3B5998;
-    opacity: 0.5;
+    background-color: #00a4dd38;
+    opacity: 0.7;
     width: 90%;
 }
 

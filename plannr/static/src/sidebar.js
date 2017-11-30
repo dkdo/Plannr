@@ -39,11 +39,18 @@ class Sidebar extends React.Component {
                     <span className="icon-bar"></span>
                     <span className="icon-bar"></span>
                   </button>
-                  <a className="navbar-brand" href="#">Plannr</a>
+                  <a href="/"><img src="/static/plannr_logo_small.png" className="navbar-icon"></img></a>
                 </div>
                 <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                   <ul className="nav navbar-nav">
-                    <li><a href="/">Calendar</a></li>
+                    <li className="dropdown">
+                        <a href="#" className="dropdown-toggle" data-toggle="dropdown">Calendar<b className="caret"></b></a>
+                        <ul className="dropdown-menu">
+                          <li><a href="/">Month</a></li>
+                          <li className="divider"></li>
+                          <li><a href="/week">Week</a></li>
+                        </ul>
+                    </li>
                     <li><a href="/shift-center">Shift Center</a></li>
                     <li className="dropdown">
                         <a href="#" className="dropdown-toggle" data-toggle="dropdown">Manage <b className="caret"></b></a>

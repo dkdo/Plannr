@@ -216,7 +216,7 @@ class AddEvent extends React.Component {
         let startOptions = this.getStartTimeOptions();
         return (
             <div className="eventAdder">
-                <p className="calendar-subtitle"><u><b>New Event</b></u></p>
+                <p className="calendar-subtitle"><b>New Event</b></p>
                 <div className="eventAdder-info">
                     <div><b>Title: </b></div>
                     <input className="form-control" type="text" value={this.props.eventTitle} onChange={this.titleChange}/>

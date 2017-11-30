@@ -40,6 +40,19 @@
     margin-left: 10px;
 }
 
+.navbar {
+    position: relative;
+}
+
+.navbar .navbar-icon {
+    height: 45px;
+    width: 45px;
+    margin-top: 2px;
+    margin-left: 14px;
+    margin-right: 14px;
+}
+
+
  /* END PLANNR THEME BUTTONS */
 
 /* MODAL */
@@ -124,10 +137,8 @@
 
  /* Main Content Wrapper */
  .main-content-wrapper {
-    padding-left: 50px;
-    padding-top: 50px;
-    padding-right: 50px;
-    padding-bottom: 40px;
+    padding-left: 75px;
+    padding-right: 75px;
  }
 
 /* Main Position Page */
@@ -516,13 +527,17 @@ img.logo-resize {
 
 .event-list{
     float: left;
-    height: 70vh;
+    height: 75vh;
     overflow-y: scroll;
     overflow-x: hidden;
     background-color: #fff;
     color: black;
     width: 100%;
     padding-top: 10px;
+}
+
+.calendar-event-container .event-list {
+    height: 43vh;
 }
 
 .event-list-title {
@@ -556,5 +571,16 @@ img.logo-resize {
 .eventAdder-info {
     margin-bottom: 0.8em;
 }
+
+.calendar-modules {
+    overflow-x: scroll;
+    table-layout: fixed;
+}
+
+    .calendar-modules td {
+        overflow-y: scroll;
+        padding-bottom: 10px;
+        width: 100%;
+    }
 
 /* END CALENDAR WEEK AND MONTH */
