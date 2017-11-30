@@ -32,7 +32,6 @@ class Sidebar extends React.Component {
         return(
         <div>
             <nav className="navbar navbar-inverse navbar-fixed-top">
-              <div className="container">
               <div className="navbar-header">
                   <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span className="sr-only">Toggle navigation</span>
@@ -42,43 +41,27 @@ class Sidebar extends React.Component {
                   </button>
                   <a className="navbar-brand" href="#">Plannr</a>
                 </div>
-                <div id="navbar" className="collapse navbar-collapse">
+                <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                   <ul className="nav navbar-nav">
-                    <li><a href="/">Month</a></li>
-                    <li><a href="/week">Week</a></li>
+                    <li><a href="/">Calendar</a></li>
+                    <li><a href="/shift-center">Shift Center</a></li>
+                    <li className="dropdown">
+                        <a href="#" className="dropdown-toggle" data-toggle="dropdown">Manage <b className="caret"></b></a>
+                        <ul className="dropdown-menu">
+                          <li><a href="/employees">Employees</a></li>
+                          <li className="divider"></li>
+                          <li><a href="/position">Position</a></li>
+                          <li className="divider"></li>
+                          <li><a href="/rewards">Rewards</a></li>
+                        </ul>
+                    </li>
+                  </ul>
+                  <ul className="nav navbar-nav navbar-right">
+                      <li><a href="/profil">Profile</a></li>
+                      <li><a><MasterLogout /></a></li>
                   </ul>
                 </div>
-              </div>
             </nav>
-            <div id="sidebar-wrapper">
-                <ul className="sidebar-nav">
-                    <li>
-                        <a href="/">Home</a>
-                    </li>
-                    <li>
-                        <a href="/shift-center">Shift Center</a>
-                    </li>
-                    <li>
-                        <a href="/profil">Profile</a>
-                    </li>
-                    {this.state.isManager ?
-                        <li>
-                            <a href="/employees">Employees</a>
-                        </li>
-                        : null}
-                    {this.state.isManager ?
-                        <li>
-                            <a href="/position">Position</a>
-                        </li> : null}
-                    {this.state.isManager ?
-                        <li>
-                            <a href="/rewards">Rewards</a>
-                        </li> : null}
-                </ul>
-                <div className="sidebar-logout">
-                  <MasterLogout />
-                </div>
-            </div>
         </div>
         );
     }

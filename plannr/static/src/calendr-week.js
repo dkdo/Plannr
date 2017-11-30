@@ -177,7 +177,7 @@ class WeekCalendrTitle extends React.Component {
                     <div className="prev-arrow arrow-wrapper" onClick={this.props.prevWeek.bind(null, this)} >
                         <div className="r-prev" role="button" tabIndex="0"></div>
                     </div>
-                    <div className="calendr-title">
+                    <div className="calendar-title">
                         {monday} - {sunday}
                     </div>
                     <div className="next-arrow arrow-wrapper" onClick={this.props.nextWeek.bind(null, this)} >

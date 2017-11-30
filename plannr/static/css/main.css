@@ -71,6 +71,10 @@
 
  /* Main Calendar Table */
 
+.calendar-header > div {
+    display: inline-block;
+}
+
  .calendar-grid-wrapper {
     max-width: 50%;
     max-height: 40%;
@@ -78,9 +82,18 @@
     padding-bottom: 1%;
  }
 
- .month-title {
+ .r-arrows > div {
+    padding-right: 10px;
+ }
+
+ .r-arrows > div:focus{
+    outline: none;
+ }
+
+ .calendar-title {
     text-align: center;
     font-size: 30px;
+    padding-left: 40px;
  }
 
  #month-grid th {
@@ -107,7 +120,7 @@
 
  /* Main Content Wrapper */
  .main-content-wrapper {
-    padding-left: 250px;
+    padding-left: 50px;
     padding-top: 50px;
     padding-right: 50px;
     padding-bottom: 40px;
@@ -261,30 +274,10 @@
 
 /* Logout */
 
-.sidebar-logout {
-    height: 40px;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
+.logout-btn {
+    cursor: pointer;
+    padding-right: 10px;
 }
-
-.sidebar-logout button{
-    background-color: inherit;
-    border: none;
-    color: #0066ff;
-    height: 100%;
-    text-align: left;
-    text-indent: 20px;
-    width: 100%;
-}
-
-.sidebar-logout button:hover {
-    border-top: 1px solid #0052cc;
-    border-bottom: 1px solid #0052cc;
-    color: #0052cc;
-}
-
-
 
 /* Calendar Arrows */
 
@@ -335,6 +328,7 @@
 }
 .calendar-table{
     display: table;
+    table-layout: fixed;
     width: 100%;
 }
 .r-calendar .r-row{
@@ -342,12 +336,14 @@
     width: 100%;
 }
 .r-calendar .r-row .r-cell:first-child {
-    border-left: 1px solid rgba(0,0,0,0.1);
+    border-left: 1px solid rgba(0,0,0,0.3);
 }
 .r-calendar .r-row .r-cell {
-    border-top: 1px solid rgba(0,0,0,0.1);
-    border-right: 1px solid rgba(0,0,0,0.1);
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0,0,0,0.3);
+    border-right: 1px solid rgba(0,0,0,0.3);
+}
+.r-calendar .r-row:last-child .r-cell {
+    border-bottom: 1px solid rgba(0,0,0,0.3);
 }
 .r-calendar .r-dates {
     display: table-row-group;
@@ -358,14 +354,31 @@
     text-align: center;
     vertical-align: middle;
 }
+.r-calendar .r-cell:focus {
+    outline: none;
+}
 .r-calendar .r-cell.r-weekday {
     vertical-align: middle;
     text-align: center;
 }
+.r-calendar .r-date {
+    vertical-align: top;
+    text-align: left;
+}
+.r-calendar .r-date .day-number {
+    padding-top: 5px;
+    padding-left: 5px;
+}
 .r-calendar .r-date,
 .r-calendar .r-cell.r-weekday {
-    height: 50px;
+    height: 80px;
     width: 50px;
+}
+.r-calendar .r-date.r-cell.r-selected {
+    background-color: #00a4dd38
+}
+.r-calendar .r-cell.r-weekday {
+    height: 30px;
 }
 .r-calendar .r-title {
     text-align: center;
