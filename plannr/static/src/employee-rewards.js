@@ -28,7 +28,7 @@ class EmployeeRewardsContainer extends React.Component {
             }
         });
         var data = {
-            points: this.props.points,
+            points: this.props.total_points,
         };
         $.ajax({
             type: 'POST',
@@ -76,7 +76,6 @@ class EmployeeRewardsContainer extends React.Component {
 
 EmployeeRewardsContainer.defaultProps = {
     rewardsUrl: '/rewards/assignRewards/',
-    points: 0,
 };
 
 class EmployeeRewards extends React.Component {
