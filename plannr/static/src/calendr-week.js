@@ -5,6 +5,7 @@ import AddEventContainer from './add-event'
 import SalaryContainer from './salary';
 import EventList from './event-list';
 import salaryConst from './shared/salary-const';
+import { isManager } from './shared/isManager';
 import '../css/calendr-week.css';
 
 class CalendrWeek extends React.Component {
@@ -18,7 +19,8 @@ class CalendrWeek extends React.Component {
             eventTitle: '',
             thisWeekMonday: new Date(),
             weekEventsList: [],
-            timeHighlight: false
+            timeHighlight: false,
+            isManager: false,
         };
         this.getPreviousMonday = this.getPreviousMonday.bind(this);
         this.nextWeek = this.nextWeek.bind(this);
@@ -34,6 +36,7 @@ class CalendrWeek extends React.Component {
 
 
     componentWillMount() {
+        isManager((isUserManager) => this.setState({isManager: isUserManager}));
         this.setState({thisWeekMonday: this.getPreviousMonday(this.state.today)})
     }
 
@@ -120,9 +123,10 @@ class CalendrWeek extends React.Component {
     }
     render() {
         let weekEvents = [].concat.apply([], this.state.weekEventsList);
+        let managerClass = this.state.isManager ? 'ismanager' : null;
         return (
             <div className="calendr-week-main-wrapper row">
-                <div className="calendr-week-wrapper col-xs-7">
+                <div className="calendr-week-wrapper col-xs-9">
                     <table className="calendr-week-table">
                         <tbody ref={(dayColumns) => (this.dayColumns = dayColumns)}>
                             <WeekCalendrTitle thisWeekMonday={this.state.thisWeekMonday} nextWeek={this.nextWeek} prevWeek={this.prevWeek} />
@@ -135,7 +139,7 @@ class CalendrWeek extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <table className="calendar-modules col-xs-5" ref={(addEventComp) => {this.addEventComp = addEventComp}} >
+                <table className="calendar-modules col-xs-3" ref={(addEventComp) => {this.addEventComp = addEventComp}} >
                     <tbody>
                         <tr>
                             <td>
@@ -147,7 +151,7 @@ class CalendrWeek extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td className={managerClass}>
                                 <div className="calendar-subtitle"><b>Shifts</b></div>
                                 <EventList dayEventList={weekEvents}/>
                             </td>

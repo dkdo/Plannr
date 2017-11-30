@@ -107,7 +107,7 @@ class Salary extends React.Component {
     render() {
         return(
             <table className="salary-comp" id="salary-table">
-                <caption><b>Expected Salary</b></caption>
+                <caption className="calendar-subtitle"><b>Expected Salary</b></caption>
                 <tbody>
                 <tr>
                     <td>

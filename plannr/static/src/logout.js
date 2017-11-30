@@ -46,11 +46,7 @@ class MasterLogout extends React.Component {
 			datatype: 'json',
 			cache: false,
 			success: function() {
-				alert("Logout Success!");
 				history.push('/login/');
-			}.bind(this),
-			error: function() {
-				alert("Logout Failed !");
 			}.bind(this)
 		})
 		event.preventDefault();

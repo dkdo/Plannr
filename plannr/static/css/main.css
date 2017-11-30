@@ -139,6 +139,7 @@
  .main-content-wrapper {
     padding-left: 75px;
     padding-right: 75px;
+    padding-bottom: 40px;
  }
 
 /* Main Position Page */
@@ -386,7 +387,7 @@
 }
 .r-calendar .r-date,
 .r-calendar .r-cell.r-weekday {
-    height: 80px;
+    height: 140px;
     width: 50px;
 }
 .r-calendar .r-date.r-cell.r-selected {
@@ -527,7 +528,7 @@ img.logo-resize {
 
 .event-list{
     float: left;
-    height: 75vh;
+    height: 65vh;
     overflow-y: scroll;
     overflow-x: hidden;
     background-color: #fff;
@@ -536,8 +537,15 @@ img.logo-resize {
     padding-top: 10px;
 }
 
-.calendar-event-container .event-list {
+.calendar-event-container .ismanager .event-list {
     height: 43vh;
+}
+
+.calendr-week-main-wrapper .event-list {
+    height: 98vh;
+}
+.calendr-week-main-wrapper .ismanager .event-list {
+    height: 77vh;
 }
 
 .event-list-title {

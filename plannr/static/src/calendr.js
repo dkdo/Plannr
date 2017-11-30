@@ -5,6 +5,7 @@ import AddEventContainer from './add-event';
 import EventList from './event-list';
 import SalaryContainer from './salary';
 import salaryConst from './shared/salary-const';
+import { isManager } from './shared/isManager';
 import '../css/calendr-month.css';
 
 class Calendr extends React.Component {
@@ -28,7 +29,8 @@ class Calendr extends React.Component {
             monthEventList: [],
             eventTitle: '',
             eventStartTime: '0:00',
-            eventEndTime: '0:30'
+            eventEndTime: '0:30',
+            isManager: false,
         }
 
         this.calc = this.calc.bind(this);
@@ -57,6 +59,7 @@ class Calendr extends React.Component {
     }
 
     componentWillMount() {
+        isManager((isUserManager) => this.setState({isManager: isUserManager}));
         this.setState(this.calc.call(null, this.state.year, this.state.month));
         this.loadMonthEvents();
         this.loadDateEvents(this.getSelectedDate().toISOString());
@@ -193,9 +196,10 @@ class Calendr extends React.Component {
     }
 
     render() {
+        let managerClass = this.state.isManager ? 'ismanager' : null;
         return (
             <div className="calendar-event-container row">
-                <div className="col-xs-7">
+                <div className="col-xs-9">
                     <div className="r-calendar">
                         <div className="r-outer">
                             <div className="r-inner">
@@ -211,7 +215,7 @@ class Calendr extends React.Component {
                         </div>
                     </div>
                 </div>
-                <table className="calendar-modules col-xs-5" ref={(addEventComp) => {this.addEventComp = addEventComp}} >
+                <table className="calendar-modules col-xs-3" ref={(addEventComp) => {this.addEventComp = addEventComp}} >
                     <tbody>
                         <tr>
                             <td>
@@ -223,7 +227,7 @@ class Calendr extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td className={managerClass}>
                                 <div className="calendar-subtitle"><b>Shifts</b></div>
                                 <EventList dayEventList={this.state.dayEventList}/>
                             </td>
@@ -354,14 +358,14 @@ class MonthDates extends React.Component {
                             if(monthEventList[d] !== undefined && monthEventList.length > 0) {
                                 var events = monthEventList[d];
                                 var eventPoints = [];
-                                var limit = events.length > 2 ? 2 : events.length;
+                                var limit = events.length > 4 ? 4 : events.length;
 
                                 for(var i = 0; i < limit; i ++){
                                     var eventBlock = <EventPoint event={events[i]} key={events[i].id}/>
                                     eventPoints.push(eventBlock)
                                 }
 
-                                if(events.length > 2) {
+                                if(events.length > 4) {
                                     eventPoints.push(<div key={d} className="more-events">...</div>)
                                 }
                             }

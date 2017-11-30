@@ -63,12 +63,8 @@ class Login extends React.Component {
                 datatype: 'json',
                 cache: false,
                 success: function(){
-                    alert("Success!");
 					history.push('/');
                 }.bind(this),
-                error: function(){
-                	alert("Failed!")
-                }.bind(this)
             })
         this.setState({username: '', password: ''});
         event.preventDefault();
@@ -130,12 +126,6 @@ class Signup extends React.Component {
 			cache: false,
 			success: function(){
 				this.setState({firstname: '', lastname: '', email: '', spassword: '', organization: ''});
-				alert("Submitted successfully!");
-				console.log("SUCCESS!");
-			}.bind(this),
-			error: function(jqXHR, exception){
-				alert("HO OH, Something went wrong!");
-				console.log("FAILED!");
 			}.bind(this)
 		})
 		event.preventDefault();

@@ -29,6 +29,19 @@ class Sidebar extends React.Component {
     }
 
     render() {
+        let manage = null;
+        if(this.state.isManager) {
+          manage = <li className="dropdown">
+                        <a href="#" className="dropdown-toggle" data-toggle="dropdown">Manage <b className="caret"></b></a>
+                        <ul className="dropdown-menu">
+                          <li><a href="/employees">Employees</a></li>
+                          <li className="divider"></li>
+                          <li><a href="/position">Position</a></li>
+                          <li className="divider"></li>
+                          <li><a href="/rewards">Rewards</a></li>
+                        </ul>
+                    </li>
+        }
         return(
         <div>
             <nav className="navbar navbar-inverse navbar-fixed-top">
@@ -52,16 +65,7 @@ class Sidebar extends React.Component {
                         </ul>
                     </li>
                     <li><a href="/shift-center">Shift Center</a></li>
-                    <li className="dropdown">
-                        <a href="#" className="dropdown-toggle" data-toggle="dropdown">Manage <b className="caret"></b></a>
-                        <ul className="dropdown-menu">
-                          <li><a href="/employees">Employees</a></li>
-                          <li className="divider"></li>
-                          <li><a href="/position">Position</a></li>
-                          <li className="divider"></li>
-                          <li><a href="/rewards">Rewards</a></li>
-                        </ul>
-                    </li>
+                    {manage}
                   </ul>
                   <ul className="nav navbar-nav navbar-right">
                       <li><a href="/profil">Profile</a></li>
