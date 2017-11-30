@@ -8,3 +8,11 @@
     top: 0px;
     bottom: 0px;
 }
+
+.shift-center .event-card {
+    height: 16em;
+}
+
+.shift-center .event-card .btn {
+    margin-top: 10px;
+}

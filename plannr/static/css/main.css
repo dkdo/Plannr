@@ -40,6 +40,11 @@
     margin-left: 10px;
 }
 
+.plannr-btn:disabled {
+    border-color: lightgrey;
+    color: lightgrey;
+}
+
 .navbar {
     position: relative;
 }
@@ -84,7 +89,7 @@
 
 /* Main Calendar Table */
 
-.calendar-header {
+.calendar-event-container .calendar-header {
     padding-bottom: 5px;
 }
 
@@ -528,7 +533,7 @@ img.logo-resize {
 
 .event-list{
     float: left;
-    height: 65vh;
+    height: 64vh;
     overflow-y: scroll;
     overflow-x: hidden;
     background-color: #fff;
@@ -545,7 +550,7 @@ img.logo-resize {
     height: 98vh;
 }
 .calendr-week-main-wrapper .ismanager .event-list {
-    height: 77vh;
+    height: 76vh;
 }
 
 .event-list-title {
@@ -562,14 +567,15 @@ img.logo-resize {
     border: 1px solid #0066ff;
     padding: 10px;
     margin-bottom: 5px;
-    height: 13em;
+    height: 11em;
 }
 
 .event-card .event-title {
-  display: block; /* or inline-block */
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+    margin-top: 10px;
+    display: block; /* or inline-block */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .eventAdder-btn {

@@ -55,7 +55,7 @@ class ShiftCenter extends React.Component {
 
     render() {
         return(
-            <div>
+            <div className="shift-center">
                 <h1 className="page-title">Shift Center</h1>
                 <Shifts shifts={this.state.shifts} loadShifts={this.loadShifts} isManager={this.state.isManager}/>
             </div>
@@ -76,8 +76,8 @@ class Shifts extends React.Component {
     render() {
         return(
             <div className="row equal">
-                <CurrentShifts shifts={this.props.shifts.current_shifts} loadShifts={this.props.loadShifts} />
-                <SearchingShifts shifts={this.props.shifts.searching} loadShifts={this.props.loadShifts} />
+                <CurrentShifts shifts={this.props.shifts.current_shifts} loadShifts={this.props.loadShifts} userProfile={this.props.shifts.user_profile} />
+                <SearchingShifts shifts={this.props.shifts.searching} loadShifts={this.props.loadShifts} isManager={this.props.isManager}/>
                 <WaitingApprovalShifts shifts={this.props.shifts.waiting_approval} loadShifts={this.props.loadShifts} isManager={this.props.isManager} />
             </div>
         )
@@ -119,7 +119,7 @@ class CurrentShifts extends React.Component {
             shiftBlocks.push(
                 <ShiftBlock id={shifts[i].id} key={shifts[i].id} shift_detail={shifts[i]}
                             handleClick={this.handleSearch} buttonText={this.buttonText}
-                            modalText={this.modalText} />
+                            modalText={this.modalText} currentProfile={this.props.userProfile}/>
             )
         }
         return shiftBlocks;
@@ -173,15 +173,15 @@ class SearchingShifts extends React.Component {
 
     getCurrentShiftBlocks() {
         var shiftBlocks = [];
-        var showButton = false;
+        var enableButton = false;
         var shifts = this.props.shifts.slice(0);
         for(var i = 0; i < shifts.length; i++) {
-            showButton = !shifts[i].is_current_user
+            enableButton = !shifts[i].is_current_user && !this.props.isManager;
             shiftBlocks.push(
                 <ShiftBlock id={shifts[i].shift_detail.id} key={shifts[i].shift_detail.id}
                             shift={shifts[i].shift} shift_detail={shifts[i].shift_detail}
                             handleClick={this.handleRequest} buttonText={this.buttonText}
-                            currentProfile={shifts[i].current_profile} showButton={showButton}
+                            currentProfile={shifts[i].current_profile} enableButton={enableButton}
                             modalText={this.modalText} />
             )
         }
@@ -241,9 +241,9 @@ class WaitingApprovalShifts extends React.Component {
             shiftBlocks.push(
                 <ShiftBlock id={shifts[i].shift_detail.id} key={shifts[i].shift_detail.id}
                             shift={shifts[i].shift} shift_detail={shifts[i].shift_detail}
-                            handleClick={this.handleApproval} showButton={this.props.isManager}
+                            handleClick={this.handleApproval} enableButton={this.props.isManager}
                             buttonText={this.buttonText} currentProfile={shifts[i].current_profile}
-                            interestedProfile={shifts[i].interested_profile} 
+                            interestedProfile={shifts[i].interested_profile}
                             modalText={this.modalText}/>
             )
         }
@@ -296,25 +296,24 @@ class ShiftBlock extends React.Component {
     }
 
     render() {
-        var button = null;
         var currentEmployeeName = null;
         var interestedEmployeeName = null;
 
-        if(this.props.showButton) {
-            button = <button className="plannr-btn btn" onClick={this.openModal}>{this.props.buttonText}</button>;
-        }
+        var button = <button className="plannr-btn btn" onClick={this.openModal} disabled={!this.props.enableButton}>{this.props.buttonText}</button>;
 
         if(this.props.currentProfile) {
-            currentEmployeeName = <div><b>Current:</b> {this.props.currentProfile.first_name} {this.props.currentProfile.last_name}</div>
+            currentEmployeeName = this.props.currentProfile.first_name + ' ' + this.props.currentProfile.last_name;
         }
 
         if(this.props.interestedProfile) {
-            interestedEmployeeName = <div><b>Interested:</b> {this.props.interestedProfile.first_name} {this.props.interestedProfile.last_name}</div>
+            interestedEmployeeName = this.props.interestedProfile.first_name + ' ' + this.props.interestedProfile.last_name;
+        } else {
+            interestedEmployeeName = "No one yet!";
         }
 
         return(
             <div className="event-card">
-                <h3><u>{this.props.shift_detail.title}</u></h3>
+                <h3 className="event-title">{this.props.shift_detail.title}</h3>
                 <ul className="list-unstyled">
                     <li>
                         <p><b>Starts:</b> {new Date(this.props.shift_detail.start_date).toLocaleString()}</p>
@@ -323,10 +322,10 @@ class ShiftBlock extends React.Component {
                         <p><b>Ends:</b> {new Date(this.props.shift_detail.end_date).toLocaleString()}</p>
                     </li>
                     <li>
-                        {currentEmployeeName}
+                        <div><b>Current:</b> {currentEmployeeName}</div>
                     </li>
                     <li>
-                        {interestedEmployeeName}
+                        <div><b>Interested:</b> {interestedEmployeeName}</div>
                     </li>
                     <li>
                         {button}
@@ -353,7 +352,7 @@ class ShiftBlock extends React.Component {
 }
 
 ShiftBlock.defaultProps = {
-    showButton: true,
+    enableButton: true,
     currentProfile: null,
     interestedProfile: null
 }

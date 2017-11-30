@@ -22,6 +22,7 @@ class ShiftCenterList(APIView):
         user_id = request.user.id
         profile = Profile.objects.get(user_id=user_id)
         organization_id = profile.organization_id
+        profile_serializer = ProfileSerializer(profile)
         shifts = Shift.objects.filter(organization_id=organization_id, manager_approved=False)
         shifts_serializers = ShiftSerializer(shifts, many=True)
 
@@ -43,7 +44,8 @@ class ShiftCenterList(APIView):
 
         shifts = {'current_shifts': [],
                   'searching': [],
-                  'waiting_approval': []}
+                  'waiting_approval': [],
+                  'user_profile': profile_serializer.data}
 
         shifts['current_shifts'] = current_shifts.data
 
