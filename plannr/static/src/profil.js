@@ -9,6 +9,7 @@ import StatsContainer from './stats.js';
 import '../css/stats.css';
 import EmployeeRewardsContainer from './employee-rewards.js';
 import { calculateTotalPoints } from './shared/calculateTotalPoints';
+import { isManager } from './shared/isManager';
 
 class MasterProfile extends React.Component {
 	constructor(props) {
@@ -18,6 +19,7 @@ class MasterProfile extends React.Component {
             taken_shifts: 0,
             given_shifts: 0,
 			total_points: 0,
+			total_shifts: 0,
             isManager: false,
         };
 
@@ -47,9 +49,15 @@ class MasterProfile extends React.Component {
             success: function(data){
                 if(data != '') {
                     console.log(data);
-                    this.setState(data);
-					tot_pts = calculateTotalPoints(this.state.hours, this.state.taken_shifts, this.state.given_shifts);
-					this.setState(total_points: tot_pts);
+					var points = calculateTotalPoints(data.hours, data.taken_shifts, data.given_shifts);
+					var setData = {
+						hours: data.hours,
+			            taken_shifts: data.taken_shifts,
+			            given_shifts: data.given_shifts,
+						total_shifts: data.shifts,
+						total_points: points,
+					};
+					this.setState(setData);
                 }
             }.bind(this),
             error: function() {
@@ -63,8 +71,8 @@ class MasterProfile extends React.Component {
 			<div className="profile-container">
 				<div className="profile-content-container">
 					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
-					{this.state.isManager ? <StatsContainer hours={this.state.hours} taken={this.state.taken_shifts} given={this.state.given_shifts} total_points={this.state.total_points}/> : null}
-					{this.state.isManager ? <EmployeeRewardsContainer total_points={this.state.total_points}/> : null}
+					{!this.state.isManager ? <StatsContainer hours={this.state.hours} taken={this.state.taken_shifts} given={this.state.given_shifts} total_points={this.state.total_points} all_shifts={this.state.total_shifts} /> : null}
+					{!this.state.isManager ? <EmployeeRewardsContainer total_points={this.state.total_points} /> : null}
 				</div>
 			</div>
 		);
@@ -196,7 +204,7 @@ class UserInformation extends React.Component {
 
 	render() {
 		return (
-			<form onSubmit={this.saveProfileInfo} className="profile-sub-container" id="profile_form">
+			<form onSubmit={this.saveProfileInfo} className="profile-sub-container col-sm-5" id="profile_form">
 				<h1>{this.state.fixed_first_name}&#39;s Profile</h1>
 				<div className='input-group user-info-group'>
   					<span className='user-info-label input-group-addon'>First Name </span>

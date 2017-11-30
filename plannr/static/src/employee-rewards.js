@@ -7,16 +7,18 @@ class EmployeeRewardsContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            allRewards: [],
             isManager: false,
+            allRewards: [],
         };
     }
 
+
     componentWillMount() {
         isManager((isUserManager) => this.setState({isManager: isUserManager}));
-        if(!this.state.isManager) {
-            this.updateRewards();
-        }
+    }
+
+    componentDidMount() {
+        this.updateRewards();
     }
 
     updateRewards() {
@@ -27,14 +29,11 @@ class EmployeeRewardsContainer extends React.Component {
                 xhr.setRequestHeader("X-CSRFToken", csrfToken);
             }
         });
-        var data = {
-            points: this.props.total_points,
-        };
         $.ajax({
-            type: 'POST',
+            type: 'PATCH',
             url: this.props.rewardsUrl,
             datatype: 'json',
-            data: data,
+            data: {},
             cache: false,
             success: function(data){
                 console.log('updated the rewards successfully');
@@ -64,7 +63,7 @@ class EmployeeRewardsContainer extends React.Component {
 
     render() {
         return(
-            <div className="employee-rewards-container">
+            <div className="employee-rewards-container col-sm-4">
                 <h3>Earned Rewards</h3>
                 <div className="employee-rewards-list">
                     <EmployeeRewards rewards={this.state.allRewards}/>

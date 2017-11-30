@@ -18,10 +18,10 @@ class StatsContainer extends React.Component {
     render() {
         var statsContainer = null;
         if(!this.state.isManager) {
-            statsContainer = <Stats hours={this.props.hours} taken={this.props.taken} given={this.props.given} points={this.props.total_points}/>
+            statsContainer = <Stats hours={this.props.hours} taken={this.props.taken} given={this.props.given} total_points={this.props.total_points} shifts={this.props.all_shifts}/>
         }
         return(
-            <div className="stats-content-container">
+            <div className="stats-content-container col-sm-3">
                 {statsContainer}
             </div>
         );
@@ -47,6 +47,8 @@ class Stats extends React.Component {
                 <div>{this.props.taken}</div>
                 <div><b>Given Shifts:</b></div>
                 <div>{this.props.given}</div>
+                <div><b>Shifts:</b></div>
+                <div>{this.props.shifts}</div>
                 <div><b>Total Points:</b></div>
                 <div>{this.props.total_points}</div>
             </div>
