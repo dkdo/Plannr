@@ -58,10 +58,11 @@ class Calendr extends React.Component {
 
     componentWillMount() {
         this.setState(this.calc.call(null, this.state.year, this.state.month));
+        this.loadMonthEvents();
+        this.loadDateEvents(this.getSelectedDate());
     }
 
     componentDidMount() {
-        this.loadMonthEvents();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -74,26 +75,40 @@ class Calendr extends React.Component {
         var state = {};
         if (this.state.month > 0) {
             state.month = this.state.month - 1;
+            state.selectedMonth = state.month;
             state.year = this.state.year;
+            state.selectedYear = state.year;
         } else {
             state.month = 11;
+            state.selectedMonth = state.month;
             state.year = this.state.year - 1;
+            state.selectedYear = state.year;
         }
         Object.assign(state, this.calc.call(null, state.year, state.month));
-        this.setState(state, () => this.loadMonthEvents());
+        this.setState(state, () => {
+            this.loadMonthEvents();
+            this.loadDateEvents(this.getSelectedDate());
+        });
     }
 
     getNext() {
         var state = {};
         if (this.state.month < 11) {
             state.month = this.state.month + 1;
+            state.selectedMonth = state.month;
             state.year = this.state.year;
+            state.selectedYear = state.year;
         } else {
             state.month = 0;
+            state.selectedMonth = state.month;
             state.year = this.state.year + 1;
+            state.selectedYear = state.year;
         }
         Object.assign(state, this.calc.call(null, state.year, state.month));
-        this.setState(state, () => this.loadMonthEvents());
+        this.setState(state, () => {
+            this.loadMonthEvents();
+            this.loadDateEvents(this.getSelectedDate());
+        });
     }
 
     loadDateEvents(date){
@@ -206,7 +221,7 @@ class Calendr extends React.Component {
                                     events={this.state.dayEventList}/>
                             </div>
                             <div className="col-sm-6">
-                                <div className="event-list-title"><b><u>Shifts</u></b></div>
+                                <div className="calendar-subtitle"><b><u>Shifts</u></b></div>
                                 <EventList dayEventList={this.state.dayEventList}/>
                             </div>
                         </div>
@@ -237,7 +252,7 @@ class Header extends React.Component {
         return (
             <div className="calendar-header">
                 <Arrows onPrev={this.props.onPrev} onNext={this.props.onNext}/>
-                <div className="calendar-title">{calendrConst.monthNames[this.props.month]}&nbsp;{this.props.year}</div>
+                <div className="calendar-title">{calendrConst.monthNamesFull[this.props.month]}&nbsp;{this.props.year}</div>
             </div>
         );
     }
@@ -343,7 +358,7 @@ class MonthDates extends React.Component {
                                 }
 
                                 if(events.length > 2) {
-                                    eventPoints.push(<div className="more-events">...</div>)
+                                    eventPoints.push(<div key={d} className="more-events">...</div>)
                                 }
                             }
 

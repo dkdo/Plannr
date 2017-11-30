@@ -69,11 +69,15 @@
     color: #0066ff;
 }
 
- /* Main Calendar Table */
+/* Main Calendar Table */
 
-.calendar-header > div {
-    display: inline-block;
+.calendar-header {
+    padding-bottom: 5px;
 }
+
+    .calendar-header > div {
+        display: inline-block;
+    }
 
  .calendar-grid-wrapper {
     max-width: 50%;
@@ -384,6 +388,11 @@
     text-align: center;
 }
 
+.calendar-subtitle {
+    font-size: 20px;
+    text-align: center;
+}
+
 /* Login / Sign up CSS */
 
 .hidden {
@@ -506,9 +515,6 @@ img.logo-resize {
 /* CALENDR WEEK AND MONTH */
 
 .event-list{
-    display: grid;
-    grid-template-columns: [col-one] 100%;
-    grid-row-gap: 5px;
     float: left;
     height: 70vh;
     overflow-y: scroll;
@@ -516,6 +522,7 @@ img.logo-resize {
     background-color: #fff;
     color: black;
     width: 100%;
+    padding-top: 10px;
 }
 
 .event-list-title {
@@ -532,6 +539,14 @@ img.logo-resize {
     border: 1px solid #0066ff;
     padding: 10px;
     margin-bottom: 5px;
+    height: 13em;
+}
+
+.event-card .event-title {
+  display: block; /* or inline-block */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .eventAdder-btn {
@@ -540,11 +555,6 @@ img.logo-resize {
 
 .eventAdder-info {
     margin-bottom: 5px;
-}
-
-.eventAdder-title {
-    font-size: 18px;
-    text-align: center;
 }
 
 /* END CALENDAR WEEK AND MONTH */
