@@ -5,6 +5,8 @@ import { getCookie } from './shared/csrf_methods';
 import '../css/position.css';
 import { isManager } from './shared/isManager.js';
 import AlertDismissable from './alert-dismissable.js';
+import Modal from 'react-modal';
+import centerModal from './shared/centerModal';
 
 export default class MasterPosition extends React.Component {
   constructor(props) {
@@ -62,23 +64,26 @@ class Position extends React.Component {
         bsStyle: '',
         alertText: '',
         headline: '',
+        showModal: false,
     };
+    this.modalText = 'Do you wish to delete this position?';
+    this.buttonText = 'DELETE';
     this.handlePositionClick = this.handlePositionClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.addNewPosition = this.addNewPosition.bind(this);
     this.handleAddClick = this.handleAddClick.bind(this);
     this.modifyPosition = this.modifyPosition.bind(this);
     this.searchPosition = this.searchPosition.bind(this);
-    this.saveAddCallback = this.saveAddCallback.bind(this);
+    this.crudCallback = this.crudCallback.bind(this);
     this.alertDismiss = this.alertDismiss.bind(this);
-
+    this.deletePosition = this.deletePosition.bind(this);
   }
 
   componentWillMount() {
     this.loadPositions();
   }
 
-  saveAddCallback(bsStyle, alertText) {
+  crudCallback(bsStyle, alertText) {
     var headline = bsStyle === "success" ? "Success!" : "Uh oh!"
     this.setState({
         showAlert: true,
@@ -104,7 +109,7 @@ class Position extends React.Component {
               }
           }.bind(this),
           error: function() {
-              this.saveAddCallback("danger", "ERROR LOADING POSITIONS");
+              this.crudCallback("danger", "ERROR LOADING POSITIONS");
           }.bind(this)
       })
   }
@@ -191,6 +196,49 @@ class Position extends React.Component {
       return doesApply;
   }
 
+  deletePosition(event, id) {
+      console.log('enters deletePosition');
+      var data = {position_id: id}
+      console.log(data);
+      console.log(this.props.getpos_url);
+      var csrfToken = getCookie('csrftoken');
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              xhr.setRequestHeader("X-CSRFToken", csrfToken);
+          }
+      });
+      $.ajax({
+          url: this.props.getpos_url,
+          type: 'DELETE',
+          datatype: 'json',
+          cache: false,
+          data: data,
+          success: function(data){
+             this.removePositionFromList(id);
+             this.crudCallback("success", "Deleted position!");
+             this.setState({appearDetail: false});
+          }.bind(this)
+      });
+      event.preventDefault();
+  }
+
+  removePositionFromList(id) {
+      var fixed = this.state.fixedPositionList.slice(0);
+      var search = this.state.positionList.slice(0);
+      for(var i = 0; i < fixed.length; i++) {
+          if(fixed[i].id == id) {
+              fixed.splice(i, 1);
+          }
+      }
+      for(var j = 0; j < search.length; j++) {
+          if(search[j].id == id) {
+              search.splice(j, 1);
+          }
+      }
+
+      this.setState({fixedPositionList: fixed, positionList: search});
+  }
+
   addNewPosition(event) {
       var canAdd = this.addSanitize();
       if (canAdd) {
@@ -224,16 +272,16 @@ class Position extends React.Component {
                       this.setState({fixedPositionList: positions,
                       newTitle: '', newDep: '', newSalary: '',
                       positionList: filteredPositions});
-                      this.saveAddCallback("success", "Position has been succesfully added!");
+                      this.crudCallback("success", "Position has been successfully added!");
                   }
               }.bind(this),
               error: function() {
-                  this.saveAddCallback("danger", "ERROR ADDING NEW POSITION");
+                  this.crudCallback("danger", "ERROR ADDING NEW POSITION");
               }.bind(this)
           })
       }
       else {
-          this.saveAddCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
+          this.crudCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
       }
       event.preventDefault();
   }
@@ -280,16 +328,16 @@ class Position extends React.Component {
               success: function(data){
                   if(data != "") {
                       this.updatePositionList();
-                      this.saveAddCallback("success", "Position has been succesfully updated!");
+                      this.crudCallback("success", "Position has been succesfully updated!");
                   }
               }.bind(this),
               error: function() {
-                  this.saveAddCallback("danger", "ERROR UPDATING POSITION");
+                  this.crudCallback("danger", "ERROR UPDATING POSITION");
               }.bind(this)
           })
       }
       else {
-          this.saveAddCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
+          this.crudCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
       }
       event.preventDefault();
   }
@@ -317,7 +365,8 @@ class Position extends React.Component {
         <div className="position-pane" id="right_position_pane">
             <DisplayInformation modifyPosition={this.modifyPosition} show={this.state.appearDetail} handleInputChange={this.handleInputChange}
             posId={this.state.selectedId} posTitle={this.state.selectedTitle}
-            posSalary={this.state.selectedSalary} posDep={this.state.selectedDep}/>
+            posSalary={this.state.selectedSalary} posDep={this.state.selectedDep} posId={this.state.selectedId}
+            modalText={this.modalText} deletePosition={this.deletePosition} buttonText={this.buttonText}/>
             <DisplayNewPosition addNewPosition={this.addNewPosition} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
             newTitle={this.state.newTitle} newSalary={this.state.newSalary}
             newDep={this.state.newDep}/>
@@ -328,26 +377,67 @@ class Position extends React.Component {
   }
 }
 
-function DisplayInformation(props) {
-    if(!props.show) {
-        return null;
+class DisplayInformation extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showModal: false,
+        };
+
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
-    return(
-        <form className="right-position-pane-content">
-            <h2 className="position-title"> {props.posTitle} </h2>
-            <div className="input-group position-group">
-                <span className="input-group-addon position-info-label">Salary&#47;h</span>
-                <input className="form-control position-info-input" onChange={props.handleInputChange} name="selectedSalary" value={props.posSalary} placeholder="ex:13$"></input>
+
+    openModal(event) {
+        this.setState({showModal: true});
+    }
+
+    closeModal(event) {
+        this.setState({showModal: false});
+    }
+
+    onClick(event) {
+        this.props.deletePosition(event, this.props.posId);
+        this.closeModal();
+    }
+    render() {
+        if(!this.props.show) {
+            return null;
+        }
+        return(
+            <div className="right-position-pane-content">
+                <Modal
+                    isOpen={this.state.showModal}
+                    onRequestClose={this.closeModal}
+                    contentLabel="Modal"
+                    style={centerModal}>
+                    <div>
+                        <div className="modal-text">
+                            {this.props.modalText}
+                        </div>
+                        <div className="modal-btns">
+                            <button className="plannr-btn btn" onClick={this.onClick}>{this.props.buttonText}</button>
+                            <button className="plannr-btn btn" onClick={this.closeModal}>Cancel</button>
+                        </div>
+                    </div>
+                </Modal>
+                <h2 className="position-title"> {this.props.posTitle} </h2>
+                <div className="input-group position-group">
+                    <span className="input-group-addon position-info-label">Salary&#47;h</span>
+                    <input className="form-control position-info-input" onChange={this.props.handleInputChange} name="selectedSalary" value={this.props.posSalary} placeholder="ex:13$"></input>
+                </div>
+                <div className="input-group position-group">
+                    <span className="input-group-addon position-info-label">Department</span>
+                    <input className="form-control position-info-input" onChange={this.props.handleInputChange} name="selectedDep" value={this.props.posDep} placeholder="Customer Service"></input>
+                </div>
+                <div className="position-save-btn-wrapper">
+                    <button onClick={this.props.modifyPosition} className="position-save-btn plannr-btn btn">SAVE</button>
+                    <button onClick={this.openModal} className="position-delete-btn plannr-btn btn">DELETE</button>
+                </div>
             </div>
-            <div className="input-group position-group">
-                <span className="input-group-addon position-info-label">Department</span>
-                <input className="form-control position-info-input" onChange={props.handleInputChange} name="selectedDep" value={props.posDep} placeholder="Customer Service"></input>
-            </div>
-            <div className="position-save-btn-wrapper">
-                <button onClick={props.modifyPosition} className="position-save-btn plannr-btn btn">SAVE</button>
-            </div>
-        </form>
-    );
+        );
+    }
 }
 
 function DisplayNewPosition(props) {

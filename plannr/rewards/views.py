@@ -12,6 +12,12 @@ from rewards.models import Employee_Rewards
 from stats.models import Stat
 
 class RewardList(APIView):
+    def get_object(self, pk):
+        try:
+            return Reward.objects.get(pk=pk)
+        except Reward.DoesNotExist:
+            raise Http404
+
     def get(self, request, format=None):
         if request.user.is_authenticated() and is_manager(request):
             uid = request.user.id
@@ -43,6 +49,14 @@ class RewardList(APIView):
                 reward_serializer.save()
                 return Response(reward_serializer.data)
         return Response(reward_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, format=None):
+        pk = request.data.get('reward_id')
+        reward = self.get_object(pk)
+        print('reward')
+        print(reward)
+        reward.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AssignRewards(APIView):
     def patch(self, request, format=None):

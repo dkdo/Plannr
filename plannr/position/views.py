@@ -9,6 +9,12 @@ from position.models import Position
 from profil.models import Profile
 
 class PositionList(APIView):
+    def get_object(self, pk):
+        try:
+            return Position.objects.get(pk=pk)
+        except Position.DoesNotExist:
+            raise Http404
+
     def get(self, request, format=None):
         if request.user.is_authenticated():
             uid = request.user.id
@@ -40,6 +46,14 @@ class PositionList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         print serializer.errors
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, format=None):
+        pk = request.data.get('position_id')
+        position = self.get_object(pk)
+        print('position')
+        print(position)
+        position.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 def exists_or_not(classmodel, **kwargs):
 	num_results = classmodel.objects.filter(**kwargs).count()
