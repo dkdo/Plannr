@@ -216,6 +216,7 @@ class Position extends React.Component {
           success: function(data){
              this.removePositionFromList(id);
              this.crudCallback("success", "Deleted position!");
+             this.setState({appearDetail: false});
           }.bind(this)
       });
       event.preventDefault();
