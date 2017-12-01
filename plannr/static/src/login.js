@@ -14,6 +14,7 @@ class MasterLogin extends React.Component {
 		};
 
 		this.showSignUp = this.showSignUp.bind(this);
+		this.hideSignUp = this.hideSignUp.bind(this);
 	}
 
 	showSignUp() {
@@ -28,7 +29,7 @@ class MasterLogin extends React.Component {
 		return (
 			<div className="login-content-container">
 				<Login show={this.showSignUp} submit_url={this.props.submit_url}/>
-				{this.state.showSignup ? <Signup hideSignUp={this.hideSignUp} signup_url={this.props.signup_url}/> : null}
+				{this.state.showSignup ? <Signup hideSignUp={this.hideSignUp} signup_url={this.props.signup_url} hideSignUp={this.hideSignUp}/> : null}
 			</div>
 		);
 	}
@@ -117,7 +118,6 @@ class Signup extends React.Component {
 			password: this.state.spassword,
 			organization: this.state.organization
 		};
-		console.log(signupInfo);
 		$.ajax({
 			type: 'POST',
 			url: this.props.signup_url,
@@ -126,6 +126,7 @@ class Signup extends React.Component {
 			cache: false,
 			success: function(){
 				this.setState({firstname: '', lastname: '', email: '', spassword: '', organization: ''});
+				this.props.hideSignUp();
 			}.bind(this)
 		})
 		event.preventDefault();
