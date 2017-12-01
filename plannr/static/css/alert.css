@@ -1,0 +1,10 @@
+.alert-top {
+    position: fixed;
+    top: 45px;
+    left: 25%;
+    width: 50%;
+}
+
+.alert-top h4 {
+    margin: 0px;
+}
