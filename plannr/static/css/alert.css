@@ -14,3 +14,11 @@
 .alert-top p {
     display: inline-block;
 }
+
+.login-main-container .alert-top {
+    position: fixed;
+    top: 0px;
+    left: 25%;
+    width: 50%;
+    z-index: 5;
+}

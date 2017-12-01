@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute, withRouter } from 'react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
 import DjangoCSRFToken from './shared/csrf';
+import AlertDismissable from './alert-dismissable.js';
 
 const history = createBrowserHistory({forceRefresh:true});
 
@@ -11,11 +12,31 @@ class MasterLogin extends React.Component {
 		super(props);
 		this.state = {
 			showSignup: false,
+	        showAlert: false,
+	        bsStyle: '',
+	        alertText: '',
+	        headline: '',
 		};
 
 		this.showSignUp = this.showSignUp.bind(this);
 		this.hideSignUp = this.hideSignUp.bind(this);
+		this.crudCallback = this.crudCallback.bind(this);
+		this.alertDismiss = this.alertDismiss.bind(this);
 	}
+
+	 crudCallback(bsStyle, alertText) {
+    	var headline = bsStyle === "success" ? "Success!" : "Uh oh!"
+    	this.setState({
+        	showAlert: true,
+        	bsStyle: bsStyle,
+        	alertText: alertText,
+        	headline: headline,
+    	});
+  	}
+
+  	alertDismiss() {
+      	this.setState({showAlert: false});
+  	}
 
 	showSignUp() {
 		this.setState({showSignup: true});
@@ -27,9 +48,13 @@ class MasterLogin extends React.Component {
 
 	render() {
 		return (
-			<div className="login-content-container">
-				<Login show={this.showSignUp} submit_url={this.props.submit_url}/>
-				{this.state.showSignup ? <Signup hideSignUp={this.hideSignUp} signup_url={this.props.signup_url} hideSignUp={this.hideSignUp}/> : null}
+			<div className="login-main-container">
+				<AlertDismissable alertVisible={this.state.showAlert} bsStyle={this.state.bsStyle} headline={this.state.headline} alertText={this.state.alertText}
+	                              alertDismiss={this.alertDismiss}/>
+				<div className="login-content-container">
+					<Login show={this.showSignUp} submit_url={this.props.submit_url}/>
+					{this.state.showSignup ? <Signup hideSignUp={this.hideSignUp} signup_url={this.props.signup_url} hideSignUp={this.hideSignUp} crudCallback={this.crudCallback}/> : null}
+				</div>
 			</div>
 		);
 	}
@@ -110,6 +135,8 @@ class Signup extends React.Component {
 		this.handleInputChange = this.handleInputChange.bind(this);
 	}
 
+
+
 	attemptSignup(event) {
 		var signupInfo = {
 			firstname: this.state.firstname,
@@ -124,9 +151,15 @@ class Signup extends React.Component {
 			data: signupInfo,
 			datatype: 'json',
 			cache: false,
-			success: function(){
+			success: function(data){
+				console.log(data);
 				this.setState({firstname: '', lastname: '', email: '', spassword: '', organization: ''});
+				this.props.crudCallback("success", "Successfully signed up!");
 				this.props.hideSignUp();
+			}.bind(this),
+			error: function(data){
+				console.log(data.responseJSON);
+				this.props.crudCallback("danger", JSON.parse(data.responseJSON).message);
 			}.bind(this)
 		})
 		event.preventDefault();

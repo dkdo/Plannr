@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
@@ -60,7 +61,12 @@ class SignUpRequest(APIView):
         if type(organization_name) is unicode:
             organization_name = organization_name.encode('utf-8')
 
-        user = User.objects.create_user(email, email, password)
+        try:
+            user = User.objects.create_user(email, email, password)
+        except:
+            res = {'code': 400, 'message': 'User name already taken!'}
+            return Response(data=json.dumps(res), status=status.HTTP_400_BAD_REQUEST)
+
         user.first_name = first_name
         user.last_name = last_name
         if user is not None:

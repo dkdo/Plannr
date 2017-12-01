@@ -9,7 +9,7 @@ class AuthRequiredMiddleware(object):
     def __call__(self, request):
         response = self.get_response(request)
         if not request.user.is_authenticated():
-            if not request.path == reverse('login:index'):
+            if not request.path.startswith(reverse('login:index')):
                 return HttpResponseRedirect(reverse('login:index'))
 
         return response
