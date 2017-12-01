@@ -78,7 +78,7 @@ class Calendr extends React.Component {
 
     refreshPage() {
         this.loadMonthEvents();
-        this.loadDateEvents(this.getSelectedDate());
+        this.loadDateEvents(this.getSelectedDate().toISOString());
     }
 
     getPrev() {

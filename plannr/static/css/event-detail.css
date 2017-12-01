@@ -4,6 +4,7 @@
 
 .event-modal .modal-title {
     text-align: center;
+    padding-bottom: 10px;
 }
 
 .event-modal > div:not(.modal-btns) {

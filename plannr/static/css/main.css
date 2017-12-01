@@ -564,7 +564,7 @@ img.logo-resize {
     background-color: #fff;
     color: black;
     border-radius: 5px;
-    border: 1px solid #0066ff;
+    border: 2px solid rgba(0, 102, 255, 0.6);
     padding: 10px;
     margin-bottom: 5px;
     height: 11em;

@@ -11,11 +11,11 @@ class EventList extends React.Component {
     }
 
     render() {
-        var eventComponents = this.props.dayEventList.map(function(event) {
-            return(
-                <EventCard key={event.id} event={event} />
-            )
-        });
+        var eventComponents = [];
+        for(let i = 0; i < this.props.dayEventList.length; i++){
+            eventComponents.push(<EventCard key={this.props.dayEventList[i].id} event={this.props.dayEventList[i]} refreshPage={this.props.refreshPage} />);
+        }
+
         return (
             <div className="event-list">
                 {eventComponents}

@@ -37,7 +37,8 @@ class AddEvent extends React.Component {
         super(props);
         this.state = {
             endTimeOptions: [],
-            employeeId: null
+            employeeId: null,
+            showModal: false,
         }
         this.startTimeChangeEvent = this.startTimeChangeEvent.bind(this);
         this.startTimeChange = this.startTimeChange.bind(this);
