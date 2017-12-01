@@ -1,0 +1,12 @@
+.event-modal {
+    padding: 0 15px;
+}
+
+.event-modal .modal-title {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.event-modal > div:not(.modal-btns) {
+    padding-top: 2px;
+}

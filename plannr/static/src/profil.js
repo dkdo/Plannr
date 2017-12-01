@@ -10,6 +10,7 @@ import '../css/stats.css';
 import EmployeeRewardsContainer from './employee-rewards.js';
 import { calculateTotalPoints } from './shared/calculateTotalPoints';
 import { isManager } from './shared/isManager';
+import AlertDismissable from './alert-dismissable.js';
 
 class MasterProfile extends React.Component {
 	constructor(props) {
@@ -21,8 +22,13 @@ class MasterProfile extends React.Component {
 			total_points: 0,
 			total_shifts: 0,
             isManager: false,
+            showAlert: false,
+			bsStyle: '',
+			alertText: '',
+			headline: '',
         };
-
+        this.alertDismiss = this.alertDismiss.bind(this);
+        this.saveCallback = this.saveCallback.bind(this);
 	}
 
 	componentWillMount() {
@@ -66,12 +72,29 @@ class MasterProfile extends React.Component {
         })
     }
 
+
+    saveCallback(bsStyle, alertText) {
+    	var headline = bsStyle === "success" ? "Success!" : "Uh oh!"
+        this.setState({
+        	showAlert: true,
+        	bsStyle: bsStyle,
+			alertText: alertText,
+			headline: headline,
+        });
+    }
+
+    alertDismiss() {
+        this.setState({showAlert: false});
+    }
+
 	render() {
 		return (
 			<div className="profile-container">
+				<AlertDismissable alertVisible={this.state.showAlert} bsStyle={this.state.bsStyle} headline={this.state.headline} alertText={this.state.alertText}
+                                  alertDismiss={this.alertDismiss}/>
 				<div className="profile-content-container">
 					{!this.state.isManager ? <StatsContainer hours={this.state.hours} taken={this.state.taken_shifts} given={this.state.given_shifts} total_points={this.state.total_points} all_shifts={this.state.total_shifts} /> : null}
-					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
+					<UserInformation saveprofile_url={this.props.saveprofile_url} saveCallback={this.saveCallback}/>
 					{!this.state.isManager ? <EmployeeRewardsContainer total_points={this.state.total_points} /> : null}
 				</div>
 			</div>
@@ -136,7 +159,7 @@ class UserInformation extends React.Component {
 			console.log('isValid: ' + isNumValid);
 			if (!isNumValid) {
 				valid = false;
-				err_msg += i + '. Phone Number needs to have XXX-XXX-XXXX or XXXYYYZZZZ format';
+				err_msg += i + '. Phone Number needs to have XXX-XXX-XXXX or XXXYYYZZZZ format\n';
 				i++;
 			}
 		}
@@ -144,7 +167,7 @@ class UserInformation extends React.Component {
 			var isDateValid = isBirthDateValid(this.state.birth_date);
 			if (!isDateValid) {
 				valid = false;
-				err_msg += i + '. Birth Date needs to have YYYY/MM/DD format';
+				err_msg += i + '. Birth Date needs to have YYYY/MM/DD format\n';
 				i++;
 			}
 		}
@@ -185,15 +208,15 @@ class UserInformation extends React.Component {
 				data: info,
 				datatype: 'json',
 				success: function() {
-					alert("Successfully saved the information");
+					this.props.saveCallback("success", "Successfully saved the information!");
 				}.bind(this),
 				error: function() {
-					alert("Saving Profile Info Failed");
+					this.props.saveCallback("danger", "Saving Profile Info Failed");
 				}.bind(this)
 			})
 		}
 		else {
-			alert(validObj.msg);
+			this.props.saveCallback("danger", validObj.msg);
 		}
 		event.preventDefault();
 	}

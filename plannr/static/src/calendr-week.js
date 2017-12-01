@@ -32,6 +32,7 @@ class CalendrWeek extends React.Component {
         this.endTimeChange = this.endTimeChange.bind(this);
         this.handleOutsideClick = this.handleOutsideClick.bind(this);
         this.addEventCallback = this.addEventCallback.bind(this);
+        this.refreshPage = this.refreshPage.bind(this);
     }
 
 
@@ -67,6 +68,7 @@ class CalendrWeek extends React.Component {
     }
 
     dayOnClick(weekdayId) {
+        if(!this.state.isManager) return;
         // Monday is 1 in JS, but 0 in python
         var selectedDate = new Date(weekdayId);
 
@@ -79,9 +81,13 @@ class CalendrWeek extends React.Component {
         });
     }
 
+    refreshPage() {
+        this.getWeekEvents();
+    }
+
     getWeekEvents() {
-        const calendrMonday = this.state.thisWeekMonday;
-        const weekMonday = new Date(calendrMonday.getFullYear(), calendrMonday.getMonth(),
+        let calendrMonday = this.state.thisWeekMonday;
+        let weekMonday = new Date(calendrMonday.getFullYear(), calendrMonday.getMonth(),
                                     calendrMonday.getDate(), 0, 0, 0).toISOString();
         $.ajax({
             url: this.props.url + 'weekevents/',
@@ -153,7 +159,7 @@ class CalendrWeek extends React.Component {
                         <tr>
                             <td className={managerClass}>
                                 <div className="calendar-subtitle"><b>Shifts</b></div>
-                                <EventList dayEventList={weekEvents}/>
+                                <EventList dayEventList={weekEvents} refreshPage={this.refreshPage}/>
                             </td>
                         </tr>
                     </tbody>

@@ -4,6 +4,7 @@ import calendrConst from './shared/calendr-const';
 import Select from 'react-select';
 import {getCookie} from './shared/getCookie';
 import {isManager} from './shared/isManager';
+import AlertDismissable from './alert-dismissable.js';
 
 class AddEventContainer extends React.Component {
     constructor(props) {
@@ -37,7 +38,11 @@ class AddEvent extends React.Component {
         super(props);
         this.state = {
             endTimeOptions: [],
-            employeeId: null
+            employeeId: null,
+            showAlert: false,
+            headline: '',
+            alertText: '',
+            bsStyle: '',
         }
         this.startTimeChangeEvent = this.startTimeChangeEvent.bind(this);
         this.startTimeChange = this.startTimeChange.bind(this);
@@ -47,6 +52,7 @@ class AddEvent extends React.Component {
         this.addEvent = this.addEvent.bind(this);
         this.checkShiftFit = this.checkShiftFit.bind(this);
         this.doesShiftOverlap = this.doesShiftOverlap.bind(this);
+        this.alertDismiss = this.alertDismiss.bind(this);
     }
 
     componentDidMount() {
@@ -71,6 +77,10 @@ class AddEvent extends React.Component {
         return true;
     }
 
+    alertDismiss() {
+        this.setState({showAlert: false});
+    }
+
     doesShiftOverlap(newStart, newEnd, oldStart, oldEnd) {
         var startsAfter = newStart >= oldStart && newStart < oldEnd;
         var startsBefore = newStart <= oldStart && newEnd > oldStart;
@@ -80,10 +90,16 @@ class AddEvent extends React.Component {
 
     addEvent(){
         if (this.props.eventTitle == ''){
-            alert('Select a date and/or add a title!');
+            let alertState = {headline: 'Uh oh!', alertText: 'Select a date and/or add a title!', showAlert: true, bsStyle: 'danger'};
+            this.setState(alertState);
         }
         else if (!this.checkShiftFit()) {
-            alert('Employee already has an overlapping shift at that time period!');
+            let alertState = {headline: 'Uh oh!', alertText: 'Employee already has an overlapping shift at that time period!', showAlert: true, bsStyle: 'danger'};
+            this.setState(alertState);
+        }
+        else if (!this.state.employeeId || this.state.employeeId === null){
+            let alertState = {headline: 'Uh oh!', alertText: 'Select an employee!', showAlert: true, bsStyle: 'danger'};
+            this.setState(alertState);
         }
         else{
             var start_date = this.parseEventStartDate().toISOString();
@@ -108,6 +124,8 @@ class AddEvent extends React.Component {
                 cache: false,
                 success: function(data) {
                     this.props.addEventCallback(data);
+                    let alertState = {headline: 'Success!', alertText: 'Added new shift!', showAlert: true, bsStyle: 'success'};
+                    this.setState(alertState);
                 }.bind(this)
             })
             this.props.titleChange('');
@@ -216,6 +234,8 @@ class AddEvent extends React.Component {
         let startOptions = this.getStartTimeOptions();
         return (
             <div className="eventAdder">
+                <AlertDismissable alertVisible={this.state.showAlert} bsStyle={this.state.bsStyle} headline={this.state.headline} alertText={this.state.alertText}
+                                  alertDismiss={this.alertDismiss}/>
                 <p className="calendar-subtitle"><b>New Event</b></p>
                 <div className="eventAdder-info">
                     <div><b>Title: </b></div>

@@ -132,8 +132,11 @@ class EventDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
+    def delete(self, request, format=None):
+        pk = request.data.get('event_id')
         event = self.get_object(pk)
+        print('event')
+        print(event)
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

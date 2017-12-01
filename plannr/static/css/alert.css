@@ -1,0 +1,16 @@
+.alert-top {
+    position: fixed;
+    top: 45px;
+    left: 25%;
+    width: 50%;
+    z-index: 5;
+}
+
+.alert-top h4 {
+    margin: 0px;
+    display: inline-block;
+}
+
+.alert-top p {
+    display: inline-block;
+}
