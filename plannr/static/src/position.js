@@ -74,7 +74,7 @@ class Position extends React.Component {
     this.handleAddClick = this.handleAddClick.bind(this);
     this.modifyPosition = this.modifyPosition.bind(this);
     this.searchPosition = this.searchPosition.bind(this);
-    this.saveAddCallback = this.saveAddCallback.bind(this);
+    this.crudCallback = this.crudCallback.bind(this);
     this.alertDismiss = this.alertDismiss.bind(this);
     this.deletePosition = this.deletePosition.bind(this);
   }
@@ -83,7 +83,7 @@ class Position extends React.Component {
     this.loadPositions();
   }
 
-  saveAddCallback(bsStyle, alertText) {
+  crudCallback(bsStyle, alertText) {
     var headline = bsStyle === "success" ? "Success!" : "Uh oh!"
     this.setState({
         showAlert: true,
@@ -109,7 +109,7 @@ class Position extends React.Component {
               }
           }.bind(this),
           error: function() {
-              this.saveAddCallback("danger", "ERROR LOADING POSITIONS");
+              this.crudCallback("danger", "ERROR LOADING POSITIONS");
           }.bind(this)
       })
   }
@@ -215,6 +215,7 @@ class Position extends React.Component {
           data: data,
           success: function(data){
              this.removePositionFromList(id);
+             this.crudCallback("success", "Deleted position!");
           }.bind(this)
       });
       event.preventDefault();
@@ -270,16 +271,16 @@ class Position extends React.Component {
                       this.setState({fixedPositionList: positions,
                       newTitle: '', newDep: '', newSalary: '',
                       positionList: filteredPositions});
-                      this.saveAddCallback("success", "Position has been succesfully added!");
+                      this.crudCallback("success", "Position has been succesfully added!");
                   }
               }.bind(this),
               error: function() {
-                  this.saveAddCallback("danger", "ERROR ADDING NEW POSITION");
+                  this.crudCallback("danger", "ERROR ADDING NEW POSITION");
               }.bind(this)
           })
       }
       else {
-          this.saveAddCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
+          this.crudCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
       }
       event.preventDefault();
   }
@@ -326,16 +327,16 @@ class Position extends React.Component {
               success: function(data){
                   if(data != "") {
                       this.updatePositionList();
-                      this.saveAddCallback("success", "Position has been succesfully updated!");
+                      this.crudCallback("success", "Position has been succesfully updated!");
                   }
               }.bind(this),
               error: function() {
-                  this.saveAddCallback("danger", "ERROR UPDATING POSITION");
+                  this.crudCallback("danger", "ERROR UPDATING POSITION");
               }.bind(this)
           })
       }
       else {
-          this.saveAddCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
+          this.crudCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
       }
       event.preventDefault();
   }
@@ -365,7 +366,8 @@ class Position extends React.Component {
             posId={this.state.selectedId} posTitle={this.state.selectedTitle}
             posSalary={this.state.selectedSalary} posDep={this.state.selectedDep} posId={this.state.selectedId}
             modalText={this.modalText} closeModal={this.closeModal} deletePosition={this.deletePosition}
-            buttonText={this.buttonText} showModal={this.state.showModal} openModal={this.openModal}/>
+            buttonText={this.buttonText} showModal={this.state.showModal} openModal={this.openModal}
+            />
             <DisplayNewPosition addNewPosition={this.addNewPosition} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
             newTitle={this.state.newTitle} newSalary={this.state.newSalary}
             newDep={this.state.newDep}/>
@@ -390,24 +392,22 @@ class DisplayInformation extends React.Component {
 
     openModal(event) {
         this.setState({showModal: true});
-        event.preventDefault();
     }
 
     closeModal(event) {
         this.setState({showModal: false});
-        event.preventDefault();
     }
 
     onClick(event) {
         this.props.deletePosition(event, this.props.posId);
-        event.preventDefault();
+        this.closeModal();
     }
     render() {
         if(!this.props.show) {
             return null;
         }
         return(
-            <form className="right-position-pane-content">
+            <div className="right-position-pane-content">
                 <Modal
                     isOpen={this.state.showModal}
                     onRequestClose={this.closeModal}
@@ -436,7 +436,7 @@ class DisplayInformation extends React.Component {
                     <button onClick={this.props.modifyPosition} className="position-save-btn plannr-btn btn">SAVE</button>
                     <button onClick={this.openModal} className="position-delete-btn plannr-btn btn">DELETE</button>
                 </div>
-            </form>
+            </div>
         );
     }
 }
