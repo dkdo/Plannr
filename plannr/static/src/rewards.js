@@ -4,6 +4,9 @@ import DjangoCSRFToken from './shared/csrf';
 import { isManager } from './shared/isManager.js';
 import { getCookie } from './shared/getCookie';
 import '../css/rewards.css';
+import AlertDismissable from './alert-dismissable.js';
+import Modal from 'react-modal';
+import centerModal from './shared/centerModal';
 
 class MasterReward extends React.Component {
     constructor(props) {
@@ -54,18 +57,42 @@ class Reward extends React.Component {
         newPoints: '',
         appearAdd: false,
         searchFilter: '',
+        showAlert: false,
+        bsStyle: '',
+        alertText: '',
+        headline: '',
+        showModal: false,
     };
+    this.modalText = 'Do you wish to delete this reward?';
+    this.buttonText = 'DELETE';
     this.handleRewardClick = this.handleRewardClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.addNewReward = this.addNewReward.bind(this);
     this.handleAddClick = this.handleAddClick.bind(this);
     this.modifyReward = this.modifyReward.bind(this);
     this.searchReward = this.searchReward.bind(this);
+    this.deleteReward = this.deleteReward.bind(this);
+    this.crudCallback = this.crudCallback.bind(this);
+    this.alertDismiss = this.alertDismiss.bind(this);
 
   }
 
   componentWillMount() {
     this.loadRewards();
+  }
+
+  crudCallback(bsStyle, alertText) {
+    var headline = bsStyle === "success" ? "Success!" : "Uh oh!"
+    this.setState({
+        showAlert: true,
+        bsStyle: bsStyle,
+        alertText: alertText,
+        headline: headline,
+    });
+  }
+
+  alertDismiss() {
+      this.setState({showAlert: false});
   }
 
   loadRewards() {
@@ -80,7 +107,7 @@ class Reward extends React.Component {
               }
           }.bind(this),
           error: function() {
-              alert("ERROR LOADING REWARDS");
+              this.crudCallback("danger", "ERROR LOADING POSITIONS");
           }.bind(this)
       })
   }
@@ -172,6 +199,49 @@ class Reward extends React.Component {
       return doesApply;
   }
 
+  deleteReward(event, id) {
+      console.log('enters deleteReward');
+      var data = {reward_id: id}
+      console.log(data);
+      console.log(this.props.getpos_url);
+      var csrfToken = getCookie('csrftoken');
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              xhr.setRequestHeader("X-CSRFToken", csrfToken);
+          }
+      });
+      $.ajax({
+          url: this.props.rewards_url,
+          type: 'DELETE',
+          datatype: 'json',
+          cache: false,
+          data: data,
+          success: function(data){
+             this.removeRewardFromList(id);
+             this.setState({appearDetail: false});
+             this.crudCallback("success", "Deleted reward!");
+          }.bind(this)
+      });
+      event.preventDefault();
+  }
+
+  removeRewardFromList(id) {
+      var fixed = this.state.fixedRewardList.slice(0);
+      var search = this.state.rewardList.slice(0);
+      for(var i = 0; i < fixed.length; i++) {
+          if(fixed[i].id == id) {
+              fixed.splice(i, 1);
+          }
+      }
+      for(var j = 0; j < search.length; j++) {
+          if(search[j].id == id) {
+              search.splice(j, 1);
+          }
+      }
+
+      this.setState({fixedRewardList: fixed, rewardList: search});
+  }
+
   addNewReward(event) {
       var canAdd = this.addSanitize();
       if (canAdd) {
@@ -204,16 +274,16 @@ class Reward extends React.Component {
                       newName: '',
                       newPoints: '',
                       rewardList: filteredRewards});
-                      alert('Reward has been succesfully added!')
+                      this.crudCallback("success", "reward has been successfully added!");
                   }
               }.bind(this),
               error: function() {
-                  alert("ERROR ADDING NEW REWARD");
+                  this.crudCallback("danger", "ERROR ADDING NEW REWARD");
               }.bind(this)
           })
       }
       else {
-          alert('Points needs to be a number and name needs to be under 100 characters and unique');
+          this.crudCallback('danger', 'Points needs to be a number and name needs to be under 100 characters and unique');
       }
       event.preventDefault();
   }
@@ -257,16 +327,16 @@ class Reward extends React.Component {
               success: function(data){
                   if(data != "") {
                       this.updateRewardList();
-                      alert('Reward has been succesfully updated!')
+                      this.crudCallback("success", "Reward has been succesfully updated!");
                   }
               }.bind(this),
               error: function() {
-                  alert("ERROR UPDATING REWARD");
+                  this.crudCallback("danger", "ERROR UPDATING REWARD");
               }.bind(this)
           })
       }
       else {
-          alert('Points needs to be a number and name needs to be under 100 characters and unique');
+         this.crudCallback('danger', 'Points needs to be a number and name needs to be under 100 characters and unique');
       }
       event.preventDefault();
   }
@@ -274,6 +344,8 @@ class Reward extends React.Component {
   render() {
     return (
         <div className="reward-content-container">
+            <AlertDismissable alertVisible={this.state.showAlert} bsStyle={this.state.bsStyle} headline={this.state.headline} alertText={this.state.alertText}
+                              alertDismiss={this.alertDismiss}/>
             <div className="reward-pane" id="left_reward_pane">
                 <button onClick={this.handleAddClick} className="reward-add-btn plannr-btn btn">ADD</button>
                 <div className="search-bar">
@@ -292,7 +364,8 @@ class Reward extends React.Component {
         <div className="reward-pane" id="right_reward_pane">
             <DisplayRewardInformation modifyReward={this.modifyReward} show={this.state.appearDetail} handleInputChange={this.handleInputChange}
             rewardId={this.state.selectedId} rewardName={this.state.selectedName}
-            rewardPoints={this.state.selectedPoints}/>
+            rewardPoints={this.state.selectedPoints} rewardId={this.state.selectedId}
+            deleteReward={this.deleteReward} modalText={this.modalText} buttonText={this.buttonText}/>
             <DisplayNewReward addNewReward={this.addNewReward} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
             newName={this.state.newName} newPoints={this.state.newPoints}/>
         </div>
@@ -302,26 +375,67 @@ class Reward extends React.Component {
   }
 }
 
-function DisplayRewardInformation(props) {
-    if(!props.show) {
-        return null;
+class DisplayRewardInformation extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showModal: false,
+        };
+
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
-    return(
-        <form className="right-reward-pane-content">
-            <h2 className="reward-name"> {props.rewardName} </h2>
-            <div className="input-group reward-group">
-                <span className="input-group-addon reward-info-label">Name</span>
-                <input className="form-control reward-info-input" onChange={props.handleInputChange} name="selectedName" value={props.rewardName} placeholder="ex:Trooper"></input>
+
+    openModal(event) {
+        this.setState({showModal: true});
+    }
+
+    closeModal(event) {
+        this.setState({showModal: false});
+    }
+
+    onClick(event) {
+        this.props.deleteReward(event, this.props.rewardId);
+        this.closeModal();
+    }
+    render() {
+        if(!this.props.show) {
+            return null;
+        }
+        return(
+            <div className="right-reward-pane-content">
+                <Modal
+                    isOpen={this.state.showModal}
+                    onRequestClose={this.closeModal}
+                    contentLabel="Modal"
+                    style={centerModal}>
+                    <div>
+                        <div className="modal-text">
+                            {this.props.modalText}
+                        </div>
+                        <div className="modal-btns">
+                            <button className="plannr-btn btn" onClick={this.onClick}>{this.props.buttonText}</button>
+                            <button className="plannr-btn btn" onClick={this.closeModal}>Cancel</button>
+                        </div>
+                    </div>
+                </Modal>
+                <h2 className="reward-name"> {this.props.rewardName} </h2>
+                <div className="input-group reward-group">
+                    <span className="input-group-addon reward-info-label">Name</span>
+                    <input className="form-control reward-info-input" onChange={this.props.handleInputChange} name="selectedName" value={this.props.rewardName} placeholder="ex:Trooper"></input>
+                </div>
+                <div className="input-group reward-group">
+                    <span className="input-group-addon reward-info-label">Points</span>
+                    <input className="form-control reward-info-input" onChange={this.props.handleInputChange} name="selectedPoints" value={this.props.rewardPoints} placeholder="ex:350"></input>
+                </div>
+                <div className="reward-save-btn-wrapper">
+                    <button onClick={this.props.modifyReward} className="reward-save-btn plannr-btn btn">SAVE</button>
+                    <button onClick={this.openModal} className="reward-delete-btn plannr-btn btn">DELETE</button>
+                </div>
             </div>
-            <div className="input-group reward-group">
-                <span className="input-group-addon reward-info-label">Points</span>
-                <input className="form-control reward-info-input" onChange={props.handleInputChange} name="selectedPoints" value={props.rewardPoints} placeholder="ex:350"></input>
-            </div>
-            <div className="reward-save-btn-wrapper">
-                <button onClick={props.modifyReward} className="reward-save-btn plannr-btn btn">SAVE</button>
-            </div>
-        </form>
-    );
+        );
+    }
 }
 
 function DisplayNewReward(props) {

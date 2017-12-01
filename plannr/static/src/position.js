@@ -271,7 +271,7 @@ class Position extends React.Component {
                       this.setState({fixedPositionList: positions,
                       newTitle: '', newDep: '', newSalary: '',
                       positionList: filteredPositions});
-                      this.crudCallback("success", "Position has been succesfully added!");
+                      this.crudCallback("success", "Position has been successfully added!");
                   }
               }.bind(this),
               error: function() {
@@ -365,9 +365,7 @@ class Position extends React.Component {
             <DisplayInformation modifyPosition={this.modifyPosition} show={this.state.appearDetail} handleInputChange={this.handleInputChange}
             posId={this.state.selectedId} posTitle={this.state.selectedTitle}
             posSalary={this.state.selectedSalary} posDep={this.state.selectedDep} posId={this.state.selectedId}
-            modalText={this.modalText} closeModal={this.closeModal} deletePosition={this.deletePosition}
-            buttonText={this.buttonText} showModal={this.state.showModal} openModal={this.openModal}
-            />
+            modalText={this.modalText} deletePosition={this.deletePosition} buttonText={this.buttonText}/>
             <DisplayNewPosition addNewPosition={this.addNewPosition} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
             newTitle={this.state.newTitle} newSalary={this.state.newSalary}
             newDep={this.state.newDep}/>
