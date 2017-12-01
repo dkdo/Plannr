@@ -27,6 +27,10 @@
     margin-top: 10px;
  }
 
+.input-group, .form-control {
+    z-index: 0;
+}
+
  /* PLANNR THEME BUTTONS */
  .plannr-btn {
      background-color: white;
