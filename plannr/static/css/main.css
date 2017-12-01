@@ -592,9 +592,12 @@ img.logo-resize {
 }
 
     .calendar-modules td {
-        overflow-y: scroll;
         padding-bottom: 10px;
         width: 100%;
+    }
+
+    .calendar-modules tr:last-child td {
+        overflow-y: scroll;
     }
 
 /* END CALENDAR WEEK AND MONTH */
