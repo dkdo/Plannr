@@ -5,6 +5,8 @@ import { getCookie } from './shared/csrf_methods';
 import '../css/position.css';
 import { isManager } from './shared/isManager.js';
 import AlertDismissable from './alert-dismissable.js';
+import Modal from 'react-modal';
+import centerModal from './shared/centerModal';
 
 export default class MasterPosition extends React.Component {
   constructor(props) {
@@ -62,7 +64,10 @@ class Position extends React.Component {
         bsStyle: '',
         alertText: '',
         headline: '',
+        showModal: false,
     };
+    this.modalText = 'Do you wish to delete this position?';
+    this.buttonText = 'DELETE';
     this.handlePositionClick = this.handlePositionClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.addNewPosition = this.addNewPosition.bind(this);
@@ -71,6 +76,8 @@ class Position extends React.Component {
     this.searchPosition = this.searchPosition.bind(this);
     this.saveAddCallback = this.saveAddCallback.bind(this);
     this.alertDismiss = this.alertDismiss.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.openModal = this.openModal.bind(this);
 
   }
 
@@ -191,6 +198,26 @@ class Position extends React.Component {
       return doesApply;
   }
 
+  deletePosition(id) {
+      var data = {position_id: id}
+      var csrfToken = getCookie('csrftoken');
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              xhr.setRequestHeader("X-CSRFToken", csrfToken);
+          }
+      });
+      $.ajax({
+          url: this.props.getpos_url,
+          type: 'DELETE',
+          datatype: 'json',
+          cache: false,
+          data: data,
+          success: function(data){
+              //this.props.deleteCallback();
+          }.bind(this)
+      })
+  }
+
   addNewPosition(event) {
       var canAdd = this.addSanitize();
       if (canAdd) {
@@ -294,6 +321,14 @@ class Position extends React.Component {
       event.preventDefault();
   }
 
+  closeModal() {
+      this.setState({showModal: false});
+  }
+
+  openModal() {
+      this.setState({showModal: true});
+  }
+
   render() {
     return (
         <div className="position-content-container">
@@ -317,7 +352,9 @@ class Position extends React.Component {
         <div className="position-pane" id="right_position_pane">
             <DisplayInformation modifyPosition={this.modifyPosition} show={this.state.appearDetail} handleInputChange={this.handleInputChange}
             posId={this.state.selectedId} posTitle={this.state.selectedTitle}
-            posSalary={this.state.selectedSalary} posDep={this.state.selectedDep}/>
+            posSalary={this.state.selectedSalary} posDep={this.state.selectedDep} posId={this.state.selectedId}
+            modalText={this.modalText} closeModal={this.closeModal} deletePosition={this.deletePosition}
+            buttonText={this.buttonText} showModal={this.state.showModal} openModal={this.openModal}/>
             <DisplayNewPosition addNewPosition={this.addNewPosition} show={this.state.appearAdd} handleInputChange={this.handleInputChange}
             newTitle={this.state.newTitle} newSalary={this.state.newSalary}
             newDep={this.state.newDep}/>
@@ -328,26 +365,61 @@ class Position extends React.Component {
   }
 }
 
-function DisplayInformation(props) {
-    if(!props.show) {
-        return null;
+class DisplayInformation extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showModal: false,
+        };
+
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
     }
-    return(
-        <form className="right-position-pane-content">
-            <h2 className="position-title"> {props.posTitle} </h2>
-            <div className="input-group position-group">
-                <span className="input-group-addon position-info-label">Salary&#47;h</span>
-                <input className="form-control position-info-input" onChange={props.handleInputChange} name="selectedSalary" value={props.posSalary} placeholder="ex:13$"></input>
-            </div>
-            <div className="input-group position-group">
-                <span className="input-group-addon position-info-label">Department</span>
-                <input className="form-control position-info-input" onChange={props.handleInputChange} name="selectedDep" value={props.posDep} placeholder="Customer Service"></input>
-            </div>
-            <div className="position-save-btn-wrapper">
-                <button onClick={props.modifyPosition} className="position-save-btn plannr-btn btn">SAVE</button>
-            </div>
-        </form>
-    );
+
+    openModal() {
+        this.setState({showModal: true});
+    }
+
+    closeModal() {
+        this.setState({showModal: false});
+    }
+    render() {
+        if(!this.props.show) {
+            return null;
+        }
+        return(
+            <form className="right-position-pane-content">
+                <h2 className="position-title"> {this.props.posTitle} </h2>
+                <div className="input-group position-group">
+                    <span className="input-group-addon position-info-label">Salary&#47;h</span>
+                    <input className="form-control position-info-input" onChange={this.props.handleInputChange} name="selectedSalary" value={this.props.posSalary} placeholder="ex:13$"></input>
+                </div>
+                <div className="input-group position-group">
+                    <span className="input-group-addon position-info-label">Department</span>
+                    <input className="form-control position-info-input" onChange={this.props.handleInputChange} name="selectedDep" value={this.props.posDep} placeholder="Customer Service"></input>
+                </div>
+                <div className="position-save-btn-wrapper">
+                    <button onClick={this.props.modifyPosition} className="position-save-btn plannr-btn btn">SAVE</button>
+                    <button onClick={this.openModal} className="position-delete-btn plannr-btn btn">DELETE</button>
+                    <Modal
+                        isOpen={this.state.showModal}
+                        onRequestClose={this.closeModal}
+                        contentLabel="Modal"
+                        style={centerModal}>
+                        <div>
+                            <div className="modal-text">
+                                {this.props.modalText}
+                            </div>
+                            <div className="modal-btns">
+                                <button className="plannr-btn btn" onClick={this.props.deletePosition(this.props.posId)}>{this.props.buttonText}</button>
+                                <button className="plannr-btn btn" onClick={this.closeModal}>Cancel</button>
+                            </div>
+                        </div>
+                    </Modal>
+                </div>
+            </form>
+        );
+    }
 }
 
 function DisplayNewPosition(props) {
