@@ -94,7 +94,7 @@ class MasterProfile extends React.Component {
                                   alertDismiss={this.alertDismiss}/>
 				<div className="profile-content-container">
 					{!this.state.isManager ? <StatsContainer hours={this.state.hours} taken={this.state.taken_shifts} given={this.state.given_shifts} total_points={this.state.total_points} all_shifts={this.state.total_shifts} /> : null}
-					<UserInformation saveprofile_url={this.props.saveprofile_url}/>
+					<UserInformation saveprofile_url={this.props.saveprofile_url} saveCallback={this.saveCallback}/>
 					{!this.state.isManager ? <EmployeeRewardsContainer total_points={this.state.total_points} /> : null}
 				</div>
 			</div>
