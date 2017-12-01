@@ -1,23 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import EventDetail from './event-detail';
+import AlertDismissable from './alert-dismissable.js';
 
 class EventList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            showAlert: false,
         }
+        this.alertDismiss = this.alertDismiss.bind(this);
+        this.deleteSuccess = this.deleteSuccess.bind(this);
+    }
+
+    deleteSuccess() {
+        this.setState({showAlert: true});
+    }
+
+    alertDismiss() {
+        this.setState({showAlert: false});
     }
 
     render() {
         var eventComponents = [];
         for(let i = 0; i < this.props.dayEventList.length; i++){
-            eventComponents.push(<EventCard key={this.props.dayEventList[i].id} event={this.props.dayEventList[i]} refreshPage={this.props.refreshPage} />);
+            eventComponents.push(<EventCard key={this.props.dayEventList[i].id} event={this.props.dayEventList[i]} refreshPage={this.props.refreshPage}
+                                            deleteSuccess={this.deleteSuccess}/>);
         }
 
         return (
             <div className="event-list">
+                <AlertDismissable alertVisible={this.state.showAlert} bsStyle="success" headline="Success!" alertText="Deleted Shift!"
+                                      alertDismiss={this.alertDismiss}/>
                 {eventComponents}
             </div>);
     }
@@ -39,6 +53,7 @@ class EventCard extends React.Component {
     }
 
     deleteCallback() {
+        this.props.deleteSuccess();
         this.props.refreshPage();
     }
 

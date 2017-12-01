@@ -21,7 +21,7 @@ class AlertDismissable extends React.Component {
             return (
                 <div className="alert-top">
                     <Alert bsStyle={this.props.bsStyle} onDismiss={this.handleAlertDismiss}>
-                        <h4>{this.props.headline}</h4>
+                        <h4>{this.props.headline}&nbsp;</h4>
                         <p>{this.props.alertText}</p>
                     </Alert>
                 </div>

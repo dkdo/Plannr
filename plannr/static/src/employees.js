@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Select from 'react-select';
 import {getCookie} from './shared/getCookie';
+import AlertDismissable from './alert-dismissable.js';
 import '../css/employees.css';
 
 class EmployeesList extends React.Component {
@@ -15,16 +16,27 @@ class EmployeesList extends React.Component {
             positionOptions: [],
             positionChanges: [],
             newStats: {},
+            showAlert: false,
         };
         this.handlePositionChange = this.handlePositionChange.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
         this.resetChanges = this.resetChanges.bind(this);
+        this.alertDismiss = this.alertDismiss.bind(this);
+        this.saveSuccess = this.saveSuccess.bind(this);
     }
 
     componentWillMount() {
         this.loadEmployees();
         this.loadPositions();
         this.loadStats();
+    }
+
+    saveSuccess() {
+        this.setState({showAlert: true});
+    }
+
+    alertDismiss() {
+        this.setState({showAlert: false});
     }
 
     loadStats() {
@@ -143,6 +155,7 @@ class EmployeesList extends React.Component {
                     position_id: positionChanges[i].position_id
                 },
                 success: function(data){
+                    this.saveSuccess();
                 }.bind(this),
             })
         }
@@ -159,6 +172,8 @@ class EmployeesList extends React.Component {
     render() {
         return (
             <div>
+                <AlertDismissable alertVisible={this.state.showAlert} bsStyle="success" headline="Success!" alertText="Saved employee positions!"
+                                  alertDismiss={this.alertDismiss}/>
                 <h1 className="page-title">Employees</h1>
                 <div className="empl-btns text-center">
                     <button className="plannr-btn btn" onClick={this.saveChanges}>SAVE</button>

@@ -4,6 +4,7 @@ import DjangoCSRFToken from './shared/csrf';
 import { getCookie } from './shared/csrf_methods';
 import '../css/position.css';
 import { isManager } from './shared/isManager.js';
+import AlertDismissable from './alert-dismissable.js';
 
 export default class MasterPosition extends React.Component {
   constructor(props) {
@@ -57,6 +58,10 @@ class Position extends React.Component {
         newDep: '',
         appearAdd: false,
         searchFilter: '',
+        showAlert: false,
+        bsStyle: '',
+        alertText: '',
+        headline: '',
     };
     this.handlePositionClick = this.handlePositionClick.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -64,11 +69,27 @@ class Position extends React.Component {
     this.handleAddClick = this.handleAddClick.bind(this);
     this.modifyPosition = this.modifyPosition.bind(this);
     this.searchPosition = this.searchPosition.bind(this);
+    this.saveAddCallback = this.saveAddCallback.bind(this);
+    this.alertDismiss = this.alertDismiss.bind(this);
 
   }
 
   componentWillMount() {
     this.loadPositions();
+  }
+
+  saveAddCallback(bsStyle, alertText) {
+    var headline = bsStyle === "success" ? "Success!" : "Uh oh!"
+    this.setState({
+        showAlert: true,
+        bsStyle: bsStyle,
+        alertText: alertText,
+        headline: headline,
+    });
+  }
+
+  alertDismiss() {
+      this.setState({showAlert: false});
   }
 
   loadPositions() {
@@ -83,7 +104,7 @@ class Position extends React.Component {
               }
           }.bind(this),
           error: function() {
-              alert("ERROR LOADING POSITIONS");
+              this.saveAddCallback("danger", "ERROR LOADING POSITIONS");
           }.bind(this)
       })
   }
@@ -203,16 +224,16 @@ class Position extends React.Component {
                       this.setState({fixedPositionList: positions,
                       newTitle: '', newDep: '', newSalary: '',
                       positionList: filteredPositions});
-                      alert('Position has been succesfully added!')
+                      this.saveAddCallback("success", "Position has been succesfully added!");
                   }
               }.bind(this),
               error: function() {
-                  alert("ERROR ADDING NEW POSITION");
+                  this.saveAddCallback("danger", "ERROR ADDING NEW POSITION");
               }.bind(this)
           })
       }
       else {
-          alert('Salary needs to be a number and title,Department need to be under 100 characters');
+          this.saveAddCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
       }
       event.preventDefault();
   }
@@ -259,16 +280,16 @@ class Position extends React.Component {
               success: function(data){
                   if(data != "") {
                       this.updatePositionList();
-                      alert('Position has been succesfully updated!')
+                      this.saveAddCallback("success", "Position has been succesfully updated!");
                   }
               }.bind(this),
               error: function() {
-                  alert("ERROR UPDATING POSITION");
+                  this.saveAddCallback("danger", "ERROR UPDATING POSITION");
               }.bind(this)
           })
       }
       else {
-          alert('Salary needs to be a number and title,Department need to be under 100 characters');
+          this.saveAddCallback("danger", "Salary needs to be a number and title, department need to be under 100 characters");
       }
       event.preventDefault();
   }
@@ -276,6 +297,8 @@ class Position extends React.Component {
   render() {
     return (
         <div className="position-content-container">
+            <AlertDismissable alertVisible={this.state.showAlert} bsStyle={this.state.bsStyle} headline={this.state.headline} alertText={this.state.alertText}
+                              alertDismiss={this.alertDismiss}/>
             <div className="position-pane" id="left_position_pane">
                 <button onClick={this.handleAddClick} className="position-add-btn plannr-btn btn">ADD</button>
                 <div className="search-bar">
